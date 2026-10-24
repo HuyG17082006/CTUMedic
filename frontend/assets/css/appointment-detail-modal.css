@@ -1,0 +1,349 @@
+
+/* ==============================
+   APPOINTMENT DETAIL MODAL
+   ============================== */
+
+.appointment-modal[hidden] {
+    display: none !important;
+}
+
+.appointment-modal {
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.appointment-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(3px);
+}
+
+.appointment-modal__dialog {
+    position: relative;
+    z-index: 1;
+    width: min(1200px, 100%);
+    max-height: 90vh;
+    overflow-y: auto;
+    background: var(--dash-surface, #ffffff);
+    border: 1px solid var(--dash-border, #e5e7eb);
+    border-radius: 16px;
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.2);
+    animation: appointment-modal-enter 0.2s ease-out;
+}
+
+/* Header */
+
+.appointment-modal__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 24px;
+    border-bottom: 1px solid var(--dash-border, #e5e7eb);
+}
+
+.appointment-modal__header h2 {
+    margin: 0;
+    color: var(--dash-text, #1e293b);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.appointment-modal__header p {
+    margin: 7px 0 0;
+    color: var(--dash-text-muted, #64748b);
+    font-size: 13px;
+}
+
+.appointment-modal__close {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    color: var(--dash-text-muted, #64748b);
+    background: var(--dash-surface, #ffffff);
+    border: 1px solid var(--dash-border, #e5e7eb);
+    border-radius: 9px;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.appointment-modal__close:hover {
+    color: #dc2626;
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+/* Three information sections */
+
+.appointment-modal__body {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1.25fr)
+        minmax(0, 1fr);
+    align-items: stretch;
+    gap: 16px;
+    padding: 22px 24px;
+}
+
+.appointment-detail-card {
+    min-width: 0;
+    padding: 18px;
+    background: var(--dash-surface-secondary, #f8fafc);
+    border: 1px solid var(--dash-border, #e5e7eb);
+    border-radius: 12px;
+}
+
+.appointment-detail-card--main {
+    background: var(--dash-surface, #ffffff);
+    border-color: var(--dash-primary, #2563eb);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.06);
+}
+
+.appointment-detail-card h3 {
+    margin: 0 0 18px;
+    padding-bottom: 12px;
+    color: var(--dash-text, #1e293b);
+    border-bottom: 1px solid var(--dash-border, #e5e7eb);
+    font-size: 15px;
+    font-weight: 700;
+}
+
+/* Information fields */
+
+.appointment-detail-card dl {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+}
+
+.appointment-detail-card dt {
+    margin-top: 10px;
+    color: var(--dash-text-muted, #64748b);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.appointment-detail-card dt:first-child {
+    margin-top: 0;
+}
+
+.appointment-detail-card dd {
+    margin: 0;
+    color: var(--dash-text, #334155);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+/* Action buttons area */
+
+.appointment-modal__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--dash-border, #e5e7eb);
+}
+
+/* Animation */
+
+@keyframes appointment-modal-enter {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.99);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Responsive */
+
+@media (max-width: 1000px) {
+    .appointment-modal__body {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .appointment-detail-card--main {
+        grid-column: 1 / -1;
+        grid-row: 1;
+    }
+}
+
+@media (max-width: 650px) {
+    .appointment-modal {
+        align-items: flex-start;
+        padding: 10px;
+    }
+
+    .appointment-modal__dialog {
+        max-height: calc(100vh - 20px);
+        border-radius: 12px;
+    }
+
+    .appointment-modal__header {
+        padding: 16px;
+    }
+
+    .appointment-modal__header h2 {
+        font-size: 18px;
+    }
+
+    .appointment-modal__body {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .appointment-detail-card--main {
+        grid-column: auto;
+        grid-row: auto;
+    }
+
+    .appointment-detail-card {
+        padding: 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .appointment-modal__dialog {
+        animation: none;
+    }
+}
+
+
+
+/* ==============================
+   Appointment Modal Actions
+============================== */
+
+.appointment-modal__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* Style chung cho các nút thao tác */
+.appointment-modal__actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-height: 40px;
+    padding: 10px 16px;
+
+    border: 1px solid transparent;
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.15s ease;
+}
+
+/* Hiệu ứng khi rê chuột */
+.appointment-modal__actions button:hover {
+    transform: translateY(-1px);
+}
+
+.appointment-modal__actions button:active {
+    transform: translateY(0);
+}
+
+/* Focus cho bàn phím */
+.appointment-modal__actions button:focus-visible {
+    outline: 3px solid #93c5fd;
+    outline-offset: 2px;
+}
+
+/* Sửa lịch / Hủy sửa */
+.appointment-modal__actions .btn-secondary {
+    color: #374151;
+    background: #ffffff;
+    border-color: #d1d5db;
+}
+
+.appointment-modal__actions .btn-secondary:hover {
+    background: #f3f4f6;
+    border-color: #9ca3af;
+}
+
+/* Xác nhận / Lưu thay đổi */
+.appointment-modal__actions .btn-primary {
+    color: #ffffff;
+    background: #2563eb;
+    border-color: #2563eb;
+}
+
+.appointment-modal__actions .btn-primary:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+/* Từ chối / Hủy lịch */
+.appointment-modal__actions .btn-danger {
+    color: #ffffff;
+    background: #dc2626;
+    border-color: #dc2626;
+}
+
+.appointment-modal__actions .btn-danger:hover {
+    background: #b91c1c;
+    border-color: #b91c1c;
+}
+
+/* Trạng thái disabled */
+.appointment-modal__actions button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Ẩn nút bằng thuộc tính hidden */
+.appointment-modal__actions button[hidden] {
+    display: none !important;
+}
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 480px) {
+    .appointment-modal__actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .appointment-modal__actions button {
+        width: 100%;
+    }
+}
