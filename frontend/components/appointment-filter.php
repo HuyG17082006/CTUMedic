@@ -1,5 +1,5 @@
-
 <?php
+
 /**
  * Component: Appointment Filter
  *
@@ -17,8 +17,7 @@ $showStatus = $showStatus ?? true;
 
 <section
     class="appointment-filter"
-    id="<?= htmlspecialchars($filterId) ?>"
->
+    id="<?= htmlspecialchars($filterId) ?>">
     <div class="appointment-filter__header">
         <div>
             <h3 class="appointment-filter__title">Bộ lọc lịch khám</h3>
@@ -30,8 +29,7 @@ $showStatus = $showStatus ?? true;
         <button
             type="button"
             class="appointment-filter__reset"
-            data-filter-reset
-        >
+            data-filter-reset>
             Xóa bộ lọc
         </button>
     </div>
@@ -48,7 +46,7 @@ $showStatus = $showStatus ?? true;
                 id="<?= htmlspecialchars($filterId) ?>-specialty"
                 name="specialty"
                 data-filter="specialty"
-            >
+                class="specialty-select-box">
                 <option value="">Tất cả chuyên khoa</option>
             </select>
         </div>
@@ -63,10 +61,12 @@ $showStatus = $showStatus ?? true;
                 id="<?= htmlspecialchars($filterId) ?>-doctor"
                 name="doctor"
                 data-filter="doctor"
-                disabled
-            >
+                class="doctor-select-box"
+                disabled>
                 <option value="">Chọn chuyên khoa trước</option>
+
             </select>
+
         </div>
 
         <!-- Ngày khám -->
@@ -80,7 +80,7 @@ $showStatus = $showStatus ?? true;
                 id="<?= htmlspecialchars($filterId) ?>-date"
                 name="date"
                 data-filter="date"
-            >
+                class="date-input-box">
         </div>
 
         <!-- Trạng thái -->
@@ -93,8 +93,7 @@ $showStatus = $showStatus ?? true;
                 <select
                     id="<?= htmlspecialchars($filterId) ?>-status"
                     name="status"
-                    data-filter="status"
-                >
+                    data-filter="status">
                     <option value="">Tất cả trạng thái</option>
                     <option value="PENDING">Chờ xác nhận</option>
                     <option value="CONFIRMED">Đã xác nhận</option>
@@ -115,10 +114,107 @@ $showStatus = $showStatus ?? true;
         <button
             type="button"
             class="appointment-filter__submit"
-            data-filter-apply
-        >
+            data-filter-apply>
             <span aria-hidden="true">⌕</span>
             Lọc lịch khám
         </button>
     </div>
 </section>
+
+
+<script>
+    (() => {
+        // 1. Lấy các phần tử HTML
+        const specialtySelectBox = document.querySelector('.specialty-select-box');
+        const doctorSelectBox = document.querySelector('.doctor-select-box');
+        const dateInputBox = document.querySelector('.date-input-box');
+
+        if (!specialtySelectBox) return;
+
+        // 2. Danh sách chuyên khoa
+        const chuyenKhoa = [
+            "Nội khoa",
+            "Tim mạch",
+            "Da liễu"
+        ];
+
+        chuyenKhoa.forEach((nameTag) => {
+            const option = document.createElement('option');
+            option.value = nameTag;
+            option.textContent = nameTag;
+            specialtySelectBox.appendChild(option);
+        });
+
+        // 3. Khôi phục chuyên khoa từ URL
+        const url = new URL(window.location.href);
+        const currentSpecialty = url.searchParams.get('specialty') || '';
+
+        specialtySelectBox.value = currentSpecialty;
+
+        // 4. Hàm lấy danh sách bác sĩ từ backend
+        const getDoctorList = async (specialty) => {
+            if (!doctorSelectBox) return;
+
+            doctorSelectBox.innerHTML =
+                '<option value="">Chọn bác sĩ</option>';
+            doctorSelectBox.disabled = !specialty;
+
+            if (!specialty) return;
+
+            try {
+                const request = await fetch(
+                    `<?= BASE_URL ?>/backend/api/BacSi/lay_danh_sach.php?specialty=${encodeURIComponent(specialty)}`
+                );
+                console.log("<?= BASE_URL ?>/backend/api/BacSi/lay_danh_sach.php")
+                if (!request.ok) {
+                    throw new Error('Lỗi khi lấy danh sách bác sĩ');
+                }
+
+                const result = await request.json();
+                console.log(result)
+                // TODO: Render danh sách bác sĩ theo cấu trúc JSON backend trả về
+                result.list.forEach((doctor) => {
+                    const option = document.createElement('option');
+
+                    option.value = doctor.id;
+                    option.innerText = doctor.hoTen;
+
+                    doctorSelectBox.append(option);
+                })
+
+            } catch (error) {
+                console.error('Error loading doctors:', error);
+            }
+        };
+
+        // 5. Gọi API khi trang tải, giữ đúng chuyên khoa trên URL
+        getDoctorList(currentSpecialty);
+
+        // 6. Xử lý khi người dùng đổi chuyên khoa
+        specialtySelectBox.addEventListener('change', function() {
+            const selectedSpecialty = this.value;
+            const currentUrl = new URL(window.location.href);
+
+            if (selectedSpecialty) {
+                currentUrl.searchParams.set('specialty', selectedSpecialty);
+            } else {
+                currentUrl.searchParams.delete('specialty');
+            }
+
+            // Xóa bác sĩ đã chọn vì chuyên khoa đã thay đổi
+            currentUrl.searchParams.delete('doctorId');
+
+            // Tránh nhầm với page=manager của hệ thống định tuyến
+            currentUrl.searchParams.set('pageNumber', '1');
+
+            window.history.replaceState({}, '', currentUrl);
+
+            // Tải danh sách bác sĩ tương ứng với chuyên khoa mới
+            getDoctorList(selectedSpecialty);
+        });
+
+        dateInputBox.value = url.searchParams.get('date') || '';
+
+        
+    })();
+</script>

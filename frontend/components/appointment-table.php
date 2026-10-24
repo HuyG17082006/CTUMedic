@@ -1,14 +1,5 @@
 
 <?php
-/**
- * Component: Appointment Table
- *
- * $tableId: ID riêng của bảng.
- * $tableType: appointments hoặc history.
- * $columns: Danh sách cột cần hiển thị.
- *
- * TODO: JavaScript sẽ render dữ liệu API vào tbody.
- */
 $tableId = $tableId ?? 'appointment-table';
 $tableType = $tableType ?? 'appointments';
 

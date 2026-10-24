@@ -2,6 +2,8 @@
 
 define('BASE_PATH', __DIR__);
 
+define('BASE_URL', '/dashboard/CTUMedic');
+
 define('PATH_FRONTEND', BASE_PATH . '/frontend');
 define('PATH_BACKEND', BASE_PATH . '/backend');
 define('PATH_VIEWS', PATH_FRONTEND . '/views');
