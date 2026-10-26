@@ -15,10 +15,11 @@ header('Content-Type: application/json; charset=utf-8');
 //     exit;
 // }
 
-// $userId = $_SESSION['id'];
-// $role = strtoupper($_SESSION['role'] ?? '');
+// $userId = $_SESSION['id'] || '';
+$userId = 1;
+$role = strtoupper($_SESSION['role'] ?? '');
 
-// $allowedRoles = ['PATIENT', "DOCTOR", "ADMIN"];
+// $allowedRoles = ['patient', "doctor", "manager"];
 
 // if (!in_array($role, $allowedRoles, true)) {
 //     http_response_code(403);

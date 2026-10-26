@@ -7,7 +7,7 @@ CREATE TABLE taiKhoan (
     username VARCHAR(50) NOT NULL UNIQUE,
     passwordHash VARCHAR(255) NOT NULL,
     isActive BOOLEAN NOT NULL DEFAULT TRUE,
-    role ENUM('ADMIN', 'DOCTOR', 'PATIENT') NOT NULL
+    role ENUM('manager', 'doctor', 'patient') NOT NULL
 );
 
 CREATE TABLE benhNhan (

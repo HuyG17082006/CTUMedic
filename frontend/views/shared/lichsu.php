@@ -11,16 +11,6 @@ require PATH_COMPONENTS . '/appointment-filter.php';
 $tableId = 'history-table';
 $tableType = 'history';
 
-$columns = [
-    'code'      => 'Mã lịch',
-    'patient'   => 'Bệnh nhân',
-    'doctor'    => 'Bác sĩ',
-    'specialty' => 'Chuyên khoa',
-    'date'      => 'Ngày khám',
-    'time'      => 'Giờ khám',
-    'reason'    => 'Lý do khám',
-    'status'    => 'Trạng thái',
-];
 ?>
 
 <div class="appointment-page" data-page="history">

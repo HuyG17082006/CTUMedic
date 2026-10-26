@@ -10,9 +10,12 @@
  *
  * TODO: XÓA DỮ LIỆU DEMO nếu bổ sung dữ liệu mẫu vào file này.
  */
+// Phân loại trang : lịch sử khám - lịch khám
+$tableType = $tableType ?? 'appointment';
 
 $filterId = $filterId ?? 'appointment-filter';
 $showStatus = $showStatus ?? true;
+$isDoctor = $_SESSION['role'] === 'doctor';
 ?>
 
 <section
@@ -46,8 +49,11 @@ $showStatus = $showStatus ?? true;
                 id="<?= htmlspecialchars($filterId) ?>-specialty"
                 name="specialty"
                 data-filter="specialty"
-                class="specialty-select-box">
-                <option value="">Tất cả chuyên khoa</option>
+                class="specialty-select-box"
+                <?= $isDoctor ? 'disabled' : '' ?>>
+                <option value="">
+                    <?= $isDoctor ? 'Không áp dụng' : 'Tất cả chuyên khoa' ?>
+                </option>
             </select>
         </div>
 
@@ -63,10 +69,11 @@ $showStatus = $showStatus ?? true;
                 data-filter="doctor"
                 class="doctor-select-box"
                 disabled>
-                <option value="">Chọn chuyên khoa trước</option>
 
+                <option value="">
+                    <?= $isDoctor ? 'Không áp dụng' : 'Chọn chuyên khoa trước' ?>
+                </option>
             </select>
-
         </div>
 
         <!-- Ngày khám -->
@@ -93,7 +100,8 @@ $showStatus = $showStatus ?? true;
                 <select
                     id="<?= htmlspecialchars($filterId) ?>-status"
                     name="status"
-                    data-filter="status">
+                    data-filter="status"
+                    class="status-select-box">
                     <option value="">Tất cả trạng thái</option>
                     <option value="PENDING">Chờ xác nhận</option>
                     <option value="CONFIRMED">Đã xác nhận</option>
@@ -128,6 +136,9 @@ $showStatus = $showStatus ?? true;
         const specialtySelectBox = document.querySelector('.specialty-select-box');
         const doctorSelectBox = document.querySelector('.doctor-select-box');
         const dateInputBox = document.querySelector('.date-input-box');
+        const statusSelectBox = document.querySelector('.status-select-box');
+        const filterBtnSubmit = document.querySelector('.appointment-filter__submit');
+        const appointmentTable = document.querySelector('[data-appointment-list]');
 
         if (!specialtySelectBox) return;
 
@@ -163,15 +174,15 @@ $showStatus = $showStatus ?? true;
 
             try {
                 const request = await fetch(
-                    `<?= BASE_URL ?>/backend/api/BacSi/lay_danh_sach.php?specialty=${encodeURIComponent(specialty)}`
+                    `<?= API_URL ?>/BacSi/lay_danh_sach.php?specialty=${encodeURIComponent(specialty)}`
                 );
-                console.log("<?= BASE_URL ?>/backend/api/BacSi/lay_danh_sach.php")
+
                 if (!request.ok) {
                     throw new Error('Lỗi khi lấy danh sách bác sĩ');
                 }
 
                 const result = await request.json();
-                console.log(result)
+
                 // TODO: Render danh sách bác sĩ theo cấu trúc JSON backend trả về
                 result.list.forEach((doctor) => {
                     const option = document.createElement('option');
@@ -182,8 +193,11 @@ $showStatus = $showStatus ?? true;
                     doctorSelectBox.append(option);
                 })
 
+                // Giữ lại doctorId cũ nếu đã có trước đó
+                doctorSelectBox.value = new URL(window.location.href).searchParams.get('doctorId') || ''
+
             } catch (error) {
-                console.error('Error loading doctors:', error);
+                console.error('Lỗi khi lấy danh sách bác sĩ:', error);
             }
         };
 
@@ -210,11 +224,64 @@ $showStatus = $showStatus ?? true;
             window.history.replaceState({}, '', currentUrl);
 
             // Tải danh sách bác sĩ tương ứng với chuyên khoa mới
-            getDoctorList(selectedSpecialty);
+            getDoctorList(selectedSpecialty)
+
         });
 
+        // 7. Xử lí khi người dùng đổi bác sĩ 
+        doctorSelectBox.addEventListener('change', function() {
+            const selectedDoctor = this.value;
+            const currentUrl = new URL(window.location.href);
+
+            if (selectedDoctor) {
+                currentUrl.searchParams.set('doctorId', selectedDoctor || 1);
+            } else {
+                currentUrl.searchParams.delete('doctorId');
+            }
+
+            // Tránh nhầm với page=manager của hệ thống định tuyến
+            currentUrl.searchParams.set('pageNumber', '1');
+
+            window.history.replaceState({}, '', currentUrl);
+        });
+
+        // 8. Xử lí date input
         dateInputBox.value = url.searchParams.get('date') || '';
 
+        dateInputBox.addEventListener('change', function() {
+            const inputDate = this.value;
+            const currentUrl = new URL(window.location.href);
+
+            if (inputDate) {
+                currentUrl.searchParams.set('date', inputDate || '');
+            } else {
+                currentUrl.searchParams.delete('date');
+            }
+
+            currentUrl.searchParams.set('pageNumber', '1');
+
+            window.history.replaceState({}, '', currentUrl);
+        });
+
+        // 9. Xử lí status select
+        statusSelectBox.value = url.searchParams.get('status') || '';
+
+        statusSelectBox.addEventListener('change', function() {
+            const statusSelected = this.value;
+            const currentUrl = new URL(window.location.href);
+
+            if (statusSelected) {
+                currentUrl.searchParams.set('status', statusSelected);
+            } else {
+                currentUrl.searchParams.delete('status');
+            }
+
+            currentUrl.searchParams.set('pageNumber', '1');
+
+            window.history.replaceState({}, '', currentUrl);
+        })
+
         
+
     })();
 </script>

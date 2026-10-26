@@ -15,12 +15,12 @@ $canReject = false;
 
 if (in_array($appointmentStatus, ['PENDING', 'CONFIRMED'], true)) {
     switch ($currentRole) {
-        case 'PATIENT':
+        case 'patient':
             $canEdit = true;
             $canCancel = true;
             break;
 
-        case 'DOCTOR':
+        case 'doctor':
             if ($appointmentStatus === 'PENDING') {
                 $canConfirm = true;
                 $canReject = true;
@@ -29,7 +29,7 @@ if (in_array($appointmentStatus, ['PENDING', 'CONFIRMED'], true)) {
             }
             break;
 
-        case 'ADMIN':
+        case 'manager':
             $canEdit = true;
             $canCancel = true;
 

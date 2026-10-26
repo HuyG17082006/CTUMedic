@@ -3,6 +3,7 @@
 define('BASE_PATH', __DIR__);
 
 define('BASE_URL', '/dashboard/CTUMedic');
+define("API_URL", BASE_URL.'/backend/api');
 
 define('PATH_FRONTEND', BASE_PATH . '/frontend');
 define('PATH_BACKEND', BASE_PATH . '/backend');
@@ -96,7 +97,7 @@ $_SESSION['role'] = 'manager';
     require PATH_VIEWS . '/' . $allowedPages[$page];
 
     ?>
-    <script src="./frontend/assets/js/appointment-demo.js"></script>
+
 </body>
 
 </html>
