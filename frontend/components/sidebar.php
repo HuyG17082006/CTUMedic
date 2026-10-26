@@ -7,7 +7,6 @@ $menus = [
     'patient' => [
         'label' => 'PATIENT PORTAL',
         'items' => [
-            'tongquan' => ['icon' => '⌂', 'label' => 'Tổng quan'],
             'datlich'  => ['icon' => '+', 'label' => 'Đặt lịch khám'],
             'lichkham' => ['icon' => '▦', 'label' => 'Lịch khám'],
             'lichsu'   => ['icon' => '◷', 'label' => 'Lịch sử khám'],
@@ -17,7 +16,6 @@ $menus = [
     'doctor' => [
         'label' => 'DOCTOR PORTAL',
         'items' => [
-            'tongquan' => ['icon' => '⌂', 'label' => 'Tổng quan'],
             'lichkham' => ['icon' => '▦', 'label' => 'Lịch khám'],
             'lichsu'   => ['icon' => '◷', 'label' => 'Lịch sử khám'],
         ],
@@ -26,7 +24,6 @@ $menus = [
     'manager' => [
         'label' => 'MANAGEMENT',
         'items' => [
-            'tongquan' => ['icon' => '⌂', 'label' => 'Tổng quan'],
             'lichkham' => ['icon' => '▦', 'label' => 'Quản lý lịch khám'],
             'lichsu'   => ['icon' => '◷', 'label' => 'Lịch sử khám'],
             'benhnhan' => ['icon' => '♙', 'label' => 'Quản lý bệnh nhân'],

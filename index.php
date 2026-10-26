@@ -15,7 +15,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$_SESSION['role'] = 'manager';
+$_SESSION['role'] = 'patient';
 
 ?>
 <!DOCTYPE html>

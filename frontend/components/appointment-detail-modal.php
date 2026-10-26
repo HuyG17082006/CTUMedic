@@ -8,10 +8,10 @@ $currentRole = strtoupper($_SESSION['role'] ?? '');
 $appointmentStatus = strtoupper($appointmentStatus ?? '');
 
 // Xác định các quyền thao tác
-$canEdit = false;
-$canCancel = false;
-$canConfirm = false;
-$canReject = false;
+$canEdit = true;
+$canCancel = true;
+$canConfirm = true;
+$canReject = true;
 
 if (in_array($appointmentStatus, ['PENDING', 'CONFIRMED'], true)) {
     switch ($currentRole) {

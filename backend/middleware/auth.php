@@ -17,7 +17,7 @@ header('Content-Type: application/json; charset=utf-8');
 
 // $userId = $_SESSION['id'] || '';
 $userId = 1;
-$role = strtoupper($_SESSION['role'] ?? '');
+$role = $_SESSION['role'] ?? '';
 
 // $allowedRoles = ['patient', "doctor", "manager"];
 

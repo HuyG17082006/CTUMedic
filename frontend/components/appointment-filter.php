@@ -130,7 +130,7 @@ $isDoctor = $_SESSION['role'] === 'doctor';
 </section>
 
 
-<script>
+<script type="module">
     (() => {
         // 1. Lấy các phần tử HTML
         const specialtySelectBox = document.querySelector('.specialty-select-box');
@@ -141,7 +141,7 @@ $isDoctor = $_SESSION['role'] === 'doctor';
         const appointmentTable = document.querySelector('[data-appointment-list]');
 
         if (!specialtySelectBox) return;
-
+        
         // 2. Danh sách chuyên khoa
         const chuyenKhoa = [
             "Nội khoa",
