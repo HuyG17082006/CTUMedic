@@ -12,29 +12,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // 1. Kiểm tra xem người dùng nhập vào là username hay CCCD
     // Thử tìm theo username trước kết hợp kiểm tra mật khẩu
-    $stmt = $pdo->prepare('SELECT * FROM taiKhoan WHERE username = ? AND passwordHash = ?;');
-    $stmt->execute([$loginIdentifier, $passwordHash]);
+    // $stmt = $pdo->prepare('SELECT * FROM taiKhoan WHERE username = ? AND passwordHash = ?;');
+    // $stmt->execute([$loginIdentifier, $passwordHash]);
 
-    if ($stmt->rowCount() == 1) {
-        $account = $stmt->fetch();
-    } else {
-        // Nếu không khớp username, thử tìm xem có phải là CCCD của bệnh nhân không
-        $stmt = $pdo->prepare('SELECT taiKhoanId FROM benhNhan WHERE CCCD = ?;');
-        $stmt->execute([$loginIdentifier]);
+    // if ($stmt->rowCount() == 1) {
+    //     $account = $stmt->fetch();
+    // } else {
+    //     // Nếu không khớp username, thử tìm xem có phải là CCCD của bệnh nhân không
+    //     $stmt = $pdo->prepare('SELECT taiKhoanId FROM benhNhan WHERE CCCD = ?;');
+    //     $stmt->execute([$loginIdentifier]);
 
-        if ($stmt->rowCount() == 1) {
-            $benhNhanInfo = $stmt->fetch();
-            $taiKhoanId = $benhNhanInfo['taiKhoanId'];
+    //     if ($stmt->rowCount() == 1) {
+    //         $benhNhanInfo = $stmt->fetch();
+    //         $taiKhoanId = $benhNhanInfo['taiKhoanId'];
 
-            // Kiểm tra tiếp tài khoản ứng với ID đó có đúng mật khẩu không
-            $stmtAcc = $pdo->prepare('SELECT * FROM taiKhoan WHERE id = ? AND passwordHash = ?;');
-            $stmtAcc->execute([$taiKhoanId, $passwordHash]);
+    //         // Kiểm tra tiếp tài khoản ứng với ID đó có đúng mật khẩu không
+    //         $stmtAcc = $pdo->prepare('SELECT * FROM taiKhoan WHERE id = ? AND passwordHash = ?;');
+    //         $stmtAcc->execute([$taiKhoanId, $passwordHash]);
 
-            if ($stmtAcc->rowCount() == 1) {
-                $account = $stmtAcc->fetch();
-            }
-        }
-    }
+    //         if ($stmtAcc->rowCount() == 1) {
+    //             $account = $stmtAcc->fetch();
+    //         }
+    //     }
+    // }
+
+    $stmt = $pdo->prepare("
+        SELECT tk.*
+        FROM taiKhoan tk
+        LEFT JOIN benhNhan bn
+            ON bn.taiKhoanId = tk.id
+        WHERE tk.passwordHash = ?
+            AND (
+                tk.username = ?
+                OR bn.CCCD = ?
+            )
+        LIMIT 1");
+
+    $stmt->execute([
+        $passwordHash,
+        $loginIdentifier,
+        $loginIdentifier
+    ]);
+
+    $account = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // 2. Nếu tìm thấy tài khoản và khớp mật khẩu
     if ($account) {
@@ -73,4 +93,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 exit();
-?>
