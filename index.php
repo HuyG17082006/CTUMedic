@@ -31,7 +31,6 @@ if (isset($_GET['api'])) {
         exit('API not found');
     }
 }
-
 $role = $_SESSION['role'] ?? '';
 $page = $_GET['page'] ?? null;
 

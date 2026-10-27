@@ -1,6 +1,8 @@
 <?php
-session_start();
 require_once(PATH_BACKEND . '/database.php');
+
+if (session_status() === PHP_SESSION_NONE)
+    session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $loginIdentifier = trim($_POST['loginIdentifier']); // Có thể là username hoặc CCCD
@@ -37,20 +39,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 2. Nếu tìm thấy tài khoản và khớp mật khẩu
     if ($account) {
         // Lưu thông tin vào Session để dùng sau này
-        $_SESSION['user_id'] = $account['id'];
+        $_SESSION['userId'] = $account['id'];
         $_SESSION['role'] = $account['role'];
 
         // Lấy thông tin chi tiết dựa theo từng Role
         $user = null;
-        if ($account['role'] == 'PATIENT') {
+        if ($account['role'] == 'patient') {
             $stmtUser = $pdo->prepare('SELECT * FROM benhNhan WHERE taiKhoanId = ?;');
             $stmtUser->execute([$account['id']]);
             $user = $stmtUser->fetch();
-        } elseif ($account['role'] == 'DOCTOR') {
+        } elseif ($account['role'] == 'doctor') {
             $stmtUser = $pdo->prepare('SELECT * FROM bacSi WHERE taiKhoanId = ?;');
             $stmtUser->execute([$account['id']]);
             $user = $stmtUser->fetch();
-        } elseif ($account['role'] == 'ADMIN') {
+        } elseif ($account['role'] == 'manager') {
             $user = $account; // Admin có thể lấy trực tiếp bảng taiKhoan
         }
 
