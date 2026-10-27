@@ -4,31 +4,31 @@ if (session_status() === PHP_SESSION_NONE)
 
 header('Content-Type: application/json; charset=utf-8');
 
-// if (empty($_SESSION['id'])) {
-//     http_response_code(401);
+if (empty($_SESSION['id'])) {
+    http_response_code(401);
 
-//     echo json_encode([
-//         'success' => false,
-//         'message' => 'Vui lòng đăng nhập trước khi thực hiện thao tác này'
-//     ]);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Vui lòng đăng nhập trước khi thực hiện thao tác này'
+    ]);
 
-//     exit;
-// }
+    exit;
+}
 
 // $userId = $_SESSION['id'] || '';
-$userId = 1;
+$userId = $_SESSION['userId'];
 $role = $_SESSION['role'] ?? '';
 
-// $allowedRoles = ['patient', "doctor", "manager"];
+$allowedRoles = ['patient', "doctor", "manager"];
 
-// if (!in_array($role, $allowedRoles, true)) {
-//     http_response_code(403);
+if (!in_array($role, $allowedRoles, true)) {
+    http_response_code(403);
 
-//     echo json_encode([
-//         'success' => false,
-//         'message' => 'Không có quyền truy cập'
-//     ]);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Không có quyền truy cập'
+    ]);
 
-//     exit;
-// }
+    exit;
+}
 ?>

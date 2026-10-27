@@ -7,7 +7,7 @@ CREATE TABLE taiKhoan (
     username VARCHAR(50) NOT NULL UNIQUE,
     passwordHash VARCHAR(255) NOT NULL,
     isActive BOOLEAN NOT NULL DEFAULT TRUE,
-    role ENUM('manager', 'doctor', 'patient') NOT NULL
+    role ENUM('manager', 'doctor', 'patient') DEFAULT 'patient' NOT NULL
 );
 
 CREATE TABLE benhNhan (
@@ -49,6 +49,6 @@ CREATE TABLE lichKham (
     createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (bacSiId) REFERENCES bacSi(id) ON DELETE CASCADE,
-    FOREIGN KEY (benhNhanId) REFERENCES benNhan(id) ON DELETE CASCADE
+    FOREIGN KEY (benhNhanId) REFERENCES benhNhan(id) ON DELETE CASCADE
 );
 
