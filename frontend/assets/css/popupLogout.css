@@ -1,0 +1,100 @@
+/* Phủ mờ toàn màn hình với hiệu ứng chuyển động mượt mà */
+.custom-modal-overlay {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(15, 23, 42, 0.6); /* Màu tối sang trọng, hiện đại */
+    backdrop-filter: blur(4px); /* Hiệu ứng kính mờ (blur background) cực đẹp */
+    display: none; /* Mặc định ẩn */
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    animation: fadeInModal 0.25s ease-in-out;
+}
+
+/* Khung card chính của Modal */
+.custom-modal-card {
+    background: #ffffff;
+    padding: 28px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transform: translateY(0);
+    animation: slideUpModal 0.25s ease-in-out;
+}
+
+/* Tiêu đề modal */
+.custom-modal-header h3 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #111827;
+}
+
+/* Nội dung thông báo */
+.custom-modal-body p {
+    margin: 0 0 24px 0;
+    color: #4b5563;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* Khu vực chứa nút bấm */
+.custom-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* Nút Hủy */
+.custom-modal-footer .btn-cancel {
+    background-color: #f3f4f6;
+    color: #374151;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.custom-modal-footer .btn-cancel:hover {
+    background-color: #e5e7eb;
+}
+
+/* Nút Xác nhận Đăng xuất */
+.custom-modal-footer .btn-confirm-logout {
+    background-color: #dc2626;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-modal-footer .btn-confirm-logout:hover {
+    background-color: #b91c1c;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+/* Hiệu ứng chuyển động xuất hiện */
+@keyframes fadeInModal {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUpModal {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
