@@ -4,7 +4,7 @@ if (session_status() === PHP_SESSION_NONE)
 
 header('Content-Type: application/json; charset=utf-8');
 
-if (empty($_SESSION['id'])) {
+if (empty($_SESSION['role'])) {
     http_response_code(401);
 
     echo json_encode([
@@ -15,7 +15,7 @@ if (empty($_SESSION['id'])) {
     exit;
 }
 
-// $userId = $_SESSION['id'] || '';
+// $userId = $_SESSION['userId'] || '';
 $userId = $_SESSION['userId'];
 $role = $_SESSION['role'] ?? '';
 

@@ -16,10 +16,10 @@ $whereConditions = ' WHERE 1 = 1';
 
 // Xử lý lịch cá nhân
 if ($role === 'patient') {
-    $whereConditions .= ' AND bn.taiKhoanId = ?';
+    $whereConditions .= ' AND lk.benhNhanId = ?';
     $params[] = $userId;
 } elseif ($role === 'doctor') {
-    $whereConditions .= ' AND bs.taiKhoanId = ?';
+    $whereConditions .= ' AND lk.bacSiId = ?';
     $params[] = $userId;
 }
 

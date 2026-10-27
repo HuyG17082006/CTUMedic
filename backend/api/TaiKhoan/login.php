@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // }
 
     $stmt = $pdo->prepare("
-        SELECT tk.*
+        SELECT tk.id AS taiKhoanId, tk.role,bn.*
         FROM taiKhoan tk
         LEFT JOIN benhNhan bn
             ON bn.taiKhoanId = tk.id
