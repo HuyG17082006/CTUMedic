@@ -14,7 +14,7 @@
             unset($_SESSION['success_message']);
         }
         ?>
-        <form id="registerForm" action="index.php?api=register" method="POST">
+        <form id="registerForm">
             <div class="form-section">
                 <h3>Thông tin tài khoản</h3>
 
@@ -98,46 +98,56 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('registerForm');
-
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault(); // Dừng submit mặc định để xử lý băm mật khẩu
-
-            const passwordInput = document.getElementById('password');
-            const confirmPasswordInput = document.getElementById('confirmPassword');
-
-            // Kiểm tra xác nhận mật khẩu có khớp không
-            if (passwordInput.value !== confirmPasswordInput.value) {
-                alert('Mật khẩu xác nhận không khớp.');
-                confirmPasswordInput.focus();
-                return;
-            }
-
-            try {
-                // Băm mật khẩu trước khi gửi lên server
-                const hashedPassword = await hashPassword(passwordInput.value);
-
-                // Thay thế giá trị gốc bằng chuỗi đã băm
-                passwordInput.value = hashedPassword;
-                confirmPasswordInput.value = hashedPassword;
-
-                // Gửi form (Lúc này các điều kiện required, pattern của HTML5 đã được trình duyệt tự kiểm tra xong)
-                form.submit();
-
-            } catch (error) {
-                console.error('Lỗi khi băm mật khẩu:', error);
-                alert('Đã xảy ra lỗi, vui lòng thử lại.');
-            }
-        });
-    });
-
-    // Hàm băm SHA-256 sử dụng Web Crypto API
-    async function hashPassword(plainText) {
+    // Hàm băm mật khẩu sử dụng Web Crypto API
+    async function hashSHA1(plainText) {
         const encoder = new TextEncoder();
         const data = encoder.encode(plainText);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        // Ní có thể đổi thành 'SHA-1' hoặc 'SHA-256' tùy theo thiết kế backend
+        const hashBuffer = await crypto.subtle.digest('SHA-1', data); 
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
+
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        e.preventDefault(); // Ngăn form submit mặc định
+
+        const password = document.getElementById('password').value.trim();
+        const confirmPassword = document.getElementById('confirmPassword').value.trim();
+
+        // 1. Kiểm tra khớp mật khẩu
+        if (password !== confirmPassword) {
+            alert("Mật khẩu và xác nhận mật khẩu không khớp!");
+            document.getElementById('confirmPassword').focus();
+            return;
+        }
+
+        try {
+            // 2. Mã hóa mật khẩu
+            const hashedPassword = await hashSHA1(password);
+
+            // 3. Đưa dữ liệu vào FormData
+            const formData = new FormData(this);
+            formData.set('password', hashedPassword);
+            formData.delete('confirmPassword'); // Lược bỏ trường không cần thiết gửi lên server
+
+            // 4. Gửi dữ liệu bằng Fetch API lên PHP xử lý
+            const response = await fetch('index.php?api=register', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                alert(result.message);
+                window.location.href = 'index.php?page=login';
+            } else {
+                alert(result.message);
+            }
+
+        } catch (error) {
+            console.error('Lỗi kết nối:', error);
+            alert('Có lỗi xảy ra, vui lòng thử lại.');
+        }
+    });
 </script>

@@ -1,4 +1,3 @@
-
 <div class="login-page auth-page">
     <div class="login-card">
 
@@ -50,8 +49,7 @@
                             name="loginIdentifier"
                             placeholder="Nhập tên đăng nhập hoặc CCCD/CMND"
                             autocomplete="username"
-                            required
-                        >
+                            required>
                     </div>
 
                     <div class="login-form-group">
@@ -63,8 +61,7 @@
                             name="password"
                             placeholder="Nhập mật khẩu"
                             autocomplete="current-password"
-                            required
-                        >
+                            required>
                     </div>
 
                     <button type="submit" class="login-submit">
@@ -95,3 +92,38 @@
     </div>
 </div>
 ```
+
+<script>
+    async function hashSHA1(message) {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-1', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault(); // Tạm dừng form submit để thực hiện mã hóa
+
+        const passwordHash = await hashSHA1(document.getElementById('loginPassword').value.trim());
+        const formData = new FormData(this);
+        formData.set('password', passwordHash);
+
+        try{
+            const response = await fetch('index.php?api=login',{
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = await response.json();
+
+            if(result.status === 'success'){ 
+                window.location.href = 'index.php?page=' + result.role;
+            }
+            else{
+                alert("Sai tai khoan hoac mat khau");
+            }
+        }
+        catch(error){
+            alert(error);
+        }
+    });
+</script>
