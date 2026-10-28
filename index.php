@@ -19,6 +19,7 @@ if (isset($_GET['api'])) {
     $allowedApis = [
         "register"  => PATH_API . '/TaiKhoan/register.php',
         "login"     => PATH_API . '/TaiKhoan/login.php',
+        "logout"    => PATH_API . '/TaiKhoan/logout.php',
         // Thêm các API khác ở đây nếu sau này có (ví dụ: login, update, ...)
     ];
 
@@ -36,11 +37,11 @@ $role = $_SESSION['role'] ?? '';
 $page = $_GET['page'] ?? null;
 
 $allowedPages = [
-    'login'    => 'DangNhap/login.php',
-    'register' => 'DangNhap/register.php',
-    'patient'  => 'BenhNhan/benhnhan.php',
-    'doctor'   => 'BacSi/bacsi.php',
-    'manager'  => 'QuanLy/quanly.php'
+    'login'     => 'DangNhap/login.php',
+    'register'  => 'DangNhap/register.php',
+    'patient'   => 'BenhNhan/benhnhan.php',
+    'doctor'    => 'BacSi/bacsi.php',
+    'manager'   => 'QuanLy/quanly.php',
 ];
 
 $dashboardPages = ['patient', 'doctor', 'manager'];
@@ -69,6 +70,7 @@ if ($page !== 'login' && $page !== 'register') {
         exit('Access denied');
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -87,6 +89,7 @@ if ($page !== 'login' && $page !== 'register') {
         <link rel="stylesheet" href="./frontend/assets/css/appointment-filter.css">
         <link rel="stylesheet" href="./frontend/assets/css/appointment-page.css">
         <link rel="stylesheet" href="./frontend/assets/css/appointment-detail-modal.css">
+        <link rel="stylesheet" href="./frontend/assets/css/popupLogout.css">
     <?php endif; ?>
 </head>
 

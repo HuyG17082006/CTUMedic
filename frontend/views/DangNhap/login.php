@@ -116,7 +116,7 @@
             const result = await response.json();
 
             if(result.status === 'success'){ 
-                window.location.href = 'index.php?page=' + result.role;
+                window.location.href = 'index.php?page=' + result.role.toLowerCase();
             }
             else{
                 alert("Sai tai khoan hoac mat khau");

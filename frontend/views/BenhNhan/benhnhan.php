@@ -1,6 +1,7 @@
 
 <?php
 
+
 $role = 'patient';
 
 $allowedTabs = [

@@ -1,6 +1,5 @@
-
 <?php
-$role = $_GET['page']; 
+$role = $_GET['page'];
 $tab = $_GET['tab'] ?? 'tongquan';
 
 $menus = [
@@ -34,12 +33,11 @@ $menus = [
 
 $menu = $menus[$role] ?? $menus['patient'];
 ?>
-
 <aside class="app-sidebar">
 
     <!-- Brand -->
     <a class="sidebar-brand"
-       href="index.php?page=<?= urlencode($role) ?>&tab=tongquan">
+        href="index.php?page=<?= urlencode($role) ?>&tab=tongquan">
         <span class="brand-icon">+</span>
         <span>CTU<span class="brand-highlight">Medic</span></span>
     </a>
@@ -55,8 +53,7 @@ $menu = $menus[$role] ?? $menus['patient'];
             <a
                 href="index.php?page=<?= urlencode($role) ?>&tab=<?= urlencode($key) ?>"
                 class="sidebar-link <?= $tab === $key ? 'active' : '' ?>"
-                <?= $tab === $key ? 'aria-current="page"' : '' ?>
-            >
+                <?= $tab === $key ? 'aria-current="page"' : '' ?>>
                 <span class="sidebar-icon">
                     <?= htmlspecialchars($item['icon']) ?>
                 </span>
@@ -73,18 +70,42 @@ $menu = $menus[$role] ?? $menus['patient'];
         <a
             href="index.php?page=<?= urlencode($role) ?>&tab=taikhoan"
             class="sidebar-link <?= $tab === 'taikhoan' ? 'active' : '' ?>"
-            <?= $tab === 'taikhoan' ? 'aria-current="page"' : '' ?>
-        >
+            <?= $tab === 'taikhoan' ? 'aria-current="page"' : '' ?>>
             <span class="sidebar-icon">⚙</span>
             <span>Thông tin tài khoản</span>
         </a>
 
         <!-- Logout -->
-        <a href="index.php?page=logout" class="sidebar-logout">
+        <a href="#" class="sidebar-logout" onclick="openLogoutModal(event)">
             <span class="sidebar-icon">↪</span>
             <span>Đăng xuất</span>
         </a>
 
+        <div id="logoutModal" class="custom-modal-overlay" style="display: none;">
+            <div class="custom-modal-card">
+                <div class="custom-modal-header">
+                    <h3>Xác nhận đăng xuất</h3>
+                </div>
+                <div class="custom-modal-body">
+                    <p>Bạn có chắc chắn muốn thoát khỏi phiên làm việc hiện tại không?</p>
+                </div>
+                <div class="custom-modal-footer">
+                    <button type="button" class="btn-cancel" onclick="closeLogoutModal()">Hủy</button>
+                    <!-- Trỏ đúng vào ?api=logout để tránh lỗi Access denied -->
+                    <a href="index.php?page=<?= $role ?>&api=logout" class="btn-confirm-logout">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
     </div>
 
 </aside>
+<script>
+    function openLogoutModal(event) {
+        event.preventDefault(); // Ngăn chặn chuyển hướng ngay lập tức
+        document.getElementById('logoutModal').style.display = 'flex';
+    }
+
+    function closeLogoutModal() {
+        document.getElementById('logoutModal').style.display = 'none';
+    }
+</script>
