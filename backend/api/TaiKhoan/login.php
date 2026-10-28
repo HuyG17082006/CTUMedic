@@ -34,7 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $roleLower = strtolower($account['role']);
 
         // Lưu thông tin vào Session chuẩn xác
-        $_SESSION['userId'] = $account['taiKhoanId'];
+        $_SESSION['accountid'] = $account['taiKhoanId'];
+        $_SESSION['userId'] = $account['id'];
         $_SESSION['role'] = $roleLower;
         $_SESSION['user_name'] = $account['username'];
 
