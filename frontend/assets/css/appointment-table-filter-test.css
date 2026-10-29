@@ -1,0 +1,572 @@
+
+/* =========================================
+   APPOINTMENT PAGE & TABLE
+========================================= */
+
+.appointment-page {
+    --apt-primary: #0f766e;
+    --apt-primary-hover: #115e59;
+    --apt-primary-soft: #f0fdfa;
+
+    --apt-text: #1e293b;
+    --apt-muted: #64748b;
+    --apt-border: #e2e8f0;
+    --apt-surface: #ffffff;
+    --apt-background: #f8fafc;
+
+    display: flex;
+    flex-direction: column;
+    min-height: 650px;
+    gap: 22px;
+}
+
+/* =========================================
+   TABLE WRAPPER
+========================================= */
+
+.appointment-table-wrapper {
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    background: var(--apt-surface);
+    border: 1px solid var(--apt-border);
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.035);
+}
+
+/* =========================================
+   TABLE
+========================================= */
+
+.appointment-table {
+    width: 100%;
+    min-width: 720px;
+    border-collapse: separate;
+    border-spacing: 0;
+    color: var(--apt-text);
+    font-size: 13px;
+}
+
+.appointment-table thead {
+    background: #f1f5f9;
+}
+
+.appointment-table thead th {
+    padding: 16px 18px;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 750;
+    letter-spacing: 0.045em;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--apt-border);
+}
+
+.appointment-table tbody td {
+    padding: 16px 18px;
+    background: var(--apt-surface);
+    border-bottom: 1px solid #edf2f7;
+    vertical-align: middle;
+    line-height: 1.6;
+    transition: background 0.18s ease;
+}
+
+.appointment-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.appointment-table tbody tr:hover td {
+    background: #f8fcfc;
+}
+
+/* Hỗ trợ nội dung dài mà không ép vỡ bảng */
+
+.appointment-table td {
+    overflow-wrap: anywhere;
+}
+
+.appointment-table td:first-child {
+    color: #334155;
+    font-weight: 650;
+}
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.appointment-table__empty {
+    padding: 54px 20px !important;
+    color: var(--apt-muted);
+    text-align: center;
+}
+
+.appointment-table__empty-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.appointment-table__empty-icon {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    margin-bottom: 6px;
+    color: var(--apt-primary);
+    background: var(--apt-primary-soft);
+    border: 1px solid #ccfbf1;
+    border-radius: 16px;
+    font-size: 22px;
+}
+
+.appointment-table__empty-content strong {
+    color: #334155;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.appointment-table__empty-content span {
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+/* =========================================
+   STATUS BADGES
+   Giữ đủ các class để tương thích JS hiện tại
+========================================= */
+
+.appointment-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.5;
+    white-space: nowrap;
+}
+
+.appointment-status--pending {
+    color: #92400e;
+    background: #fffbeb;
+    border-color: #fde68a;
+}
+
+.appointment-status--confirmed {
+    color: #0f766e;
+    background: #f0fdfa;
+    border-color: #99f6e4;
+}
+
+.appointment-status--rejected {
+    color: #b91c1c;
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.appointment-status--cancelled {
+    color: #b91c1c;
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.appointment-status--completed {
+    color: #166534;
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+/* =========================================
+   ROW ACTION BUTTONS
+========================================= */
+
+.appointment-row-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 34px;
+    padding: 7px 11px;
+
+    color: var(--apt-primary);
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+
+    font: inherit;
+    font-size: 12px;
+    font-weight: 650;
+    white-space: nowrap;
+    cursor: pointer;
+
+    transition:
+        color 0.18s ease,
+        background 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.appointment-row-action:hover {
+    color: var(--apt-primary-hover);
+    background: var(--apt-primary-soft);
+    border-color: #5eead4;
+}
+
+.appointment-row-action:focus-visible {
+    outline: 3px solid rgba(15, 118, 110, 0.2);
+    outline-offset: 2px;
+}
+
+/* =========================================
+   APPOINTMENT FILTER
+========================================= */
+
+.appointment-filter {
+    padding: 24px;
+    background:
+        linear-gradient(135deg, #ffffff 0%, #fbfefe 100%);
+    border: 1px solid var(--apt-border);
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.035);
+}
+
+.appointment-filter__submit > span[aria-hidden="true"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 23px;
+    line-height: 1;
+    font-weight: 400;
+}
+
+.appointment-filter__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.appointment-filter__title {
+    position: relative;
+    margin: 0;
+    padding-left: 13px;
+    color: var(--apt-text);
+    font-size: 17px;
+    font-weight: 750;
+    letter-spacing: -0.025em;
+}
+
+.appointment-filter__title::before {
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    left: 0;
+    width: 4px;
+    background: var(--apt-primary);
+    border-radius: 4px;
+    content: "";
+}
+
+.appointment-filter__description {
+    margin: 7px 0 0;
+    color: var(--apt-muted);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+/* Reset button */
+
+.appointment-filter__reset {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    min-height: 36px;
+    padding: 8px 12px;
+
+    color: #64748b;
+    background: #ffffff;
+    border: 1px solid #dbe3ec;
+    border-radius: 9px;
+
+    font: inherit;
+    font-size: 12px;
+    font-weight: 650;
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.appointment-filter__reset:hover {
+    color: var(--apt-primary);
+    background: var(--apt-primary-soft);
+    border-color: #99f6e4;
+}
+
+/* Filter grid */
+
+.appointment-filter__fields {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.appointment-filter__field {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-width: 0;
+}
+
+.appointment-filter__field label {
+    color: #334155;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* Input/select shared styles */
+
+.appointment-filter__field select,
+.appointment-filter__field input {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    height: 44px;
+    padding: 0 12px;
+
+    color: #334155;
+    background-color: #ffffff;
+    border: 1px solid #dbe3ec;
+    border-radius: 9px;
+    outline: none;
+
+    font-family: inherit;
+    font-size: 12px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.appointment-filter__field select:hover,
+.appointment-filter__field input:hover {
+    border-color: #94a3b8;
+}
+
+.appointment-filter__field select:focus,
+.appointment-filter__field input:focus {
+    border-color: var(--apt-primary);
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.11);
+}
+
+.appointment-filter__field select:disabled,
+.appointment-filter__field input:disabled {
+    color: #94a3b8;
+    background-color: #f1f5f9;
+    border-color: #e2e8f0;
+    cursor: not-allowed;
+}
+
+/* Footer */
+
+.appointment-filter__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid #edf2f7;
+}
+
+.appointment-filter__hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #94a3b8;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.appointment-filter__hint i {
+    color: var(--apt-primary);
+    font-size: 13px;
+}
+
+.appointment-filter__submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    min-height: 42px;
+    padding: 0 19px;
+
+    color: #ffffff;
+    background: var(--apt-primary);
+    border: 1px solid var(--apt-primary);
+    border-radius: 9px;
+
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+
+    box-shadow: 0 3px 7px rgba(15, 118, 110, 0.12);
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.appointment-filter__submit:hover {
+    background: var(--apt-primary-hover);
+    border-color: var(--apt-primary-hover);
+    box-shadow: 0 5px 12px rgba(15, 118, 110, 0.2);
+    transform: translateY(-1px);
+}
+
+.appointment-filter__submit:active {
+    transform: translateY(0);
+}
+
+.appointment-filter__submit:focus-visible,
+.appointment-filter__reset:focus-visible {
+    outline: 3px solid rgba(15, 118, 110, 0.2);
+    outline-offset: 3px;
+}
+
+/* =========================================
+   PAGINATION
+========================================= */
+
+.appointment-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 2px;
+}
+
+.appointment-pagination button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    min-height: 36px;
+    padding: 0 10px;
+
+    color: #475569;
+    background: #ffffff;
+    border: 1px solid #dbe3ec;
+    border-radius: 9px;
+
+    font: inherit;
+    font-size: 12px;
+    font-weight: 650;
+    cursor: pointer;
+
+    transition: all 0.18s ease;
+}
+
+.appointment-pagination button:hover:not(:disabled) {
+    color: var(--apt-primary);
+    background: var(--apt-primary-soft);
+    border-color: #99f6e4;
+}
+
+.appointment-pagination button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.appointment-pagination button.active,
+.appointment-pagination button[aria-current="page"] {
+    color: #ffffff;
+    background: var(--apt-primary);
+    border-color: var(--apt-primary);
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1100px) {
+    .appointment-filter__fields {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .appointment-table thead th,
+    .appointment-table tbody td {
+        padding: 14px;
+    }
+}
+
+@media (max-width: 600px) {
+    .appointment-page {
+        min-height: 0;
+        gap: 16px;
+    }
+
+    .appointment-filter {
+        padding: 17px;
+        border-radius: 12px;
+    }
+
+    .appointment-filter__header {
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .appointment-filter__fields {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .appointment-filter__footer {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 14px;
+        margin-top: 20px;
+    }
+
+    .appointment-filter__submit {
+        width: 100%;
+    }
+
+    .appointment-filter__hint {
+        align-items: flex-start;
+    }
+
+    .appointment-table-wrapper {
+        border-radius: 11px;
+    }
+
+    .appointment-pagination {
+        gap: 6px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .appointment-table tbody td,
+    .appointment-row-action,
+    .appointment-filter__reset,
+    .appointment-filter__submit,
+    .appointment-pagination button {
+        transition: none;
+    }
+}

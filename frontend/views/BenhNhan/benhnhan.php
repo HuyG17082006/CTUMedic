@@ -12,10 +12,10 @@ $allowedTabs = [
     'taikhoan',
 ];
 
-$tab = $_GET['tab'] ?? 'tongquan';
+$tab = $_GET['tab'] ?? 'lichkham';
 
 if (!in_array($tab, $allowedTabs, true)) {
-    $tab = 'tongquan';
+    $tab = 'lichkham';
 }
 
 $tabsDirectory = PATH_VIEWS . '/BenhNhan/tabs';

@@ -11,11 +11,12 @@
  * TODO: XÓA DỮ LIỆU DEMO nếu bổ sung dữ liệu mẫu vào file này.
  */
 // Phân loại trang : lịch sử khám - lịch khám
+$role = $role ?? '';
 $tableType = $tableType ?? 'appointment';
 
 $filterId = $filterId ?? 'appointment-filter';
 $showStatus = $showStatus ?? true;
-$isDoctor = $_SESSION['role'] === 'doctor';
+$isDoctor = $role === 'doctor';
 ?>
 
 <section
@@ -123,7 +124,9 @@ $isDoctor = $_SESSION['role'] === 'doctor';
             type="button"
             class="appointment-filter__submit"
             data-filter-apply>
-            <span aria-hidden="true">⌕</span>
+            <span aria-hidden="true">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
             Lọc lịch khám
         </button>
     </div>
@@ -141,13 +144,12 @@ $isDoctor = $_SESSION['role'] === 'doctor';
         const appointmentTable = document.querySelector('[data-appointment-list]');
 
         if (!specialtySelectBox) return;
-        
+
         // 2. Danh sách chuyên khoa
-        const chuyenKhoa = [
-            "Nội khoa",
-            "Tim mạch",
-            "Da liễu"
-        ];
+        const chuyenKhoa = <?= json_encode(
+                                SPECIALTY_LIST,
+                                JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+                            ) ?>;
 
         chuyenKhoa.forEach((nameTag) => {
             const option = document.createElement('option');
@@ -281,7 +283,7 @@ $isDoctor = $_SESSION['role'] === 'doctor';
             window.history.replaceState({}, '', currentUrl);
         })
 
-        
+
 
     })();
 </script>

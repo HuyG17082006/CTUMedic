@@ -1,14 +1,5 @@
 <?php
-define('BASE_PATH', __DIR__);
-
-define('BASE_URL', '/dashboard/CTUMedic');
-define("API_URL", BASE_URL . '/backend/api');
-
-define('PATH_FRONTEND', BASE_PATH . '/frontend');
-define('PATH_BACKEND', BASE_PATH . '/backend');
-define('PATH_VIEWS', PATH_FRONTEND . '/views');
-define('PATH_COMPONENTS', PATH_FRONTEND . '/components');
-define('PATH_API', PATH_BACKEND . '/api');
+require __DIR__ . '/BASE.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -83,13 +74,23 @@ if ($page !== 'login' && $page !== 'register') {
     <link rel="stylesheet" href="./frontend/assets/css/base.css">
     <link rel="stylesheet" href="./frontend/assets/css/register.css">
     <link rel="stylesheet" href="./frontend/assets/css/login.css">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <?php if (in_array($page, $dashboardPages, true)): ?>
         <link rel="stylesheet" href="./frontend/assets/css/dashboard.css">
-        <link rel="stylesheet" href="./frontend/assets/css/appointment-filter.css">
-        <link rel="stylesheet" href="./frontend/assets/css/appointment-page.css">
+        <!-- <link rel="stylesheet" href="./frontend/assets/css/appointment-filter.css">
+        <link rel="stylesheet" href="./frontend/assets/css/appointment-page.css"> -->
+        <link rel="stylesheet" href="./frontend/assets/css/appointment-table-filter-test.css">
         <link rel="stylesheet" href="./frontend/assets/css/appointment-detail-modal.css">
         <link rel="stylesheet" href="./frontend/assets/css/popupLogout.css">
+        <?php if ($role && $role == 'doctor'): ?>
+            <link rel="stylesheet" href="./frontend/assets/css/doctor-schedule.css">
+        <?php endif; ?>
+        <?php if ($role && $role == 'patient'): ?>
+            <link rel="stylesheet" href="./frontend/assets/css/patient-booking.css">
+        <?php endif; ?>
     <?php endif; ?>
 </head>
 

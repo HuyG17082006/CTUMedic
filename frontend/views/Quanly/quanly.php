@@ -4,7 +4,6 @@
 $role = 'manager';
 
 $allowedTabs = [
-    'tongquan',
     'lichkham',
     'lichsu',
     'benhnhan',
@@ -12,7 +11,7 @@ $allowedTabs = [
     'taikhoan',
 ];
 
-$tab = $_GET['tab'] ?? 'tongquan';
+$tab = $_GET['tab'] ?? 'lichkham';
 
 if (!in_array($tab, $allowedTabs, true)) {
     $tab = 'tongquan';
@@ -44,6 +43,10 @@ $tabConfigs = [
     'taikhoan' => [
         'title' => 'Thông tin tài khoản',
         'description' => 'Cập nhật thông tin cá nhân và đổi mật khẩu.',
+    ],
+    'nguoidung' => [
+        'title' => 'Thông tin tài khoản',
+        'description' => 'Quản lí thông tin tài khoản và phân quyền.',
     ],
 ];
 
