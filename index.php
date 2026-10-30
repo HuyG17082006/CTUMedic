@@ -17,16 +17,17 @@ if (session_status() === PHP_SESSION_NONE) {
 // 1. Xử lý các request gọi API trước tiên
 if (isset($_GET['api'])) {
     $allowedApis = [
-        "register"  => PATH_API . '/TaiKhoan/register.php',
-        "login"     => PATH_API . '/TaiKhoan/login.php',
-        "logout"    => PATH_API . '/TaiKhoan/logout.php',
-        // Thêm các API khác ở đây nếu sau này có (ví dụ: login, update, ...)
+        "register"              => PATH_API . '/TaiKhoan/register.php',
+        "login"                 => PATH_API . '/TaiKhoan/login.php',
+        "logout"                => PATH_API . '/TaiKhoan/logout.php',
+        "profile"               => PATH_API . '/TaiKhoan/trang_ca_nhan.php'
     ];
 
     $apiName = $_GET['api'];
 
     if (array_key_exists($apiName, $allowedApis)) {
         require_once $allowedApis[$apiName];
+        exit(); // <-- Thêm dòng này để dừng lại, không chạy xuống code bên dưới nữa!
     } else {
         http_response_code(404);
         exit('API not found');
@@ -83,6 +84,8 @@ if ($page !== 'login' && $page !== 'register') {
     <link rel="stylesheet" href="./frontend/assets/css/base.css">
     <link rel="stylesheet" href="./frontend/assets/css/register.css">
     <link rel="stylesheet" href="./frontend/assets/css/login.css">
+    <link rel="stylesheet" href="./frontend/assets/css/taikhoan.css">
+
 
     <?php if (in_array($page, $dashboardPages, true)): ?>
         <link rel="stylesheet" href="./frontend/assets/css/dashboard.css">
