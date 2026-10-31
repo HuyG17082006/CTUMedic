@@ -1,135 +1,117 @@
 <?php
-require_once __DIR__ . '/../../middleware/auth.php';
-require_once __DIR__ . '/../../database.php';
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
 
-// Đặt header trả về JSON chuẩn
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
-// Kiểm tra xem đã đăng nhập chưa
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once(PATH_BACKEND . '/database.php');
+
 if (!isset($_SESSION['taiKhoanId'])) {
     echo json_encode([
         'status' => 'failed',
-        'error' => 'Unauthorized: Chưa đăng nhập',
+        'message' => 'Unauthorized: Chưa đăng nhập phiên làm việc'
     ]);
     exit();
 }
 
 $accountId = $_SESSION['taiKhoanId'];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+try {
+    // 1. Lấy thông tin tài khoản chung
+    $stmtAcc = $pdo->prepare("SELECT id, username, role FROM taiKhoan WHERE id = ? LIMIT 1;");
+    $stmtAcc->execute([$accountId]);
+    $account = $stmtAcc->fetch(PDO::FETCH_ASSOC);
+
+    if (!$account) {
+        echo json_encode([
+            'status' => 'failed',
+            'message' => 'Không tìm thấy tài khoản trong hệ thống'
+        ]);
+        exit();
+    }
+
+    $roleLower = strtolower($account['role']);
     $action = $_POST['action'] ?? '';
 
-    // 1. Xử lý cập nhật thông tin liên lạc (Email và Số điện thoại)
+    // Xử lý cập nhật thông tin liên lạc (Dành cho bệnh nhân)
     if ($action === 'update_contact') {
-        $email = trim($_POST['email'] ?? '');
-        $sdt = trim($_POST['sdt'] ?? '');
-
-        if (empty($email) || empty($sdt)) {
-            echo json_encode([
-                'status' => 'failed',
-                'message' => 'Email và Số điện thoại không được để trống!',
-            ]);
+        if ($roleLower === 'doctor' || $roleLower === 'bacsi') {
+            echo json_encode(['status' => 'failed', 'message' => 'Bác sĩ không có quyền chỉnh sửa thông tin này!']);
             exit();
         }
 
-        try {
-            $updateCommand = 'UPDATE benhNhan SET email = ?, SDT = ? WHERE taiKhoanId = ?;';
-            $stmtUpdate = $pdo->prepare($updateCommand);
-            $updated = $stmtUpdate->execute([$email, $sdt, $accountId]);
+        $email = trim($_POST['email'] ?? '');
+        $sdt = trim($_POST['sdt'] ?? '');
+        $ngaySinh = trim($_POST['ngaySinh'] ?? '');
+        $cccd = trim($_POST['cccd'] ?? '');
 
-            if ($updated) {
-                echo json_encode([
-                    'status' => 'success',
-                    'message' => 'Cập nhật thông tin thành công!',
-                ]);
-            } else {
-                echo json_encode([
-                    'status' => 'failed',
-                    'message' => 'Không thể cập nhật cơ sở dữ liệu.',
-                ]);
-            }
-        } catch (Exception $e) {
-            echo json_encode([
-                'status' => 'failed',
-                'message' => 'Lỗi hệ thống: ' . $e->getMessage(),
-            ]);
+        $stmtUpdate = $pdo->prepare('UPDATE benhNhan SET email = ?, SDT = ?, ngaySinh = ?, CCCD = ? WHERE taiKhoanId = ?;');
+        $updated = $stmtUpdate->execute([$email, $sdt, $ngaySinh, $cccd, $accountId]);
+
+        if ($updated) {
+            echo json_encode(['status' => 'success', 'message' => 'Cập nhật thành công!']);
+        } else {
+            echo json_encode(['status' => 'failed', 'message' => 'Cập nhật thất bại!']);
         }
         exit();
     }
 
-    // 2. Xử lý đổi mật khẩu (So sánh trực tiếp chuỗi SHA-1 với DB)
+    // Xử lý đổi mật khẩu
     if ($action === 'change_password') {
         $oldPasswordHashClient = $_POST['old_password'] ?? '';
         $newPasswordHashClient = $_POST['new_password'] ?? '';
 
-        if (empty($oldPasswordHashClient) || empty($newPasswordHashClient)) {
-            echo json_encode([
-                'status' => 'failed',
-                'message' => 'Vui lòng nhập đầy đủ mật khẩu cũ và mới!',
-            ]);
+        $stmtPwd = $pdo->prepare('SELECT passwordHash FROM taiKhoan WHERE id = ?;');
+        $stmtPwd->execute([$accountId]);
+        $accData = $stmtPwd->fetch(PDO::FETCH_ASSOC);
+
+        if (!$accData || $accData['passwordHash'] !== $oldPasswordHashClient) {
+            echo json_encode(['status' => 'failed', 'message' => 'Mật khẩu cũ không chính xác!']);
             exit();
         }
 
-        try {
-            // Lấy chuỗi passwordHash hiện tại từ database
-            $stmtAcc = $pdo->prepare('SELECT passwordHash FROM taiKhoan WHERE id = ?;');
-            $stmtAcc->execute([$accountId]);
-            $account = $stmtAcc->fetch(PDO::FETCH_ASSOC);
+        $stmtUpdatePwd = $pdo->prepare('UPDATE taiKhoan SET passwordHash = ? WHERE id = ?;');
+        $updatedPwd = $stmtUpdatePwd->execute([$newPasswordHashClient, $accountId]);
 
-            // So sánh trực tiếp chuỗi SHA-1 gửi lên với cột passwordHash trong database
-            if (!$account || $account['passwordHash'] !== $oldPasswordHashClient) {
-                echo json_encode([
-                    'status' => 'failed',
-                    'message' => 'Mật khẩu cũ không chính xác!',
-                ]);
-                exit();
-            }
-
-            // Cập nhật chuỗi SHA-1 mới vào database
-            $stmtUpdatePwd = $pdo->prepare('UPDATE taiKhoan SET passwordHash = ? WHERE id = ?;');
-            $updatedPwd = $stmtUpdatePwd->execute([$newPasswordHashClient, $accountId]);
-
-            if ($updatedPwd) {
-                echo json_encode([
-                    'status' => 'success',
-                    'message' => 'Đổi mật khẩu thành công!',
-                ]);
-            } else {
-                echo json_encode([
-                    'status' => 'failed',
-                    'message' => 'Không thể cập nhật mật khẩu mới.',
-                ]);
-            }
-        } catch (Exception $e) {
-            echo json_encode([
-                'status' => 'failed',
-                'message' => 'Lỗi hệ thống: ' . $e->getMessage(),
-            ]);
+        if ($updatedPwd) {
+            echo json_encode(['status' => 'success', 'message' => 'Đổi mật khẩu thành công!']);
+        } else {
+            echo json_encode(['status' => 'failed', 'message' => 'Không thể đổi mật khẩu!']);
         }
         exit();
     }
 
-    // 3. Mặc định: Lấy thông tin chi tiết của người dùng
-    $command = 'SELECT benhNhan.hoTen, benhNhan.ngaySinh, benhNhan.email, benhNhan.SDT, benhNhan.CCCD, taiKhoan.username, taiKhoan.role FROM benhNhan JOIN taiKhoan ON benhNhan.taiKhoanId = taiKhoan.id WHERE taiKhoanId = ?;';
-    $stmt = $pdo->prepare($command);
-    $stmt->execute([$accountId]);
-
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($result) {
-        echo json_encode([
-            'status' => 'success',
-            'information' => $result,
-        ]);
+    // 2. Lấy thông tin chi tiết dựa theo vai trò
+    $detailData = [];
+    if ($roleLower === 'doctor' || $roleLower === 'bacsi') {
+        $stmtDoc = $pdo->prepare("SELECT hoTen, email, chuyenKhoa FROM bacSi WHERE taiKhoanId = ? LIMIT 1;");
+        $stmtDoc->execute([$accountId]);
+        $detailData = $stmtDoc->fetch(PDO::FETCH_ASSOC) ?: [];
     } else {
-        echo json_encode([
-            'status' => 'failed',
-            'error' => 'Not found',
-        ]);
+        $stmtPat = $pdo->prepare("SELECT hoTen, ngaySinh, email, SDT, CCCD FROM benhNhan WHERE taiKhoanId = ? LIMIT 1;");
+        $stmtPat->execute([$accountId]);
+        $detailData = $stmtPat->fetch(PDO::FETCH_ASSOC) ?: [];
     }
-} else {
+
+    // Gộp dữ liệu tài khoản và chi tiết lại
+    $merged = array_merge($account, $detailData);
+    $merged['role'] = $roleLower;
+
+    echo json_encode([
+        'status' => 'success',
+        'information' => $merged
+    ]);
+    exit();
+
+} catch (Exception $e) {
     echo json_encode([
         'status' => 'failed',
-        'error' => 'Wrong method',
+        'message' => 'Lỗi cơ sở dữ liệu: ' . $e->getMessage()
     ]);
+    exit();
 }
+?>

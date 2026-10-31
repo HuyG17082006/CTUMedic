@@ -9,17 +9,6 @@
                     placeholder="Nhập tên đăng nhập"
                     maxlength="50" autocomplete="username" required readonly>
             </div>
-            
-            <div class="form-row" style="display: none;">
-                <div class="form-group">
-                    <label for="password">Mật khẩu <span>*</span></label>
-                    <input type="password" id="password" name="password" autocomplete="new-password" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="confirmPassword">Xác nhận mật khẩu <span>*</span></label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" readonly>
-                </div>
-            </div>
         </div>
 
         <div class="form-section">
@@ -32,58 +21,72 @@
                     maxlength="100" autocomplete="name" required readonly>
             </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="ngaySinh">Ngày sinh</label>
-                    <input type="date" id="ngaySinh" name="ngaySinh" readonly>
+            <!-- Trường chuyên khoa (Chỉ hiển thị khi là Bác sĩ) -->
+            <div class="form-group" id="groupChuyenKhoa" style="display: none; margin-top: 15px;">
+                <label for="chuyenKhoa">Chuyên khoa</label>
+                <input type="text" id="chuyenKhoa" name="chuyenKhoa" class="form-control" readonly>
+            </div>
+
+            <!-- Các trường thông tin riêng của Bệnh nhân -->
+            <div class="patient-fields">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ngaySinh">Ngày sinh</label>
+                        <input type="date" id="ngaySinh" name="ngaySinh" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="SDT">Số điện thoại <span>*</span></label>
+                        <input type="tel" id="SDT" name="SDT"
+                            placeholder="Nhập số điện thoại"
+                            maxlength="10" pattern="0[0-9]{9}"
+                            autocomplete="tel" readonly>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="SDT">Số điện thoại <span>*</span></label>
-                    <input type="tel" id="SDT" name="SDT"
-                        placeholder="Nhập số điện thoại"
-                        maxlength="10" pattern="0[0-9]{9}"
-                        autocomplete="tel"
-                        title="Số điện thoại gồm 10 chữ số và bắt đầu bằng số 0"
-                        required readonly>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="CCCD">CCCD/CMND</label>
+                        <input type="text" id="CCCD" name="CCCD"
+                            placeholder="Nhập số CCCD/CMND"
+                            maxlength="12" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email <span>*</span></label>
+                        <input type="email" id="email" name="email"
+                            placeholder="Nhập địa chỉ email"
+                            maxlength="255" autocomplete="email" readonly>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-row">
+            <!-- Trường Email dành riêng cho Bác sĩ -->
+            <div class="doctor-fields" style="display: none; margin-top: 15px;">
                 <div class="form-group">
-                    <label for="CCCD">CCCD/CMND</label>
-                    <input type="text" id="CCCD" name="CCCD"
-                        placeholder="Nhập số CCCD/CMND"
-                        maxlength="12" pattern="[0-9]{9}|[0-9]{12}"
-                        title="CCCD gồm 12 chữ số hoặc CMND cũ gồm 9 chữ số" readonly>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email"
-                        placeholder="Nhập địa chỉ email"
-                        maxlength="255" autocomplete="email" readonly>
+                    <label for="doctor_email">Email <span>*</span></label>
+                    <input type="email" id="doctor_email" name="email" class="form-control" readonly>
                 </div>
             </div>
         </div>
 
-        <!-- Khu vực nút bấm chuẩn theo hệ thống -->
+        <!-- Khu vực nút bấm -->
         <div class="appointment-modal__actions" style="border-top: none; margin-top: 20px; padding-top: 0;">
             <button type="button" class="btn-secondary" id="btnExit">Thoát</button>
-            <button type="button" class="btn-secondary" id="btnOpenChangeInfo">Sửa thông tin</button>
-            <button type="button" class="btn-primary" id="btnOpenChangePassword">Thay đổi mật khẩu</button>
+            <button type="button" class="btn-secondary" id="btnOpenChangeInfo" style="display: none;">Sửa thông tin</button>
+            <button type="button" class="btn-primary" id="btnOpenChangePassword" style="display: none;">Thay đổi mật khẩu</button>
         </div>
     </form>
 </div>
 
-<!-- POPUP MODAL SỬA THÔNG TIN (EMAIL & SĐT) -->
+<!-- POPUP MODAL SỬA THÔNG TIN (Dành cho Bệnh nhân) -->
 <div id="editModal" class="appointment-modal" hidden>
     <div class="appointment-modal__backdrop"></div>
-    <div class="appointment-modal__dialog" style="max-width: 500px;">
+    <div class="appointment-modal__dialog" style="max-width: 550px;">
         <div class="appointment-modal__header">
             <div>
                 <h2>Chỉnh sửa thông tin cá nhân</h2>
-                <p>Cập nhật số điện thoại và địa chỉ email của bạn</p>
+                <p>Cập nhật thông tin liên lạc của bạn</p>
             </div>
             <button type="button" class="appointment-modal__close" id="btnCloseModal">&times;</button>
         </div>
@@ -95,9 +98,19 @@
                     <input type="email" id="modal_email" name="email" class="form-control" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px;" required>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom: 16px;">
                     <label for="modal_sdt" style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px;">Số điện thoại mới <span>*</span></label>
                     <input type="tel" id="modal_sdt" name="sdt" class="form-control" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px;" maxlength="10" pattern="0[0-9]{9}" required>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label for="modal_ngaySinh" style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px;">Ngày sinh mới</label>
+                    <input type="date" id="modal_ngaySinh" name="ngaySinh" class="form-control" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px;">
+                </div>
+
+                <div class="form-group">
+                    <label for="modal_cccd" style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px;">CCCD/CMND mới</label>
+                    <input type="text" id="modal_cccd" name="cccd" class="form-control" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px;" maxlength="12">
                 </div>
             </div>
 
@@ -147,13 +160,11 @@
     </div>
 </div>
 
-<!-- JAVASCRIPT XỬ LÝ LOGIC -->
 <script>
     let globalUserRole = '';
     const editModal = document.getElementById('editModal');
     const passwordModal = document.getElementById('passwordModal');
 
-    // Hàm hỗ trợ băm SHA-1 ở client
     async function hashSHA1(str) {
         const encoder = new TextEncoder();
         const data = encoder.encode(str);
@@ -162,11 +173,11 @@
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    // 1. Tải thông tin tài khoản
     async function fetchUserInformation(){
         try {
             const response = await fetch('index.php?api=profile', {
                 method: 'POST',
+                credentials: 'include', // Bắt buộc để truyền cookie session
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({ message: 'get user information' })
             });
@@ -174,20 +185,45 @@
             const result = await response.json();
 
             if(result.status === 'success'){
-                const user = result.user || result.information || result.body;
-                globalUserRole = user.role || 'patient';
+                const user = result.information || result.user;
+                globalUserRole = (user.role || 'patient').toLowerCase();
 
                 document.getElementById('username').value = user.username || '';
                 document.getElementById('hoTen').value = user.hoTen || '';
-                document.getElementById('ngaySinh').value = user.ngaySinh || '';
-                document.getElementById('CCCD').value = user.CCCD || '';
-                document.getElementById('email').value = user.email || '';
-                document.getElementById('SDT').value = user.SDT || '';
 
-                document.getElementById('modal_email').value = user.email || '';
-                document.getElementById('modal_sdt').value = user.SDT || '';
+                const btnEditInfo = document.getElementById('btnOpenChangeInfo');
+                const btnChangePwd = document.getElementById('btnOpenChangePassword');
+
+                if (globalUserRole === 'doctor' || globalUserRole === 'bacsi') {
+                    document.getElementById('groupChuyenKhoa').style.display = 'block';
+                    document.getElementById('chuyenKhoa').value = user.chuyenKhoa || 'Chưa cập nhật';
+                    
+                    document.querySelector('.patient-fields').style.display = 'none';
+                    document.querySelector('.doctor-fields').style.display = 'block';
+                    document.getElementById('doctor_email').value = user.email || '';
+
+                    if (btnEditInfo) btnEditInfo.style.display = 'none';
+                    if (btnChangePwd) btnChangePwd.style.display = 'none';
+                } else {
+                    document.getElementById('groupChuyenKhoa').style.display = 'none';
+                    document.querySelector('.patient-fields').style.display = 'block';
+                    document.querySelector('.doctor-fields').style.display = 'none';
+
+                    document.getElementById('ngaySinh').value = user.ngaySinh || '';
+                    document.getElementById('CCCD').value = user.CCCD || '';
+                    document.getElementById('email').value = user.email || '';
+                    document.getElementById('SDT').value = user.SDT || '';
+
+                    document.getElementById('modal_email').value = user.email || '';
+                    document.getElementById('modal_sdt').value = user.SDT || '';
+                    document.getElementById('modal_ngaySinh').value = user.ngaySinh || '';
+                    document.getElementById('modal_cccd').value = user.CCCD || '';
+
+                    if (btnEditInfo) btnEditInfo.style.display = 'inline-flex';
+                    if (btnChangePwd) btnChangePwd.style.display = 'inline-flex';
+                }
             } else {
-                alert('ERROR: 404 - NOT FOUND');
+                alert('Lỗi từ Server: ' + (result.message || 'Không thể tải thông tin tài khoản!'));
             }
         } catch(error) {
             console.error(error);
@@ -197,49 +233,62 @@
 
     fetchUserInformation();
 
-    // 2. Xử lý nút Thoát
     document.getElementById('btnExit').addEventListener('click', () => {
-        window.location.href = 'index.php?page=' + globalUserRole.toLowerCase();
+        window.location.href = 'index.php?page=' + globalUserRole;
     });
 
-    // 3. Mở/Đóng Modal Sửa thông tin
-    document.getElementById('btnOpenChangeInfo').addEventListener('click', () => { editModal.removeAttribute('hidden'); });
+    const btnEditInfo = document.getElementById('btnOpenChangeInfo');
+    if (btnEditInfo) {
+        btnEditInfo.addEventListener('click', () => { editModal.removeAttribute('hidden'); });
+    }
     document.getElementById('btnCloseModal').addEventListener('click', () => { editModal.setAttribute('hidden', ''); });
     document.getElementById('btnCancelModal').addEventListener('click', () => { editModal.setAttribute('hidden', ''); });
 
-    // 4. Mở/Đóng Modal Đổi mật khẩu
-    document.getElementById('btnOpenChangePassword').addEventListener('click', () => { passwordModal.removeAttribute('hidden'); });
+    const btnChangePwd = document.getElementById('btnOpenChangePassword');
+    if (btnChangePwd) {
+        btnChangePwd.addEventListener('click', () => { passwordModal.removeAttribute('hidden'); });
+    }
     document.getElementById('btnClosePasswordModal').addEventListener('click', () => { passwordModal.setAttribute('hidden', ''); });
     document.getElementById('btnCancelPasswordModal').addEventListener('click', () => { passwordModal.setAttribute('hidden', ''); });
 
-    // 5. Submit form cập nhật thông tin liên lạc (Email & SĐT)
-    document.getElementById('editProfileForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const email = document.getElementById('modal_email').value;
-        const sdt = document.getElementById('modal_sdt').value;
+    const editForm = document.getElementById('editProfileForm');
+    if (editForm) {
+        editForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('modal_email').value;
+            const sdt = document.getElementById('modal_sdt').value;
+            const ngaySinh = document.getElementById('modal_ngaySinh').value;
+            const cccd = document.getElementById('modal_cccd').value;
 
-        try {
-            const response = await fetch('index.php?api=profile', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ action: 'update_contact', email: email, sdt: sdt })
-            });
+            try {
+                const response = await fetch('index.php?api=profile', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ 
+                        action: 'update_contact', 
+                        email: email, 
+                        sdt: sdt, 
+                        ngaySinh: ngaySinh, 
+                        cccd: cccd 
+                    })
+                });
 
-            const result = await response.json();
-            if(result.status === 'success') {
-                alert('Cập nhật thông tin thành công!');
-                editModal.setAttribute('hidden', '');
-                fetchUserInformation();
-            } else {
-                alert(result.message || 'Cập nhật thất bại!');
+                const result = await response.json();
+                if(result.status === 'success') {
+                    alert('Cập nhật thông tin thành công!');
+                    editModal.setAttribute('hidden', '');
+                    fetchUserInformation();
+                } else {
+                    alert(result.message || 'Cập nhật thất bại!');
+                }
+            } catch(err) {
+                console.error(err);
+                alert('Lỗi kết nối máy chủ!');
             }
-        } catch(err) {
-            console.error(err);
-            alert('Lỗi kết nối máy chủ!');
-        }
-    });
+        });
+    }
 
-    // 6. Submit form Đổi mật khẩu (Băm SHA-1)
     document.getElementById('changePasswordForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const oldPasswordRaw = document.getElementById('old_password').value;
@@ -257,6 +306,7 @@
 
             const response = await fetch('index.php?api=profile', {
                 method: 'POST',
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({ 
                     action: 'change_password', 
