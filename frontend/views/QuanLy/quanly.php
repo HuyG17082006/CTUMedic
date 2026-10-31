@@ -1,6 +1,4 @@
-
 <?php
-
 $role = 'manager';
 
 $allowedTabs = [

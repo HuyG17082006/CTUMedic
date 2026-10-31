@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 define('BASE_PATH', __DIR__);
 
 define('BASE_URL', '/dashboard/CTUMedic');
@@ -20,7 +23,9 @@ if (isset($_GET['api'])) {
         "register"              => PATH_API . '/TaiKhoan/register.php',
         "login"                 => PATH_API . '/TaiKhoan/login.php',
         "logout"                => PATH_API . '/TaiKhoan/logout.php',
-        "profile"               => PATH_API . '/TaiKhoan/trang_ca_nhan.php'
+        "profile"               => PATH_API . '/TaiKhoan/trang_ca_nhan.php',
+        "manager_get_patients"  => PATH_API . '/QuanLy/benhnhan.php',
+        "manager_get_doctors" => PATH_API   . '/QuanLy/bacsi.php',
     ];
 
     $apiName = $_GET['api'];
@@ -38,11 +43,11 @@ $role = $_SESSION['role'] ?? '';
 $page = $_GET['page'] ?? null;
 
 $allowedPages = [
-    'login'     => 'DangNhap/login.php',
-    'register'  => 'DangNhap/register.php',
-    'patient'   => 'BenhNhan/benhnhan.php',
-    'doctor'    => 'BacSi/bacsi.php',
-    'manager'   => 'QuanLy/quanly.php',
+    'login'                 => 'DangNhap/login.php',
+    'register'              => 'DangNhap/register.php',
+    'patient'               => 'BenhNhan/benhnhan.php',
+    'doctor'                => 'BacSi/bacsi.php',
+    'manager'               => 'QuanLy/quanly.php',
 ];
 
 $dashboardPages = ['patient', 'doctor', 'manager'];
