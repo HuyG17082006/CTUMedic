@@ -1,6 +1,5 @@
 <?php
 $role = $_GET['page'];
-$tab = $_GET['tab'] ?? 'tongquan';
 
 $menus = [
     'patient' => [

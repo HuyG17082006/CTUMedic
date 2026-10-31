@@ -4,7 +4,6 @@ $pageTitle = 'Lịch khám';
 $pageDescription = 'Theo dõi và quản lý các lịch khám.';
 
 $filterId = 'appointment-filter';
-$showStatus = true;
 
 require PATH_COMPONENTS . '/appointment-filter.php';
 

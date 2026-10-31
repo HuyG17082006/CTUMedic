@@ -12,10 +12,9 @@
  */
 // Phân loại trang : lịch sử khám - lịch khám
 $role = $role ?? '';
-$tableType = $tableType ?? 'appointment';
+$tableType = $tableType ?? 'appointments';
 
 $filterId = $filterId ?? 'appointment-filter';
-$showStatus = $showStatus ?? true;
 $isDoctor = $role === 'doctor';
 ?>
 
@@ -92,26 +91,22 @@ $isDoctor = $role === 'doctor';
         </div>
 
         <!-- Trạng thái -->
-        <?php if ($showStatus): ?>
-            <div class="appointment-filter__field">
-                <label for="<?= htmlspecialchars($filterId) ?>-status">
-                    Trạng thái
-                </label>
+        <div class="appointment-filter__field" hidden>
+            <label for="<?= htmlspecialchars($filterId) ?>-status">
+                Trạng thái
+            </label>
 
-                <select
-                    id="<?= htmlspecialchars($filterId) ?>-status"
-                    name="status"
-                    data-filter="status"
-                    class="status-select-box">
-                    <option value="">Tất cả trạng thái</option>
-                    <option value="PENDING">Chờ xác nhận</option>
-                    <option value="CONFIRMED">Đã xác nhận</option>
-                    <option value="REJECTED">Bị từ chối</option>
-                    <option value="CANCELLED">Đã hủy</option>
-                    <option value="COMPLETED">Đã hoàn thành</option>
-                </select>
-            </div>
-        <?php endif; ?>
+            <select
+                id="<?= htmlspecialchars($filterId) ?>-status"
+                name="status"
+                data-filter="status"
+                class="status-select-box">
+                <option value="">Tất cả trạng thái</option>
+                <option value="CONFIRMED">Sắp tới</option>
+                <option value="CANCELLED">Đã hủy</option>
+                <option value="COMPLETED">Đã hoàn thành</option>
+            </select>
+        </div>
 
     </div>
 
@@ -133,7 +128,7 @@ $isDoctor = $role === 'doctor';
 </section>
 
 
-<script type="module">
+<!-- <script type="module">
     (() => {
         // 1. Lấy các phần tử HTML
         const specialtySelectBox = document.querySelector('.specialty-select-box');
@@ -166,6 +161,7 @@ $isDoctor = $role === 'doctor';
 
         // 4. Hàm lấy danh sách bác sĩ từ backend
         const getDoctorList = async (specialty) => {
+
             if (!doctorSelectBox) return;
 
             doctorSelectBox.innerHTML =
@@ -266,7 +262,7 @@ $isDoctor = $role === 'doctor';
         });
 
         // 9. Xử lí status select
-        statusSelectBox.value = url.searchParams.get('status') || '';
+        statusSelectBox.value = url.searchParams.get('status') ?? '';
 
         statusSelectBox.addEventListener('change', function() {
             const statusSelected = this.value;
@@ -286,4 +282,4 @@ $isDoctor = $role === 'doctor';
 
 
     })();
-</script>
+</script> -->

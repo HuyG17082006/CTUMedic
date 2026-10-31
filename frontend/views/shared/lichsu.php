@@ -4,7 +4,6 @@ $pageTitle = 'Lịch sử khám';
 $pageDescription = 'Tra cứu các lịch khám đã hoàn thành.';
 
 $filterId = 'history-filter';
-$showStatus = false;
 
 require PATH_COMPONENTS . '/appointment-filter.php';
 
