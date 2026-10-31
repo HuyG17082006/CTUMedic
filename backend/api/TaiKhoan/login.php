@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $passwordHash = trim($_POST['password'] ?? ''); 
 
     $stmt = $pdo->prepare("
-        SELECT tk.id AS taiKhoanId, tk.username, tk.role, bn.*
+        SELECT tk.id AS taiKhoanId, tk.username, tk.role, bn.CCCD
         FROM taiKhoan tk
         LEFT JOIN benhNhan bn
             ON bn.taiKhoanId = tk.id
@@ -51,7 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($roleLower == 'manager') {
             $user = $account; 
         }
-
+        if ($roleLower !== 'manager')
+            $_SESSION['userId'] = $user["id"];
         // Trả về JSON thành công cho JavaScript xử lý
         echo json_encode([
             'status' => 'success',
