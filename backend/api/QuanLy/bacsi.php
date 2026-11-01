@@ -42,7 +42,7 @@ try {
     $doctors = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([
-        'status' => 'success',
+        'status' => 'status',
         'data' => $doctors
     ]);
     exit();

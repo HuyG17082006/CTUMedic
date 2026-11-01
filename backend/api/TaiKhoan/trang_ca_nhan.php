@@ -18,12 +18,12 @@ if (!isset($_SESSION['taiKhoanId'])) {
     exit();
 }
 
-$accountId = $_SESSION['taiKhoanId'];
+$taiKhoanId = $_SESSION['taiKhoanId'];
 
 try {
     // 1. Lấy thông tin tài khoản chung
     $stmtAcc = $pdo->prepare("SELECT id, username, role FROM taiKhoan WHERE id = ? LIMIT 1;");
-    $stmtAcc->execute([$accountId]);
+    $stmtAcc->execute([$taiKhoanId]);
     $account = $stmtAcc->fetch(PDO::FETCH_ASSOC);
 
     if (!$account) {
@@ -50,10 +50,10 @@ try {
         $cccd = trim($_POST['cccd'] ?? '');
 
         $stmtUpdate = $pdo->prepare('UPDATE benhNhan SET email = ?, SDT = ?, ngaySinh = ?, CCCD = ? WHERE taiKhoanId = ?;');
-        $updated = $stmtUpdate->execute([$email, $sdt, $ngaySinh, $cccd, $accountId]);
+        $updated = $stmtUpdate->execute([$email, $sdt, $ngaySinh, $cccd, $taiKhoanId]);
 
         if ($updated) {
-            echo json_encode(['status' => 'success', 'message' => 'Cập nhật thành công!']);
+            echo json_encode(['status' => 'status', 'message' => 'Cập nhật thành công!']);
         } else {
             echo json_encode(['status' => 'failed', 'message' => 'Cập nhật thất bại!']);
         }
@@ -66,7 +66,7 @@ try {
         $newPasswordHashClient = $_POST['new_password'] ?? '';
 
         $stmtPwd = $pdo->prepare('SELECT passwordHash FROM taiKhoan WHERE id = ?;');
-        $stmtPwd->execute([$accountId]);
+        $stmtPwd->execute([$taiKhoanId]);
         $accData = $stmtPwd->fetch(PDO::FETCH_ASSOC);
 
         if (!$accData || $accData['passwordHash'] !== $oldPasswordHashClient) {
@@ -75,10 +75,10 @@ try {
         }
 
         $stmtUpdatePwd = $pdo->prepare('UPDATE taiKhoan SET passwordHash = ? WHERE id = ?;');
-        $updatedPwd = $stmtUpdatePwd->execute([$newPasswordHashClient, $accountId]);
+        $updatedPwd = $stmtUpdatePwd->execute([$newPasswordHashClient, $taiKhoanId]);
 
         if ($updatedPwd) {
-            echo json_encode(['status' => 'success', 'message' => 'Đổi mật khẩu thành công!']);
+            echo json_encode(['status' => 'status', 'message' => 'Đổi mật khẩu thành công!']);
         } else {
             echo json_encode(['status' => 'failed', 'message' => 'Không thể đổi mật khẩu!']);
         }
@@ -89,11 +89,11 @@ try {
     $detailData = [];
     if ($roleLower === 'doctor' || $roleLower === 'bacsi') {
         $stmtDoc = $pdo->prepare("SELECT hoTen, email, chuyenKhoa FROM bacSi WHERE taiKhoanId = ? LIMIT 1;");
-        $stmtDoc->execute([$accountId]);
+        $stmtDoc->execute([$taiKhoanId]);
         $detailData = $stmtDoc->fetch(PDO::FETCH_ASSOC) ?: [];
     } else {
         $stmtPat = $pdo->prepare("SELECT hoTen, ngaySinh, email, SDT, CCCD FROM benhNhan WHERE taiKhoanId = ? LIMIT 1;");
-        $stmtPat->execute([$accountId]);
+        $stmtPat->execute([$taiKhoanId]);
         $detailData = $stmtPat->fetch(PDO::FETCH_ASSOC) ?: [];
     }
 
@@ -102,7 +102,7 @@ try {
     $merged['role'] = $roleLower;
 
     echo json_encode([
-        'status' => 'success',
+        'status' => 'status',
         'information' => $merged
     ]);
     exit();

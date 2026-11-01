@@ -1,33 +1,25 @@
-import api from "./api.js";
+import apiRequest from "./apiRequest.js";
 
 export const getAppointmentList = async (params) => {
-    try {
-        const queryParams = params instanceof URLSearchParams
-            ? params
-            : new URLSearchParams(params);
-        console.log(params)
-        const response = await fetch(
-            `${api}/LichKham/lay_lich_kham.php?${queryParams.toString()}`,
-            {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json'
-                }
-            }
-        );
+    const queryParams = params instanceof URLSearchParams
+        ? params
+        : new URLSearchParams(params);
 
-        const result = await response.json();
+    const result = await apiRequest(`/LichKham/lay_lich_kham.php?${queryParams.toString()}`);
+  
+    return result.list
+}
 
-        if (!response.ok) {
-            throw new Error(
-                result.message || 'Không thể lấy danh sách lịch khám.'
-            );
-        }
+export const getDoctorSchedule = async (values) => {
 
-        return result.list;
+    const queryParams = values instanceof URLSearchParams
+        ? values
+        : new URLSearchParams(values);
 
-    } catch (error) {
-        console.error('Lỗi lấy danh sách lịch khám:', error);
-        return null;
-    }
+    const result = await apiRequest(`/LichKham/lay_lich_kham_bac_si.php?${queryParams.toString()}`);
+    return result.list
+}
+
+export const appointmentBook = async (value) => {
+
 }

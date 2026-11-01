@@ -1,1 +1,1 @@
-import api from "./api.js";
+import apiRequest from "./apiRequest.js";

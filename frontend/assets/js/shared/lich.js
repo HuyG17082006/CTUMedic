@@ -61,7 +61,7 @@ const renderSpecialty = (specialty) => {
 }
 
 const renderDoctorList = async (specialty) => {
-
+    console.log(1)
     doctorSelectBox.innerHTML = '';
 
     if (!toggleDoctorSelectBox(specialty))
@@ -124,11 +124,12 @@ const checkExistColumn = (key) => {
 
 const renderAppointmentList = async () => {
     changeUrl(params)
+
     const appointmentList = await getAppointmentList({
         ...params,
         tableType : appointmentTable.dataset.tableType
     })
-
+    console.log(appointmentList)
     appointmentBody.replaceChildren()
 
     if (appointmentList && !appointmentList.length) {

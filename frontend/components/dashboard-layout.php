@@ -13,7 +13,7 @@ $roleLabel = $roleLabels[$role] ?? 'Người dùng';
 $pageTitle = $pageTitle ?? 'CTUMedic';
 $pageDescription = $pageDescription ?? 'Chào mừng đến với hệ thống CTUMedic';
 
-$userName = $_SESSION['user_name'] ?? $roleLabel;
+$hoTen = $_SESSION['hoTen'] ?? $roleLabel;
 
 ?>
 
@@ -42,7 +42,7 @@ $userName = $_SESSION['user_name'] ?? $roleLabel;
                 <div class="profile-info">
 
                     <span class="profile-name">
-                        <?= htmlspecialchars($userName) ?>
+                        <?= htmlspecialchars($hoTen) ?>
                     </span>
 
                     <span class="profile-role">

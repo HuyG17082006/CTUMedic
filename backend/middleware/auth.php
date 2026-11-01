@@ -8,7 +8,7 @@ if (empty($_SESSION['role'])) {
     http_response_code(401);
 
     echo json_encode([
-        'success' => false,
+        'status' => false,
         'message' => 'Vui lòng đăng nhập trước khi thực hiện thao tác này'
     ]);
 
@@ -25,7 +25,7 @@ if (!in_array($role, $allowedRoles, true)) {
     http_response_code(403);
 
     echo json_encode([
-        'success' => false,
+        'status' => false,
         'message' => 'Không có quyền truy cập'
     ]);
 

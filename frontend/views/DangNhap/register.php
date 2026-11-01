@@ -97,7 +97,7 @@
     </div>
 </div>
 
-<script>
+<script type="module" src="/dashboard/CTUMedic/frontend/assets/js/DangNhap/register.js">
     // Hàm băm mật khẩu sử dụng Web Crypto API
     async function hashSHA1(plainText) {
         const encoder = new TextEncoder();

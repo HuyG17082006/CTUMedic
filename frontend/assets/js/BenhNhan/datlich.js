@@ -1,5 +1,5 @@
 import { getDoctorList } from '../api/bacsi.js';
-import { getAppointmentList } from '../api/lichkham.js';
+import { getDoctorSchedule } from '../api/lichkham.js';
 import { normalizedTime, getCurrentHour, getDate } from '../helper/time.js'
 
 const specialtySelectBox = document.querySelector('#booking-specialty');
@@ -15,7 +15,7 @@ const afternoonSlots = document.querySelector('#afternoon-slots');
 const specialtyList = window.SPECIALTY_LIST;
 const timeList = window.WORKING_TIME_SLOTS;
 
-let value = {
+let values = {
     specialty: specialtySelectBox.value,
     doctorId: doctorSelectBox.value,
     date: dateSelectBox.value,
@@ -90,20 +90,22 @@ const toggleDoctorSelectBox = (specialty) => {
 };
 
 const setBookingTime = (e) => {
-    value.time = e.target.value;
+    values.time = e.target.value;
 };
 
 const renderTimeSlots = async () => {
 
-    value.specialty = specialtySelectBox.value
-    value.doctorId = doctorSelectBox.value
-    value.date = dateSelectBox.value
-    value.reason = reasonText.value
+    values.specialty = specialtySelectBox.value
+    values.doctorId = doctorSelectBox.value
+    values.date = dateSelectBox.value
+    values.reason = reasonText.value
 
     afternoonSlots.innerHTML = ""
     morningSlots.innerHTML = ""
+
     legalTimeSlot()
-    const unavailableList = await getAppointmentList(value);
+
+    const unavailableList = await getDoctorSchedule(values);
 
     let timeSlotNumber = 0;
 
@@ -146,9 +148,8 @@ const renderTimeSlot = ({ start, end }, sameStart) => {
 
 
 const legalTimeSlot = () => {
-    console.log(value.date == getDate())
-    console.log(getDate(), value.date)
-    if (value.date == getDate()) {
+
+    if (values.date == getDate()) {
 
         if (getCurrentHour() >= 7) {
             document.querySelector('.booking-period.morning').classList.add('unavailable')
@@ -158,12 +159,15 @@ const legalTimeSlot = () => {
             document.querySelector('.booking-period.afternoon').classList.add('unavailable')
         }
 
+    } else {
+        document.querySelector('.booking-period.morning').classList.remove('unavailable')
+        document.querySelector('.booking-period.afternoon').classList.remove('unavailable')
     }
 }
 
 specialtySelectBox.addEventListener('change', async (e) => {
-    value.specialty = e.target.value
-    await renderDoctorList(value.specialty)
+    values.specialty = e.target.value
+    await renderDoctorList(values.specialty)
 })
 bookingForm.addEventListener('submit', async (e) => {
     e.preventDefault()
