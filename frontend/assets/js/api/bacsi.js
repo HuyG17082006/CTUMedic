@@ -1,10 +1,12 @@
+import api from "./api.js";
+
 export const getDoctorList = async (specialty) => {
 
     if (!specialty) return;
     
     try {
         const request = await fetch(
-            `/dashboard/CTUMedic/backend/api/BacSi/lay_danh_sach.php?specialty=${encodeURIComponent(specialty)}`
+            `${api}/BacSi/lay_danh_sach.php?specialty=${encodeURIComponent(specialty)}`
         );
 
         if (!request.ok) {

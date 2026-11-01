@@ -1,3 +1,5 @@
+import api from "./api.js";
+
 export const getAppointmentList = async (params) => {
     try {
         const queryParams = params instanceof URLSearchParams
@@ -5,7 +7,7 @@ export const getAppointmentList = async (params) => {
             : new URLSearchParams(params);
         console.log(params)
         const response = await fetch(
-            `/dashboard/CTUMedic/backend/api/LichKham/lay_lich_kham.php?${queryParams.toString()}`,
+            `${api}/LichKham/lay_lich_kham.php?${queryParams.toString()}`,
             {
                 method: 'GET',
                 headers: {

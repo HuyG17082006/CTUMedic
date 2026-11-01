@@ -1,0 +1,1 @@
+export default '/dashboard/CTUMedic/backend/api'
