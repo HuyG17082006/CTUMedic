@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Lưu thông tin vào Session chuẩn xác
-        $_SESSION['taiKhoanId'] = $account['taiKhoanId'];
+        $_SESSION['userId'] = $account['taiKhoanId'];
         $_SESSION['role'] = $roleLower;
         $_SESSION['user_name'] = $account['username'];
 

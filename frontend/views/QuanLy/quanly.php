@@ -1,23 +1,6 @@
 <?php
 $role = 'manager';
 
-$allowedTabs = [
-    'tongquan',
-    'lichkham',
-    'lichsu',
-    'benhnhan',
-    'bacsi',
-    'taikhoan',
-];
-
-$tab = $_GET['tab'] ?? 'tongquan';
-
-if (!in_array($tab, $allowedTabs, true)) {
-    $tab = 'tongquan';
-}
-
-$tabsDirectory = PATH_VIEWS . '/QuanLy/tabs';
-
 $tabConfigs = [
     'tongquan' => [
         'title' => 'Tổng quan',
@@ -43,17 +26,25 @@ $tabConfigs = [
         'title' => 'Thông tin tài khoản',
         'description' => 'Cập nhật thông tin cá nhân và đổi mật khẩu.',
     ],
+    'nguoidung' => [
+        'title' => 'Quản lý người dùng',
+        'description' => 'Quản lý tài khoản và phân quyền.',
+    ],
 ];
+
+$tab = $_GET['tab'] ?? 'lichkham';
+
+if (!isset($tabConfigs[$tab])) {
+    $tab = 'tongquan';
+}
 
 $pageTitle = $tabConfigs[$tab]['title'];
 $pageDescription = $tabConfigs[$tab]['description'];
 
 $sharedTabs = ['lichkham', 'lichsu', 'taikhoan'];
 
-if (in_array($tab, $sharedTabs, true)) {
-    $contentFile = PATH_VIEWS . '/shared/' . $tab . '.php';
-} else {
-    $contentFile = $tabsDirectory . '/' . $tab . '.php';
-}
+$contentFile = in_array($tab, $sharedTabs, true)
+    ? PATH_VIEWS . '/shared/' . $tab . '.php'
+    : PATH_VIEWS . '/QuanLy/tabs/' . $tab . '.php';
 
 require PATH_COMPONENTS . '/dashboard-layout.php';

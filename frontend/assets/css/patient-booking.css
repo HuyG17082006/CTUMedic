@@ -1,0 +1,623 @@
+
+/* =======================================
+   CTUMEDIC - PATIENT BOOKING
+======================================== */
+
+.patient-booking-page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    width: 100%;
+    min-width: 0;
+    color: var(--text);
+}
+
+/* ========================================
+   THÔNG TIN ĐẶT LỊCH
+======================================== */
+
+.booking-info-card,
+.booking-period,
+.booking-reason-card {
+    padding: var(--space-lg);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    min-width: 0;
+}
+
+#booking-reason {
+    resize: none;
+    overflow: auto;
+}
+
+.booking-info-card__heading {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: var(--space-lg);
+}
+
+.booking-info-card__heading > i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    border-radius: var(--radius-md);
+    background: var(--primary-light);
+    color: var(--primary);
+    font-size: 20px;
+}
+
+.booking-info-card__heading h3,
+.booking-slot-form__heading h3 {
+    margin-bottom: 5px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.booking-info-card__heading p,
+.booking-slot-form__heading p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* ========================================
+   FORM FILTER
+======================================== */
+
+.booking-filter-form {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: end;
+    gap: 18px;
+}
+
+.booking-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-width: 0;
+}
+
+.booking-form-field > label {
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.booking-form-field input,
+.booking-form-field select,
+.booking-form-field textarea {
+    width: 100%;
+    min-width: 0;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.booking-form-field input,
+.booking-form-field select {
+    height: 46px;
+}
+
+.booking-form-field textarea {
+    padding: 12px;
+    line-height: 1.6;
+    resize: vertical;
+}
+
+.booking-form-field__hint {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+/* ========================================
+   BUTTON
+======================================== */
+
+.booking-filter-form__submit,
+.booking-submit__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    min-height: 46px;
+    padding: 0 20px;
+
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+
+    background: var(--primary);
+    color: #fff;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        background 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.booking-filter-form__submit {
+    grid-column: 1 / -1;
+    width: fit-content;
+}
+
+.booking-filter-form__submit:hover,
+.booking-submit__button:hover {
+    background: var(--primary-hover);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.booking-filter-form__submit:active,
+.booking-submit__button:active {
+    transform: translateY(0);
+}
+
+.booking-filter-form__submit i,
+.booking-submit__button i {
+    font-size: 15px;
+    transition: transform 0.2s ease;
+}
+
+.booking-filter-form__submit:hover i {
+    transform: scale(1.1);
+}
+
+.booking-submit__button:hover i {
+    transform: scale(1.1);
+}
+
+.booking-filter-form__submit:focus-visible,
+.booking-submit__button:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+}
+
+.booking-filter-form__submit:disabled,
+.booking-submit__button:disabled {
+    background: #94A3B8;
+    border-color: #94A3B8;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+    opacity: 0.7;
+}
+
+/* ========================================
+   CHÚ THÍCH TRẠNG THÁI
+======================================== */
+
+.booking-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 24px;
+
+    padding: 16px 20px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.booking-legend__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.booking-legend__dot,
+.booking-slot__dot {
+    width: 9px;
+    height: 9px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #16A34A;
+}
+
+.booking-legend__dot--available {
+    background: #16A34A;
+}
+
+.booking-legend__dot--booked {
+    background: #64748B;
+}
+
+.booking-legend__dot--blocked {
+    background: var(--danger);
+}
+
+.booking-legend__dot--completed {
+    background: #CBD5E1;
+}
+
+/* ========================================
+   KHU VỰC CHỌN GIỜ
+======================================== */
+
+.booking-slot-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+}
+
+.booking-slot-form__heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.booking-periods {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+}
+
+.booking-period {
+    padding: var(--space-lg);
+}
+
+.booking-period__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.booking-period__heading {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.booking-period__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+
+    border-radius: var(--radius-md);
+    font-size: 19px;
+}
+
+.booking-period__icon--morning {
+    background: #FEF3C7;
+    color: #B45309;
+}
+
+.booking-period__icon--afternoon {
+    background: #DBEAFE;
+    color: #1D4ED8;
+}
+
+.booking-period__heading h4 {
+    margin-bottom: 5px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.booking-period__heading p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+/* ========================================
+   CÁC KHUNG GIỜ
+======================================== */
+
+.booking-slots {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.booking-slot {
+    position: relative;
+    display: block;
+    min-width: 0;
+
+    border: 1px solid #BBF7D0;
+    border-radius: var(--radius-md);
+
+    background: #F0FDF4;
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.booking-slot > input[type="radio"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.booking-slot__content {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+
+    min-height: 130px;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.booking-slot__time {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.booking-slot__time strong {
+    color: #166534;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.booking-slot__end {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.booking-slot__status {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+
+    margin-top: auto;
+    padding: 5px 9px;
+
+    border-radius: var(--radius-sm);
+    background: #DCFCE7;
+    color: #166534;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Hover */
+
+.booking-slot:not(.booking-slot--disabled):hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+/* Selected */
+
+.booking-slot:has(input:checked) {
+    border: 2px solid var(--primary);
+    background: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.10);
+}
+
+.booking-slot:has(input:checked) .booking-slot__time strong {
+    color: var(--primary-hover);
+}
+
+.booking-slot:has(input:focus-visible) {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+}
+
+/* Booked */
+
+.booking-slot--booked {
+    border-color: #E2E8F0;
+    background: #F1F5F9;
+    cursor: not-allowed;
+}
+
+.booking-slot--booked .booking-slot__dot {
+    background: #64748B;
+}
+
+.booking-slot--booked .booking-slot__time strong {
+    color: #475569;
+}
+
+.booking-slot--booked .booking-slot__status {
+    background: #E2E8F0;
+    color: #475569;
+}
+
+/* Blocked */
+
+.booking-slot--blocked {
+    border-color: #FECACA;
+    background: #FEF2F2;
+    cursor: not-allowed;
+}
+
+.booking-slot--blocked .booking-slot__dot {
+    background: var(--danger);
+}
+
+.booking-slot--blocked .booking-slot__time strong {
+    color: #991B1B;
+}
+
+.booking-slot--blocked .booking-slot__status {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+/* Completed */
+
+.booking-slot--completed {
+    border-color: #E2E8F0;
+    background: #F8FAFC;
+    cursor: not-allowed;
+}
+
+.booking-slot--completed .booking-slot__dot {
+    background: #CBD5E1;
+}
+
+.booking-slot--completed .booking-slot__time strong {
+    color: #94A3B8;
+}
+
+.booking-slot--completed .booking-slot__status {
+    background: #E2E8F0;
+    color: #64748B;
+}
+
+.booking-slot--disabled {
+    cursor: not-allowed;
+}
+
+/* ========================================
+   LÝ DO KHÁM
+======================================== */
+
+.booking-reason-card {
+    padding: var(--space-lg);
+}
+
+/* ========================================
+   XÁC NHẬN ĐẶT LỊCH
+======================================== */
+
+.booking-submit {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    padding: 20px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.booking-submit__note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    min-width: 0;
+}
+
+.booking-submit__note > i {
+    margin-top: 3px;
+    color: var(--primary);
+    font-size: 17px;
+}
+
+.booking-submit__note p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.booking-submit__button {
+    min-height: 48px;
+    padding: 0 22px;
+    flex-shrink: 0;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 1000px) {
+    .booking-filter-form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .booking-slots {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .patient-booking-page {
+        gap: var(--space-md);
+    }
+
+    .booking-info-card,
+    .booking-period,
+    .booking-reason-card {
+        padding: var(--space-md);
+        border-radius: var(--radius-md);
+    }
+
+    .booking-filter-form {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .booking-filter-form__submit {
+        width: 100%;
+    }
+
+    .booking-legend {
+        gap: 12px 16px;
+        padding: 14px;
+    }
+
+    .booking-slots {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .booking-slot__content {
+        min-height: auto;
+    }
+
+    .booking-period__header {
+        align-items: flex-start;
+    }
+
+    .booking-submit {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 16px;
+    }
+
+    .booking-submit__button {
+        width: 100%;
+    }
+}
+
+.unavailable {
+    background-color: rgba(128, 128, 128, 0.3) !important;
+    color: #888;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
