@@ -86,8 +86,8 @@ $query = "
     $whereClause
 
     ORDER BY
-        lk.ngayKham DESC,
-        lk.gioKham DESC
+        lk.ngayKham ASC,
+        lk.gioKham ASC
 
     LIMIT $limit OFFSET $offset
 ";

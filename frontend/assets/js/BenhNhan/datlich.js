@@ -1,5 +1,5 @@
 import { getDoctorList } from '../api/bacsi.js';
-import { getDoctorSchedule } from '../api/lichkham.js';
+import { getDoctorSchedule, appointmentBook } from '../api/lichkham.js';
 import { normalizedTime, getCurrentHour, getDate } from '../helper/time.js'
 
 const specialtySelectBox = document.querySelector('#booking-specialty');
@@ -20,9 +20,17 @@ let values = {
     doctorId: doctorSelectBox.value,
     date: dateSelectBox.value,
     time: null,
-    reason: reasonText.value,
+    reason: '',
     tableType: "timeSlots"
 }
+
+const hasEmptyField = (obj) => {
+    return Object.values(obj).some(
+        value =>
+            value == null ||
+            (typeof value === 'string' && value.trim() === '')
+    );
+};
 
 const renderSpecialtyList = () => {
     specialtyList.forEach((specialty) => specialtySelectBox.append(renderSpecialty(specialty)))
@@ -91,6 +99,7 @@ const toggleDoctorSelectBox = (specialty) => {
 
 const setBookingTime = (e) => {
     values.time = e.target.value;
+    console.log(values)
 };
 
 const renderTimeSlots = async () => {
@@ -109,7 +118,7 @@ const renderTimeSlots = async () => {
 
     let timeSlotNumber = 0;
 
-    timeList.forEach(({start, end}) => {
+    timeList.forEach(({ start, end }) => {
         timeSlotNumber += 1;
         let sameStart = false;
 
@@ -165,6 +174,19 @@ const legalTimeSlot = () => {
     }
 }
 
+const booking = async () => {
+
+    if (hasEmptyField(values))
+        return alert("Vui lòng nhập đầy đủ thông tin")
+
+    const { status, message } = await appointmentBook(values)
+
+    if (status === 'failed')
+        alert(message)
+    else
+        alert(message)
+}
+
 specialtySelectBox.addEventListener('change', async (e) => {
     values.specialty = e.target.value
     await renderDoctorList(values.specialty)
@@ -173,6 +195,8 @@ bookingForm.addEventListener('submit', async (e) => {
     e.preventDefault()
     await renderTimeSlots()
 })
+reasonText.addEventListener('input', (e) => values.reason = e.target.value)
+submitBookingBtn.addEventListener('click', booking)
 renderSpecialtyList();
 renderDoctorList();
 

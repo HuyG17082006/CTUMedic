@@ -38,7 +38,8 @@ $query = '
             lk.benhNhanId IS NULL
             OR lk.trangThai IN (
                 "CONFIRMED",
-                "COMPLETED"
+                "COMPLETED",
+                "CANCELLED"
             )
         )
 

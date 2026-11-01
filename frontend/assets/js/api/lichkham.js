@@ -20,6 +20,13 @@ export const getDoctorSchedule = async (values) => {
     return result.list
 }
 
-export const appointmentBook = async (value) => {
+export const appointmentBook = async (values) => {
+
+    const result = await apiRequest(`/LichKham/dat_lich.php`, {
+        method : "POST",
+        body : JSON.stringify(values)
+    })
+
+    return result
 
 }

@@ -25,7 +25,7 @@ try {
         throw new Exception('Thiếu thông tin đặt lịch.');
     }
 
-    $taiKhoanId = $_SESSION['user_id'] ?? null;
+    $taiKhoanId = $_SESSION['taiKhoanId'] ?? null;
 
     if (!$taiKhoanId) {
         throw new Exception('Vui lòng đăng nhập.');
@@ -46,6 +46,25 @@ try {
 
     if (!$benhNhan) {
         throw new Exception('Không tìm thấy thông tin bệnh nhân.');
+    }
+
+    $stmt = $pdo->prepare("
+        SELECT 1
+        FROM lichKham
+        WHERE benhNhanId = ? AND ngayKham = ? AND gioKham = ?
+        LIMIT 1
+    ");
+
+    $stmt->execute([$benhNhan['id'], $date, $time]);
+
+    $isBookingTimeDuplicate = $stmt->fetch();
+
+    if ($isBookingTimeDuplicate) {
+        echo json_encode([
+            'status' => 'failed',
+            'message' => 'Bạn đã có lịch khám vào khung giờ này.'
+        ]);
+        exit();
     }
 
     $stmt = $pdo->prepare("
@@ -71,10 +90,11 @@ try {
             benhNhanId,
             ngayKham,
             gioKham,
-            liDoKham
+            liDoKham,
+            trangThai
         )
         VALUES (
-            ?, ?, ?, ?, ?
+            ?, ?, ?, ?, ?, 'CONFIRMED'
         )
     ");
 
@@ -87,14 +107,13 @@ try {
     ]);
 
     echo json_encode([
-        'status' => true,
+        'status' => 'success',
         'message' => 'Đặt lịch thành công.'
     ]);
-
 } catch (Throwable $e) {
 
     echo json_encode([
-        'status' => false,
+        'status' => 'failed',
         'message' => $e->getMessage()
     ]);
 }
