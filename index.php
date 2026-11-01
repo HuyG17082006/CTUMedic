@@ -85,11 +85,22 @@ if ($page !== 'login' && $page !== 'register') {
         <link rel="stylesheet" href="./frontend/assets/css/appointment-table-filter-test.css">
         <link rel="stylesheet" href="./frontend/assets/css/appointment-detail-modal.css">
         <link rel="stylesheet" href="./frontend/assets/css/popupLogout.css">
+        <script>
+            window.SPECIALTY_LIST = <?= json_encode(
+                                        SPECIALTY_LIST,
+                                        JSON_UNESCAPED_UNICODE
+                                    ) ?>;
+            window.WORKING_TIME_SLOTS = <?= json_encode(
+                                            WORKING_TIME_SLOTS,
+                                            JSON_UNESCAPED_UNICODE
+                                        ) ?>;
+        </script>
         <?php if ($role && $role == 'doctor'): ?>
             <link rel="stylesheet" href="./frontend/assets/css/doctor-schedule.css">
         <?php endif; ?>
         <?php if ($role && $role == 'patient'): ?>
             <link rel="stylesheet" href="./frontend/assets/css/patient-booking.css">
+            <link rel="stylesheet" href="./frontend/assets/css/time-slot.css">
         <?php endif; ?>
     <?php endif; ?>
 </head>

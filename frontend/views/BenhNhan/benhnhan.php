@@ -1,22 +1,8 @@
-
 <?php
-
 
 $role = 'patient';
 
-$allowedTabs = [
-    'tongquan',
-    'datlich',
-    'lichkham',
-    'lichsu',
-    'taikhoan',
-];
-
 $tab = $_GET['tab'] ?? 'lichkham';
-
-if (!in_array($tab, $allowedTabs, true)) {
-    $tab = 'lichkham';
-}
 
 $tabsDirectory = PATH_VIEWS . '/BenhNhan/tabs';
 
@@ -43,16 +29,17 @@ $tabConfigs = [
     ],
 ];
 
+if (!isset($tabConfigs[$tab])) {
+    $tab = 'lichkham';
+}
+
 $pageTitle = $tabConfigs[$tab]['title'];
 $pageDescription = $tabConfigs[$tab]['description'];
 
-// Các trang dùng chung giữa các vai trò
 $sharedTabs = ['lichkham', 'lichsu', 'taikhoan'];
 
-if (in_array($tab, $sharedTabs, true)) {
-    $contentFile = PATH_VIEWS . '/shared/' . $tab . '.php';
-} else {
-    $contentFile = $tabsDirectory . '/' . $tab . '.php';
-}
+$contentFile = in_array($tab, $sharedTabs, true)
+    ? PATH_VIEWS . '/shared/' . $tab . '.php'
+    : $tabsDirectory . '/' . $tab . '.php';
 
 require PATH_COMPONENTS . '/dashboard-layout.php';

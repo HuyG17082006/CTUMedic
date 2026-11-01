@@ -3,62 +3,164 @@
 require_once __DIR__ . '/../../middleware/auth.php';
 require_once __DIR__ . '/../../database.php';
 
-$pageNumber = $_GET['pageNumber'] ?? 1;
+header('Content-Type: application/json; charset=utf-8');
+
+$pageNumber = max(1, (int) ($_GET['pageNumber'] ?? 1));
+
 $specialty = $_GET['specialty'] ?? '';
 $doctorId = $_GET['doctorId'] ?? '';
 $date = $_GET['date'] ?? '';
 $status = $_GET['status'] ?? '';
 $tableType = $_GET['tableType'] ?? '';
-$whereConditions = '';
-$params = [];
 
+$params = [];
 $whereConditions = ' WHERE 1 = 1';
 
-// Xử lý lịch cá nhân
+// =====================================================
+// 1. XỬ LÝ TIMESLOTS
+// =====================================================
+
+if ($tableType === 'timeSlots') {
+
+    // Bắt buộc phải có bác sĩ và ngày khám
+    if ($doctorId === '' || $date === '') {
+        http_response_code(400);
+
+        echo json_encode([
+            'success' => false,
+            'message' => 'Vui lòng cung cấp bác sĩ và ngày khám.'
+        ]);
+
+        exit;
+    }
+
+    $whereConditions .= ' AND lk.bacSiId = ?';
+    $params[] = $doctorId;
+
+    $whereConditions .= ' AND lk.ngayKham = ?';
+    $params[] = $date;
+
+    // Chỉ lấy lịch thực sự chiếm khung giờ
+    $whereConditions .= "
+        AND (
+            lk.benhNhanId IS NULL
+            OR lk.trangThai IN ('CONFIRMED', 'COMPLETED')
+        )
+    ";
+
+    // Chuyên khoa là điều kiện bổ sung nếu được truyền
+    if ($specialty !== '') {
+        $whereConditions .= ' AND bs.chuyenKhoa = ?';
+        $params[] = $specialty;
+    }
+
+    $query = '
+        SELECT
+            lk.id,
+            lk.bacSiId,
+            lk.benhNhanId,
+            lk.ngayKham,
+            lk.gioKham,
+            lk.trangThai
+
+        FROM lichKham lk
+        JOIN bacSi bs ON bs.id = lk.bacSiId
+
+        ' . $whereConditions . '
+
+        ORDER BY lk.gioKham ASC
+    ';
+
+    $stmt = $pdo->prepare($query);
+    $stmt->execute($params);
+
+    $list = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    echo json_encode([
+        'success' => true,
+        'list' => $list
+    ]);
+
+    exit;
+}
+
+// =====================================================
+// 2. XỬ LÝ LỊCH CÁ NHÂN
+// =====================================================
+
 if ($role === 'patient') {
+
     $whereConditions .= ' AND lk.benhNhanId = ?';
     $params[] = $userId;
 } elseif ($role === 'doctor') {
+
     $whereConditions .= ' AND lk.bacSiId = ?';
     $params[] = $userId;
 }
 
-// Xử lý loại lịch
+// =====================================================
+// 3. XỬ LÝ LOẠI LỊCH
+// =====================================================
+
 if ($tableType === 'history') {
-    $whereConditions .= " AND lk.trangThai IN ('COMPLETED', 'CANCELLED', 'REJECTED')";
-} else {
-    $whereConditions .= " AND lk.trangThai IN ('PENDING', 'CONFIRMED')";
+    $whereConditions .= "
+        AND lk.trangThai IN ('COMPLETED', 'CANCELLED')
+    ";
+} elseif ($tableType === 'appointments') {
+    $whereConditions .= "
+        AND lk.trangThai = 'CONFIRMED'
+    ";
 }
 
-// Xử lý chuyên khoa
+// =====================================================
+// 4. XỬ LÝ CHUYÊN KHOA
+// =====================================================
+
 if ($specialty !== '' && $role !== 'doctor') {
+
     $whereConditions .= ' AND bs.chuyenKhoa = ?';
     $params[] = $specialty;
 }
 
-// Xử lý bác sĩ
+// =====================================================
+// 5. XỬ LÝ BÁC SĨ
+// =====================================================
+
 if ($doctorId !== '' && $role !== 'doctor') {
+
     $whereConditions .= ' AND bs.id = ?';
     $params[] = $doctorId;
 }
 
-// Xử lý ngày khám
+// =====================================================
+// 6. XỬ LÝ NGÀY KHÁM
+// =====================================================
+
 if ($date !== '') {
+
     $whereConditions .= ' AND lk.ngayKham = ?';
     $params[] = $date;
 }
 
-// Xử lý trạng thái
+// =====================================================
+// 7. XỬ LÝ TRẠNG THÁI
+// =====================================================
+
 if ($status !== '') {
+
     $whereConditions .= ' AND lk.trangThai = ?';
     $params[] = $status;
 }
 
-// Phân trang
-$offset = ($pageNumber - 1) * 10;
+// =====================================================
+// 8. PHÂN TRANG
+// =====================================================
+
+$limit = 10;
+$offset = ($pageNumber - 1) * $limit;
 
 $query = '
-    SELECT 
+    SELECT
         lk.id,
         lk.liDoKham,
         lk.ngayKham,
@@ -75,32 +177,37 @@ $query = '
         COUNT(*) OVER() AS totalRecords
 
     FROM lichKham lk
-    JOIN bacSi bs ON bs.id = lk.bacSiId
-    JOIN benhNhan bn ON bn.id = lk.benhNhanId
-    '.$whereConditions.'
+
+    JOIN bacSi bs
+        ON bs.id = lk.bacSiId
+
+    LEFT JOIN benhNhan bn
+        ON bn.id = lk.benhNhanId
+
+    ' . $whereConditions . '
+
     ORDER BY lk.ngayKham DESC, lk.gioKham DESC
-    LIMIT 10 OFFSET '.$offset;
+
+    LIMIT ' . $limit . ' OFFSET ' . $offset;
 
 $stmt = $pdo->prepare($query);
 $stmt->execute($params);
+
 $list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$totalRecords = 0;
-$totalPages = 0;
+$totalRecords = !empty($list)
+    ? (int) $list[0]['totalRecords']
+    : 0;
 
-if (!empty($list)) {
-    $totalRecords = (int) $list[0]['totalRecords'] || 0;
-    $totalPages = (int) ceil($totalRecords / 10);
-}
+$totalPages = (int) ceil($totalRecords / $limit);
 
 echo json_encode([
     'success' => true,
     'list' => $list,
     'pagination' => [
-        'pageNumber' => $pageNumber || 1,
-        'limit' => 10,
+        'pageNumber' => $pageNumber,
+        'limit' => $limit,
         'totalRecords' => $totalRecords,
         'totalPages' => $totalPages
     ]
-])
-?>
+]);

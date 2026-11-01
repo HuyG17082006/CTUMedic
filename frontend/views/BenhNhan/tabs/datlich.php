@@ -1,16 +1,5 @@
-<?php
-
-$selectedDate = $_GET['date'] ?? date('Y-m-d');
-
-$timeSlots = WORKING_TIME_SLOTS;
-
-$selectedDoctor = $_GET['doctorId'] ?? '';
-
-?>
-
 <section class="patient-booking-page">
 
-    <!-- Thông tin đặt lịch -->
     <section class="booking-info-card">
 
         <div class="booking-info-card__heading">
@@ -18,26 +7,13 @@ $selectedDoctor = $_GET['doctorId'] ?? '';
 
             <div>
                 <h3>Thông tin khám</h3>
-                <p>
-                    Chọn bác sĩ và ngày khám phù hợp với bạn.
-                </p>
+                <p>Chọn bác sĩ và ngày khám phù hợp với bạn.</p>
             </div>
         </div>
 
-        <form method="GET" class="booking-filter-form">
-
-            <input
-                type="hidden"
-                name="page"
-                value="patient">
-
-            <input
-                type="hidden"
-                name="tab"
-                value="datlich">
+        <form class="booking-filter-form">
 
             <div class="booking-form-field">
-
                 <label for="booking-specialty">
                     Chuyên khoa
                 </label>
@@ -46,33 +22,14 @@ $selectedDoctor = $_GET['doctorId'] ?? '';
                     id="booking-specialty"
                     name="specialty"
                     required>
-
                     <option value="">
                         Chọn chuyên khoa
                     </option>
-
-                    <option value="noikhoa">
-                        Nội khoa
-                    </option>
-
-                    <option value="ngoai khoa">
-                        Ngoại khoa
-                    </option>
-
-                    <option value="tim mach">
-                        Tim mạch
-                    </option>
-
-                    <option value="da lieu">
-                        Da liễu
-                    </option>
-
                 </select>
 
             </div>
 
             <div class="booking-form-field">
-
                 <label for="booking-doctor">
                     Bác sĩ
                 </label>
@@ -80,30 +37,26 @@ $selectedDoctor = $_GET['doctorId'] ?? '';
                 <select
                     id="booking-doctor"
                     name="doctorId"
+                    disabled
                     required>
-
                     <option value="">
-                        Chọn bác sĩ
+                        Chọn chuyên khoa trước
                     </option>
-
-                    <!-- Dữ liệu bác sĩ sẽ được render từ backend -->
-
                 </select>
 
             </div>
 
             <div class="booking-form-field">
-
                 <label for="booking-date">
                     Ngày khám
                 </label>
 
                 <input
+                    value="<?= date('Y-m-d') ?>"
+                    min="<?= date('Y-m-d') ?>"
                     type="date"
                     id="booking-date"
                     name="date"
-                    value="<?= htmlspecialchars($selectedDate) ?>"
-                    min="<?= date('Y-m-d') ?>"
                     required>
 
             </div>
@@ -111,17 +64,14 @@ $selectedDoctor = $_GET['doctorId'] ?? '';
             <button
                 type="submit"
                 class="booking-filter-form__submit">
-
                 <i class="fa-solid fa-magnifying-glass"></i>
                 Tìm khung giờ
-
             </button>
 
         </form>
 
     </section>
 
-    <!-- Chú thích trạng thái -->
     <section class="booking-legend">
 
         <span class="booking-legend__item">
@@ -146,37 +96,63 @@ $selectedDoctor = $_GET['doctorId'] ?? '';
 
     </section>
 
-    <!-- Chọn khung giờ -->
-    <form method="POST" class="booking-slot-form">
-
-        <input
-            type="hidden"
-            name="doctorId"
-            value="<?= htmlspecialchars($selectedDoctor) ?>">
-
-        <input
-            type="hidden"
-            name="date"
-            value="<?= htmlspecialchars($selectedDate) ?>">
+    <div class="booking-slot-form">
 
         <div class="booking-slot-form__heading">
-
             <div>
                 <h3>Chọn khung giờ khám</h3>
+                <p id="booking-selected-date"></p>
+            </div>
+        </div>
 
-                <p>
-                    <?= htmlspecialchars($selectedDate) ?>
-                    · 40 phút / lượt
-                </p>
+        <div
+            class="booking-periods"
+            id="booking-periods">
+
+            <div class="booking-period morning">
+
+                <div class="booking-period__header">
+                    <div class="booking-period__heading">
+                        <span class="booking-period__icon booking-period__icon--morning">
+                            <i class="fa-solid fa-sun"></i>
+                        </span>
+
+                        <div>
+                            <h4>Buổi sáng</h4>
+                            <p>07:00 – 11:00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="booking-slots"
+                    id="morning-slots"></div>
+
+            </div>
+
+            <div class="booking-period afternoon">
+
+                <div class="booking-period__header">
+                    <div class="booking-period__heading">
+                        <span class="booking-period__icon booking-period__icon--afternoon">
+                            <i class="fa-solid fa-cloud-sun"></i>
+                        </span>
+
+                        <div>
+                            <h4>Buổi chiều</h4>
+                            <p>13:00 – 17:00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="booking-slots"
+                    id="afternoon-slots"></div>
+
             </div>
 
         </div>
 
-        <div class="booking-periods" id="booking-periods">
-            <!-- Các khung giờ sẽ được render bằng JavaScript -->
-        </div>
-
-        <!-- Lý do khám -->
         <section class="booking-reason-card">
 
             <div class="booking-form-field">
@@ -193,15 +169,10 @@ $selectedDoctor = $_GET['doctorId'] ?? '';
                     placeholder="Mô tả triệu chứng hoặc lý do bạn muốn khám..."
                     required></textarea>
 
-                <span class="booking-form-field__hint">
-                    Tối đa 500 ký tự.
-                </span>
-
             </div>
 
         </section>
 
-        <!-- Xác nhận đặt lịch -->
         <div class="booking-submit">
 
             <div class="booking-submit__note">
@@ -209,56 +180,23 @@ $selectedDoctor = $_GET['doctorId'] ?? '';
 
                 <p>
                     Vui lòng kiểm tra thông tin trước khi xác nhận.
-                    Lịch khám sẽ được xác nhận sau khi đặt thành công.
                 </p>
             </div>
 
             <button
-                type="submit"
+                type="button"
                 class="booking-submit__button">
-
                 <i class="fa-solid fa-calendar-check"></i>
                 Xác nhận đặt lịch
-
             </button>
 
         </div>
 
-    </form>
+    </div>
 
 </section>
 
-<script>
-    function getEarliestBookingDateTime() {
-        const now = new Date();
-
-        const currentHour = now.getHours();
-
-        // Buổi chiều đã bắt đầu: chỉ được đặt từ ngày mai.
-        if (currentHour >= 13) {
-            now.setDate(now.getDate() + 1);
-            now.setHours(7, 0, 0, 0);
-
-            return now;
-        }
-
-        // Buổi sáng: được đặt từ 13:00 cùng ngày.
-        if (currentHour >= 7) {
-            now.setHours(13, 0, 0, 0);
-
-            return now;
-        }
-
-        // Trước 07:00: có thể đặt từ 07:00 cùng ngày.
-        now.setHours(7, 0, 0, 0);
-
-        return now;
-    }
-
-    function isBookingSlotAllowed(date, startTime) {
-        const slotDateTime = new Date(`${date}T${startTime}:00`);
-        const earliest = getEarliestBookingDateTime();
-
-        return slotDateTime >= earliest;
-    }
+<script
+    type="module"
+    src="/dashboard/CTUMedic/frontend/assets/js/BenhNhan/datlich.js">
 </script>
