@@ -6,6 +6,7 @@ const doctorSelectBox = document.querySelector('.doctor-select-box');
 const dateInputBox = document.querySelector('.date-input-box');
 const statusSelectBox = document.querySelector('.status-select-box');
 const filterBtnSubmit = document.querySelector('.appointment-filter__submit');
+const filterBtnReset = document.querySelector('.appointment-filter__reset');
 
 const appointmentTable = document.querySelector('.appointment-table');
 const appointmentBody = appointmentTable.querySelector('[data-appointment-list]')
@@ -47,39 +48,70 @@ const renderUrlValue = () => {
 }
 
 const renderSpecialtyList = () => {
+    specialtyList.forEach((specialty) => specialtySelectBox.append(renderSpecialty(specialty)))
+}
 
-    specialtyList.forEach((specialty) => {
-        const option = document.createElement('option');
-        option.value = specialty;
-        option.textContent = specialty;
-        specialtySelectBox.appendChild(option);
-    })
+const renderSpecialty = (specialty) => {
+    const option = document.createElement('option');
+
+    option.innerText = specialty;
+    option.value = specialty;
+
+    return option
+}
+
+const renderDoctorList = async (specialty) => {
+
+    doctorSelectBox.innerHTML = '';
+
+    if (!toggleDoctorSelectBox(specialty))
+        return;
+
+    const doctorList = await getDoctorList(specialty)
+
+    if (doctorList)
+        doctorList.forEach((doctor) => doctorSelectBox.append(renderDoctor(doctor)))
+
+    if (params.doctorId)
+        doctorSelectBox.value = params.doctorId
 
 }
 
-const renderDoctorList = async () => {
+const toggleDoctorSelectBox = (specialty) => {
+    if (specialty) {
+        doctorSelectBox.disabled = false
 
-    doctorSelectBox.innerHTML =
-        '<option value="">Chọn bác sĩ</option>';
-    doctorSelectBox.disabled = !params.specialty;
+        const option = document.createElement('option')
+        option.value = '';
+        option.innerText = 'Chọn bác sĩ'
 
-    if (!params.specialty)
-        return;
+        doctorSelectBox.append(option);
 
-    const doctorList = await getDoctorList(params.specialty);
+        return true;
+    }
+    else {
+        doctorSelectBox.innerHTML = '';
 
-    if (doctorList)
-        doctorList.forEach((doctor) => {
-            const option = document.createElement('option');
+        const option = document.createElement('option');
+        option.value = '';
+        option.innerText = 'Chọn chuyên khoa trước';
+        option.selected = true;
 
-            option.value = doctor.id;
-            option.innerText = doctor.hoTen;
+        doctorSelectBox.disabled = true
 
-            doctorSelectBox.append(option);
-        })
+        doctorSelectBox.append(option);
 
-    doctorSelectBox.value = params.doctorId
+        return false;
+    }
+};
 
+const renderDoctor = (doctor) => {
+    const option = document.createElement('option');
+
+    option.innerText = doctor.hoTen;
+    option.value = doctor.id;
+
+    return option
 }
 
 const checkExistColumn = (key) => {
@@ -92,7 +124,10 @@ const checkExistColumn = (key) => {
 
 const renderAppointmentList = async () => {
     changeUrl(params)
-    const appointmentList = await getAppointmentList(params)
+    const appointmentList = await getAppointmentList({
+        ...params,
+        tableType : appointmentTable.dataset.tableType
+    })
 
     appointmentBody.replaceChildren()
 
@@ -100,8 +135,7 @@ const renderAppointmentList = async () => {
         const row = document.createElement('tr');
         const cell = document.createElement('td');
 
-        cell.colSpan = appointmentBody.closest('table')
-            .querySelectorAll('thead th').length;
+        cell.colSpan = appointmentBody.closest('table').querySelectorAll('thead th').length;
         cell.className = 'appointment-table__empty';
         cell.textContent = 'Chưa có dữ liệu lịch khám.';
 
@@ -145,9 +179,8 @@ const renderAppointmentList = async () => {
 renderSpecialtyList()
 renderUrlValue()
 await renderAppointmentList()
-
 if (params.specialty) {
-    await renderDoctorList();
+    await renderDoctorList(params.specialty);
 }
 
 dateInputBox.addEventListener('change', (e) => {
@@ -167,7 +200,27 @@ specialtySelectBox.addEventListener('change', async (e) => {
     params.specialty = e.target.value
     params.doctorId = ''
     doctorSelectBox.value = ''
-    await renderDoctorList();
+    await renderDoctorList(params.specialty);
 })
 
 filterBtnSubmit.addEventListener('click', async () => await renderAppointmentList())
+filterBtnReset.addEventListener('click', async () => {
+
+    params = {
+        specialty: '',
+        date: '',
+        doctorId: '',
+        status: '',
+        pageNumber: 1,
+    };
+
+    specialtySelectBox.value = '';
+    dateInputBox.value = '';
+
+    if (statusSelectBox)
+        statusSelectBox.value = '';
+
+    await renderDoctorList('');
+
+    await renderAppointmentList();
+});

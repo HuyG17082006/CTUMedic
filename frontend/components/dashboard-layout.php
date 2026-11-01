@@ -1,8 +1,6 @@
-
 <?php
 
 $role = $role ?? 'patient';
-$tab = $tab ?? 'tongquan';
 
 $roleLabels = [
     'patient' => 'Bệnh nhân',
@@ -10,23 +8,13 @@ $roleLabels = [
     'manager' => 'Quản lý',
 ];
 
-$tabLabels = [
-    'tongquan' => 'Tổng quan',
-    'datlich'  => 'Đặt lịch khám',
-    'lichkham' => 'Lịch khám',
-    'lichsu'   => 'Lịch sử khám',
-    'benhnhan' => 'Quản lý bệnh nhân',
-    'bacsi'    => 'Quản lý bác sĩ',
-    'taikhoan' => 'Thông tin tài khoản',
-];
-
 $roleLabel = $roleLabels[$role] ?? 'Người dùng';
-$tabLabel = $tabLabels[$tab] ?? 'Tổng quan';
 
-$pageTitle = $pageTitle ?? $tabLabel;
+$pageTitle = $pageTitle ?? 'CTUMedic';
 $pageDescription = $pageDescription ?? 'Chào mừng đến với hệ thống CTUMedic';
 
 $userName = $_SESSION['user_name'] ?? $roleLabel;
+
 ?>
 
 <div class="dashboard-layout">
@@ -35,13 +23,13 @@ $userName = $_SESSION['user_name'] ?? $roleLabel;
 
     <main class="dashboard-main">
 
-        <!-- Header hiển thị thông tin trang -->
         <header class="dashboard-header">
 
             <div class="header-main">
 
                 <div class="header-title">
                     <h1><?= htmlspecialchars($pageTitle) ?></h1>
+
                     <p class="header-description">
                         <?= htmlspecialchars($pageDescription) ?>
                     </p>
@@ -49,10 +37,10 @@ $userName = $_SESSION['user_name'] ?? $roleLabel;
 
             </div>
 
-            <!-- Thông tin tài khoản -->
             <div class="header-profile">
 
                 <div class="profile-info">
+
                     <span class="profile-name">
                         <?= htmlspecialchars($userName) ?>
                     </span>
@@ -60,6 +48,7 @@ $userName = $_SESSION['user_name'] ?? $roleLabel;
                     <span class="profile-role">
                         <?= htmlspecialchars($roleLabel) ?>
                     </span>
+
                 </div>
 
                 <a
@@ -75,18 +64,21 @@ $userName = $_SESSION['user_name'] ?? $roleLabel;
 
         </header>
 
-        <!-- Nội dung của tab hiện tại -->
         <section class="dashboard-content">
-            <?php
-            if (isset($contentFile) && is_file($contentFile)) {
-                require $contentFile;
-            } else {
-                echo '<div class="empty-placeholder">';
-                echo '<h2>Không tìm thấy nội dung trang</h2>';
-                echo '<p>Vui lòng kiểm tra lại đường dẫn đến file tab.</p>';
-                echo '</div>';
-            }
-            ?>
+
+            <?php if (!empty($contentFile) && is_file($contentFile)): ?>
+
+                <?php require $contentFile; ?>
+
+            <?php else: ?>
+
+                <div class="empty-placeholder">
+                    <h2>Không tìm thấy nội dung trang</h2>
+                    <p>Vui lòng kiểm tra lại đường dẫn đến file tab.</p>
+                </div>
+
+            <?php endif; ?>
+
         </section>
 
         <footer class="dashboard-footer">
@@ -95,5 +87,5 @@ $userName = $_SESSION['user_name'] ?? $roleLabel;
         </footer>
 
     </main>
-    
+
 </div>

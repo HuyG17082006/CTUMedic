@@ -27,6 +27,11 @@
     min-width: 0;
 }
 
+#booking-reason {
+    resize: none;
+    overflow: auto;
+}
+
 .booking-info-card__heading {
     display: flex;
     align-items: center;

@@ -1,13 +1,5 @@
-<?php
-
-$timeSlots = WORKING_TIME_SLOTS;
-
-
-?>
-
 <section class="patient-booking-page">
 
-    <!-- Thông tin đặt lịch -->
     <section class="booking-info-card">
 
         <div class="booking-info-card__heading">
@@ -15,16 +7,13 @@ $timeSlots = WORKING_TIME_SLOTS;
 
             <div>
                 <h3>Thông tin khám</h3>
-                <p>
-                    Chọn bác sĩ và ngày khám phù hợp với bạn.
-                </p>
+                <p>Chọn bác sĩ và ngày khám phù hợp với bạn.</p>
             </div>
         </div>
 
-        <div class="booking-filter-form">
+        <form class="booking-filter-form">
 
             <div class="booking-form-field">
-
                 <label for="booking-specialty">
                     Chuyên khoa
                 </label>
@@ -33,18 +22,14 @@ $timeSlots = WORKING_TIME_SLOTS;
                     id="booking-specialty"
                     name="specialty"
                     required>
-
                     <option value="">
                         Chọn chuyên khoa
                     </option>
-
-
                 </select>
 
             </div>
 
             <div class="booking-form-field">
-
                 <label for="booking-doctor">
                     Bác sĩ
                 </label>
@@ -52,46 +37,41 @@ $timeSlots = WORKING_TIME_SLOTS;
                 <select
                     id="booking-doctor"
                     name="doctorId"
+                    disabled
                     required>
-
                     <option value="">
-                        Chọn bác sĩ
+                        Chọn chuyên khoa trước
                     </option>
-
                 </select>
 
             </div>
 
             <div class="booking-form-field">
-
                 <label for="booking-date">
                     Ngày khám
                 </label>
 
                 <input
+                    value="<?= date('Y-m-d') ?>"
+                    min="<?= date('Y-m-d') ?>"
                     type="date"
                     id="booking-date"
                     name="date"
-                    value="<?= date('Y-m-d') ?>"
-                    min="<?= date('Y-m-d') ?>"
                     required>
 
             </div>
 
             <button
-                type="button"
+                type="submit"
                 class="booking-filter-form__submit">
-
                 <i class="fa-solid fa-magnifying-glass"></i>
                 Tìm khung giờ
-
             </button>
 
-        </div>
+        </form>
 
     </section>
 
-    <!-- Chú thích trạng thái -->
     <section class="booking-legend">
 
         <span class="booking-legend__item">
@@ -116,30 +96,27 @@ $timeSlots = WORKING_TIME_SLOTS;
 
     </section>
 
-    <!-- Chọn khung giờ -->
-    <div" class="booking-slot-form">
+    <div class="booking-slot-form">
 
         <div class="booking-slot-form__heading">
-
             <div>
                 <h3>Chọn khung giờ khám</h3>
-
-                <p>
-                    <?= date('d-m-Y') ?>
-                     · 40 phút / lượt
-                </p>
+                <p id="booking-selected-date"></p>
             </div>
-
         </div>
 
-        <div class="booking-periods" id="booking-periods">
+        <div
+            class="booking-periods"
+            id="booking-periods">
 
             <div class="booking-period morning">
+
                 <div class="booking-period__header">
                     <div class="booking-period__heading">
                         <span class="booking-period__icon booking-period__icon--morning">
                             <i class="fa-solid fa-sun"></i>
                         </span>
+
                         <div>
                             <h4>Buổi sáng</h4>
                             <p>07:00 – 11:00</p>
@@ -147,15 +124,20 @@ $timeSlots = WORKING_TIME_SLOTS;
                     </div>
                 </div>
 
-                <div class="booking-slots" id="morning-slots"></div>
+                <div
+                    class="booking-slots"
+                    id="morning-slots"></div>
+
             </div>
- 
+
             <div class="booking-period afternoon">
+
                 <div class="booking-period__header">
                     <div class="booking-period__heading">
                         <span class="booking-period__icon booking-period__icon--afternoon">
                             <i class="fa-solid fa-cloud-sun"></i>
                         </span>
+
                         <div>
                             <h4>Buổi chiều</h4>
                             <p>13:00 – 17:00</p>
@@ -163,12 +145,14 @@ $timeSlots = WORKING_TIME_SLOTS;
                     </div>
                 </div>
 
-                <div class="booking-slots" id="afternoon-slots"></div>
+                <div
+                    class="booking-slots"
+                    id="afternoon-slots"></div>
+
             </div>
 
         </div>
 
-        <!-- Lý do khám -->
         <section class="booking-reason-card">
 
             <div class="booking-form-field">
@@ -185,15 +169,10 @@ $timeSlots = WORKING_TIME_SLOTS;
                     placeholder="Mô tả triệu chứng hoặc lý do bạn muốn khám..."
                     required></textarea>
 
-                <span class="booking-form-field__hint">
-                    Tối đa 500 ký tự.
-                </span>
-
             </div>
 
         </section>
 
-        <!-- Xác nhận đặt lịch -->
         <div class="booking-submit">
 
             <div class="booking-submit__note">
@@ -201,17 +180,14 @@ $timeSlots = WORKING_TIME_SLOTS;
 
                 <p>
                     Vui lòng kiểm tra thông tin trước khi xác nhận.
-                    Lịch khám sẽ được xác nhận sau khi đặt thành công.
                 </p>
             </div>
 
             <button
                 type="button"
                 class="booking-submit__button">
-
                 <i class="fa-solid fa-calendar-check"></i>
                 Xác nhận đặt lịch
-
             </button>
 
         </div>
@@ -220,4 +196,7 @@ $timeSlots = WORKING_TIME_SLOTS;
 
 </section>
 
-<script type="module" src="/dashboard/CTUMedic/frontend/assets/js/BenhNhan/datlich.js"></script>
+<script
+    type="module"
+    src="/dashboard/CTUMedic/frontend/assets/js/BenhNhan/datlich.js">
+</script>

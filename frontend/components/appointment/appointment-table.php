@@ -1,5 +1,4 @@
 <?php
-$tableId = $tableId ?? 'appointment-table';
 $tableType = $tableType ?? 'appointments';
 $role = $role ?? 'patient';
 
@@ -38,7 +37,6 @@ $columns = $columnsByRole[$role] ?? [];
 <div class="appointment-table-wrapper">
     <table
         class="appointment-table"
-        id="<?= htmlspecialchars($tableId) ?>"
         data-table-type="<?= htmlspecialchars($tableType) ?>">
         <thead>
             <tr>
@@ -62,7 +60,4 @@ $columns = $columnsByRole[$role] ?? [];
     </table>
 </div>
 
-<script>
-    const tableType = "<?= $tableType; ?>";
-</script>
 <script type="module" src="/dashboard/CTUMedic/frontend/assets/js/shared/lich.js"></script>

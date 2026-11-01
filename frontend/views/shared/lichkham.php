@@ -1,29 +1,9 @@
-
 <?php
-$pageTitle = 'Lịch khám';
-$pageDescription = 'Theo dõi và quản lý các lịch khám.';
 
-$filterId = 'appointment-filter';
+$pageType = 'appointments';
 
-require PATH_COMPONENTS . '/appointment-filter.php';
-
-$tableId = 'appointment-table';
 $tableType = 'appointments';
 
-?>
+$modalId = 'appointment-detail-modal';
 
-<div class="appointment-page" data-page="appointments">
-    <section class="appointment-page__section">
-
-        <?php require PATH_COMPONENTS . '/appointment-table.php'; ?>
-
-        <div class="appointment-pagination" data-pagination>
-            <!-- TODO: JavaScript render phân trang -->
-        </div>
-    </section>
-
-    <?php
-    $modalId = 'appointment-detail-modal';
-    require PATH_COMPONENTS . '/appointment-detail-modal.php';
-    ?>
-</div>
+require PATH_COMPONENTS . '/appointment/appointment-page.php';
