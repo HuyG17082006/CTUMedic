@@ -1,4 +1,6 @@
 <?php
+require __DIR__ . '/BASE.php';
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -75,6 +77,9 @@ if ($page !== 'login' && $page !== 'register') {
     <link rel="stylesheet" href="./frontend/assets/css/base.css">
     <link rel="stylesheet" href="./frontend/assets/css/register.css">
     <link rel="stylesheet" href="./frontend/assets/css/login.css">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <?php if (in_array($page, $dashboardPages, true)): ?>
         <link rel="stylesheet" href="./frontend/assets/css/dashboard.css">
