@@ -1,5 +1,4 @@
 <?php
-
 $role = 'manager';
 
 $tabConfigs = [

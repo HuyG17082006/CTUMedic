@@ -8,16 +8,19 @@ if (session_status() === PHP_SESSION_NONE) {
 // 1. Xử lý các request gọi API trước tiên
 if (isset($_GET['api'])) {
     $allowedApis = [
-        "register"  => PATH_API . '/TaiKhoan/register.php',
-        "login"     => PATH_API . '/TaiKhoan/login.php',
-        "logout"    => PATH_API . '/TaiKhoan/logout.php',
-        // Thêm các API khác ở đây nếu sau này có (ví dụ: login, update, ...)
+        "register"              => PATH_API . '/TaiKhoan/register.php',
+        "login"                 => PATH_API . '/TaiKhoan/login.php',
+        "logout"                => PATH_API . '/TaiKhoan/logout.php',
+        "profile"               => PATH_API . '/TaiKhoan/trang_ca_nhan.php',
+        "manager_get_patients"  => PATH_API . '/QuanLy/benhnhan.php',
+        "manager_get_doctors" => PATH_API   . '/QuanLy/bacsi.php',
     ];
 
     $apiName = $_GET['api'];
 
     if (array_key_exists($apiName, $allowedApis)) {
         require_once $allowedApis[$apiName];
+        exit(); // <-- Thêm dòng này để dừng lại, không chạy xuống code bên dưới nữa!
     } else {
         http_response_code(404);
         exit('API not found');
@@ -28,11 +31,11 @@ $role = $_SESSION['role'] ?? '';
 $page = $_GET['page'] ?? null;
 
 $allowedPages = [
-    'login'     => 'DangNhap/login.php',
-    'register'  => 'DangNhap/register.php',
-    'patient'   => 'BenhNhan/benhnhan.php',
-    'doctor'    => 'BacSi/bacsi.php',
-    'manager'   => 'QuanLy/quanly.php',
+    'login'                 => 'DangNhap/login.php',
+    'register'              => 'DangNhap/register.php',
+    'patient'               => 'BenhNhan/benhnhan.php',
+    'doctor'                => 'BacSi/bacsi.php',
+    'manager'               => 'QuanLy/quanly.php',
 ];
 
 $dashboardPages = ['patient', 'doctor', 'manager'];

@@ -1,10 +1,19 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_set_cookie_params([
+        'lifetime' => 86400,
+        'path' => '/',
+        'domain' => '',
+        'secure' => false,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+    session_start();
+}
+
 header('Content-Type: application/json; charset=utf-8');
 
 require_once(PATH_BACKEND . '/database.php');
-
-if (session_status() === PHP_SESSION_NONE)
-    session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $loginIdentifier = trim($_POST['loginIdentifier'] ?? ''); 
@@ -32,6 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($account) {
         $roleLower = strtolower($account['role']);
+        if ($roleLower === 'admin') {
+            $roleLower = "manager";
+        }
 
         // Lưu thông tin vào Session chuẩn xác
         $_SESSION['accountId'] = $account['taiKhoanId'];
@@ -40,22 +52,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Lấy thông tin chi tiết dựa theo từng Role
         $user = null;
-        if ($roleLower == 'patient') {
+        if ($roleLower === 'patient' || $roleLower === 'benhnhan') {
             $stmtUser = $pdo->prepare('SELECT * FROM benhNhan WHERE taiKhoanId = ?;');
             $stmtUser->execute([$account['taiKhoanId']]);
-            $user = $stmtUser->fetch();
-        } elseif ($roleLower == 'doctor') {
+            $user = $stmtUser->fetch(PDO::FETCH_ASSOC);
+        } elseif ($roleLower === 'doctor' || $roleLower === 'bacsi') {
             $stmtUser = $pdo->prepare('SELECT * FROM bacSi WHERE taiKhoanId = ?;');
             $stmtUser->execute([$account['taiKhoanId']]);
-            $user = $stmtUser->fetch();
-        } elseif ($roleLower == 'manager') {
+            $user = $stmtUser->fetch(PDO::FETCH_ASSOC);
+        } elseif ($roleLower === 'manager') {
             $user = $account; 
         }
 
-        if ($roleLower !== 'manager')
+        if ($user && isset($user['id']) && $roleLower !== 'manager') {
             $_SESSION['userId'] = $user['id'];
+        }
 
-        // Trả về JSON thành công cho JavaScript xử lý
         echo json_encode([
             'status' => 'success',
             'role' => $roleLower,
@@ -71,3 +83,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 exit();
+?>
