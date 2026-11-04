@@ -101,7 +101,7 @@
     </div>
 </div>
 
-<!-- Modal Xác Nhận Xóa Bác Sĩ (Custom Popup HTML thuần) -->
+<!-- Modal Xác Nhận Xóa Bác Sĩ (Custom Popup HTML/CSS Thuần) -->
 <div id="confirmDeleteDoctorModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1050; align-items: center; justify-content: center;">
     <div style="background: #ffffff; width: 100%; max-width: 400px; border-radius: 12px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); text-align: center;">
         <div style="width: 48px; height: 48px; background: #fee2e2; color: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 24px; font-weight: bold;">!</div>
@@ -119,6 +119,15 @@
 
 <script>
     let globalDoctors = [];
+
+    // Hàm mã hóa SHA-1 bằng Web Crypto API tích hợp sẵn của JS
+    async function sha1(str) {
+        const buffer = new TextEncoder().encode(str);
+        const digest = await crypto.subtle.digest('SHA-1', buffer);
+        return Array.from(new Uint8Array(digest))
+            .map(x => x.toString(16).padStart(2, '0'))
+            .join('');
+    }
 
     // 1. Tải danh sách bác sĩ
     async function loadDoctors() {
@@ -170,14 +179,14 @@
         }
     }
 
-    // 2. Quản lý Modal Thêm
+    // 2. Điều khiển Modal Thêm
     function openAddDoctorModal() { document.getElementById('addDoctorModal').style.display = 'flex'; }
     function closeAddDoctorModal() { 
         document.getElementById('addDoctorModal').style.display = 'none'; 
         document.getElementById('addDoctorForm').reset();
     }
 
-    // 3. Quản lý Modal Sửa
+    // 3. Điều khiển Modal Sửa
     function openEditDoctorModal(doctorId) {
         const d = globalDoctors.find(item => item.id == doctorId);
         if (!d) return;
@@ -191,7 +200,7 @@
     }
     function closeEditDoctorModal() { document.getElementById('editDoctorModal').style.display = 'none'; }
 
-    // 4. Quản lý Popup Xóa Mềm Custom (Thay thế confirm gốc)
+    // 4. Điều khiển Modal Xác Nhận Xóa
     function deleteDoctor(id, name) {
         document.getElementById('deleteDoctorId').value = id;
         document.getElementById('deleteConfirmMessage').innerText = `Bạn có chắc chắn muốn vô hiệu hóa tài khoản của bác sĩ "${name}" không?`;
@@ -226,7 +235,7 @@
         }
     }
 
-    // 5. Sự kiện khi trang load xong
+    // 5. Gắn sự kiện khi DOM tải xong
     document.addEventListener("DOMContentLoaded", function() {
         loadDoctors();
 
@@ -238,12 +247,16 @@
             loadDoctors();
         });
 
-        // Submit Form Thêm Bác sĩ
+        // Submit Form Thêm Bác sĩ (Mã hóa SHA-1 trước khi gửi)
         document.getElementById('addDoctorForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            
+            const rawPassword = document.getElementById('addPassword').value;
+            const passwordHash = await sha1(rawPassword);
+
             const payload = {
                 username: document.getElementById('addUsername').value.trim(),
-                password: document.getElementById('addPassword').value,
+                password: passwordHash, // Gửi chuỗi hash SHA-1
                 hoTen: document.getElementById('addHoTen').value.trim(),
                 chuyenKhoa: document.getElementById('addChuyenKhoa').value.trim(),
                 email: document.getElementById('addEmail').value.trim()

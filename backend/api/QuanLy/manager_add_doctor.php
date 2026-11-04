@@ -10,37 +10,38 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once(PATH_BACKEND . '/database.php');
 
-if (!isset($_SESSION['taiKhoanId']) || (strtolower($_SESSION['role'] ?? '') !== 'manager' && strtolower($_SESSION['role'] ?? '') !== 'admin')) {
-    echo json_encode(['status' => 'failed', 'message' => 'Unauthorized: Không có quyền']);
+// 1. Kiểm tra quyền
+if (!isset($_SESSION['taiKhoanId']) || (strtoupper($_SESSION['role'] ?? '') !== 'MANAGER' && strtoupper($_SESSION['role'] ?? '') !== 'ADMIN')) {
+    echo json_encode(['status' => 'failed', 'message' => 'Unauthorized: Không có quyền truy cập']);
     exit();
 }
 
 $input = json_decode(file_get_contents('php://input'), true);
 
-$username   = trim($input['username'] ?? '');
-$password   = trim($input['password'] ?? '');
-$hoTen      = trim($input['hoTen'] ?? '');
-$chuyenKhoa = trim($input['chuyenKhoa'] ?? '');
-$email      = trim($input['email'] ?? '');
+$username       = trim($input['username'] ?? '');
+$passwordHash   = trim($input['password'] ?? ''); // Chuỗi hash SHA-1 từ Client
+$hoTen          = trim($input['hoTen'] ?? '');
+$chuyenKhoa     = trim($input['chuyenKhoa'] ?? '');
+$email          = trim($input['email'] ?? '');
 
-if (empty($username) || empty($password) || empty($hoTen)) {
-    echo json_encode(['status' => 'failed', 'message' => 'Vui lòng nhập đầy đủ Username, Mật khẩu và Họ tên bác sĩ']);
+if (empty($username) || empty($passwordHash) || empty($hoTen)) {
+    echo json_encode(['status' => 'failed', 'message' => 'Vui lòng nhập đầy đủ Tên đăng nhập, Mật khẩu và Họ tên bác sĩ']);
     exit();
 }
 
 try {
     $pdo->beginTransaction();
 
-    // 1. Kiểm tra username tồn tại
+    // 2. Kiểm tra trùng username
     $checkStmt = $pdo->prepare("SELECT id FROM taiKhoan WHERE username = ?");
     $checkStmt->execute([$username]);
     if ($checkStmt->fetch()) {
         $pdo->rollBack();
-        echo json_encode(['status' => 'failed', 'message' => 'Tên đăng nhập đã tồn tại']);
+        echo json_encode(['status' => 'failed', 'message' => 'Tên đăng nhập đã tồn tại trong hệ thống']);
         exit();
     }
 
-    // 2. Tạo ID UUID/CHAR cho bảng taiKhoan
+    // 3. Tạo ID char(36) UUID
     $taiKhoanId = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
         mt_rand(0, 0xffff), mt_rand(0, 0xffff),
         mt_rand(0, 0xffff),
@@ -49,13 +50,11 @@ try {
         mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
     );
 
-    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+    // 4. Insert vào taiKhoan (Đúng tên cột passwordHash và role = 'DOCTOR')
+    $stmtAccount = $pdo->prepare("INSERT INTO taiKhoan (id, username, passwordHash, role, isActive) VALUES (?, ?, ?, 'DOCTOR', 1)");
+    $stmtAccount->execute([$taiKhoanId, $username, $passwordHash]);
 
-    // 3. Tạo tài khoản trong bảng taiKhoan
-    $stmtAccount = $pdo->prepare("INSERT INTO taiKhoan (id, username, password, role, isActive) VALUES (?, ?, ?, 'bacSi', 1)");
-    $stmtAccount->execute([$taiKhoanId, $username, $hashedPassword]);
-
-    // 4. Tạo bác sĩ trong bảng bacSi
+    // 5. Insert vào bacSi (Tái sử dụng taiKhoanId vừa tạo)
     $stmtDoctor = $pdo->prepare("INSERT INTO bacSi (taiKhoanId, hoTen, chuyenKhoa, email) VALUES (?, ?, ?, ?)");
     $stmtDoctor->execute([$taiKhoanId, $hoTen, $chuyenKhoa, $email]);
 
