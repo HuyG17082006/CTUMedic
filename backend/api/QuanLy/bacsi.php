@@ -10,7 +10,6 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once(PATH_BACKEND . '/database.php');
 
-// Kiểm tra quyền Manager
 if (!isset($_SESSION['taiKhoanId']) || (strtolower($_SESSION['role'] ?? '') !== 'manager' && strtolower($_SESSION['role'] ?? '') !== 'admin')) {
     echo json_encode([
         'status' => 'failed',
@@ -22,15 +21,17 @@ if (!isset($_SESSION['taiKhoanId']) || (strtolower($_SESSION['role'] ?? '') !== 
 try {
     $search = trim($_GET['search'] ?? '');
     
+    // Chỉ lấy bác sĩ có tk.isActive = 1
     $query = "
         SELECT bs.id, bs.hoTen, bs.email, bs.chuyenKhoa, tk.username
         FROM bacSi bs
         JOIN taiKhoan tk ON bs.taiKhoanId = tk.id
+        WHERE tk.isActive = 1
     ";
 
     $params = [];
     if (!empty($search)) {
-        $query .= " WHERE bs.hoTen LIKE ? OR bs.chuyenKhoa LIKE ? OR bs.email LIKE ? OR tk.username LIKE ?";
+        $query .= " AND (bs.hoTen LIKE ? OR bs.chuyenKhoa LIKE ? OR bs.email LIKE ? OR tk.username LIKE ?)";
         $searchTerm = "%{$search}%";
         $params = [$searchTerm, $searchTerm, $searchTerm, $searchTerm];
     }
@@ -42,7 +43,7 @@ try {
     $doctors = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([
-        'status' => 'status',
+        'status' => 'success',
         'data' => $doctors
     ]);
     exit();

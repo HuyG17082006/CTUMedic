@@ -8,12 +8,19 @@ if (session_status() === PHP_SESSION_NONE) {
 // 1. Xử lý các request gọi API trước tiên
 if (isset($_GET['api'])) {
     $allowedApis = [
-        "register"              => PATH_API . '/TaiKhoan/register.php',
-        "login"                 => PATH_API . '/TaiKhoan/login.php',
-        "logout"                => PATH_API . '/TaiKhoan/logout.php',
-        "profile"               => PATH_API . '/TaiKhoan/trang_ca_nhan.php',
-        "manager_get_patients"  => PATH_API . '/QuanLy/benhnhan.php',
-        "manager_get_doctors" => PATH_API   . '/QuanLy/bacsi.php',
+        "register"                  => PATH_API . '/TaiKhoan/register.php',
+        "login"                     => PATH_API . '/TaiKhoan/login.php',
+        "logout"                    => PATH_API . '/TaiKhoan/logout.php',
+        "profile"                   => PATH_API . '/TaiKhoan/trang_ca_nhan.php',
+        
+        "manager_get_patients"      => PATH_API . '/QuanLy/benhnhan.php',
+        "manager_update_patient"    => PATH_API . '/QuanLy/manager_update_patient.php',
+        "manager_delete_patient"    => PATH_API . '/QuanLy/manager_delete_patient.php',
+        
+        "manager_get_doctors"       => PATH_API   . '/QuanLy/bacsi.php',
+        "manager_add_doctor"        => PATH_API . '/QuanLy/manager_add_doctor.php',
+        "manager_update_doctor"     => PATH_API . '/QuanLy/manager_update_doctor.php',
+        "manager_delete_doctor"     => PATH_API . '/QuanLy/manager_delete_doctor.php',
     ];
 
     $apiName = $_GET['api'];
