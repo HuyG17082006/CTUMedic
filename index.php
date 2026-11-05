@@ -27,8 +27,10 @@ if (isset($_GET['api'])) {
     }
 }
 
+$_SESSION['role'] = "doctor";
 $role = $_SESSION['role'] ?? '';
 $page = $_GET['page'] ?? null;
+
 
 $allowedPages = [
     'login'                 => 'DangNhap/login.php',
@@ -98,6 +100,9 @@ if ($page !== 'login' && $page !== 'register') {
                                             JSON_UNESCAPED_UNICODE
                                         ) ?>;
         </script>
+        <?php if ($role && $role == 'manager'): ?>
+            <link rel="stylesheet" href="./frontend/assets/css/QuanLy/benhnhan.css">
+        <?php endif; ?>
         <?php if ($role && $role == 'doctor'): ?>
             <link rel="stylesheet" href="./frontend/assets/css/doctor-schedule.css">
         <?php endif; ?>
