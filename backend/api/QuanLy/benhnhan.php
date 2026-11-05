@@ -10,39 +10,79 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once(PATH_BACKEND . '/database.php');
 
-// Kiểm tra quyền Manager (hoặc Admin)
 if (!isset($_SESSION['taiKhoanId']) || (strtolower($_SESSION['role'] ?? '') !== 'manager' && strtolower($_SESSION['role'] ?? '') !== 'admin')) {
     echo json_encode([
         'status' => 'failed',
-        'message' => 'Unauthorized: Không có quyền truy cập hệ thống quản lý'
+        'message' => 'Unauthorized: Không có quyền truy cập'
     ]);
     exit();
 }
 
 try {
-    $search = trim($_GET['search'] ?? '');
-    
+    $search   = trim($_GET['search'] ?? '');
+    $ageGroup = trim($_GET['age_group'] ?? '');
+    $sort     = trim($_GET['sort'] ?? 'id_desc');
+
+    // Chỉ lấy bệnh nhân có tk.isActive = 1 hoặc chưa có tài khoản
     $query = "
-        SELECT bn.id, bn.hoTen, bn.ngaySinh, bn.SDT, bn.email, bn.CCCD, tk.username
+        SELECT 
+            bn.id, 
+            bn.hoTen, 
+            bn.ngaySinh, 
+            bn.email, 
+            bn.SDT, 
+            bn.CCCD, 
+            tk.username
         FROM benhNhan bn
-        JOIN taiKhoan tk ON bn.taiKhoanId = tk.id
+        LEFT JOIN taiKhoan tk ON bn.taiKhoanId = tk.id
+        WHERE (tk.isActive = 1 OR tk.id IS NULL)
     ";
 
     $params = [];
+
     if (!empty($search)) {
-        $query .= " WHERE bn.hoTen LIKE ? OR bn.SDT LIKE ? OR bn.CCCD LIKE ? OR tk.username LIKE ?";
+        $query .= " AND (bn.hoTen LIKE ? OR bn.SDT LIKE ? OR bn.CCCD LIKE ? OR bn.email LIKE ? OR tk.username LIKE ?)";
         $searchTerm = "%{$search}%";
-        $params = [$searchTerm, $searchTerm, $searchTerm, $searchTerm];
+        array_push($params, $searchTerm, $searchTerm, $searchTerm, $searchTerm, $searchTerm);
     }
 
-    $query .= " ORDER BY bn.id DESC;";
+    if (!empty($ageGroup) && $ageGroup !== 'all') {
+        $currentYear = date('Y');
+        if ($ageGroup === 'under_18') {
+            $query .= " AND bn.ngaySinh IS NOT NULL AND YEAR(bn.ngaySinh) > ?";
+            $params[] = $currentYear - 18;
+        } elseif ($ageGroup === '18_59') {
+            $query .= " AND bn.ngaySinh IS NOT NULL AND YEAR(bn.ngaySinh) BETWEEN ? AND ?";
+            $params[] = $currentYear - 59;
+            $params[] = $currentYear - 18;
+        } elseif ($ageGroup === 'over_60') {
+            $query .= " AND bn.ngaySinh IS NOT NULL AND YEAR(bn.ngaySinh) <= ?";
+            $params[] = $currentYear - 60;
+        }
+    }
+
+    switch ($sort) {
+        case 'id_asc':
+            $query .= " ORDER BY bn.id ASC";
+            break;
+        case 'name_asc':
+            $query .= " ORDER BY bn.hoTen ASC";
+            break;
+        case 'name_desc':
+            $query .= " ORDER BY bn.hoTen DESC";
+            break;
+        case 'id_desc':
+        default:
+            $query .= " ORDER BY bn.id DESC";
+            break;
+    }
 
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
     $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([
-        'status' => 'status',
+        'status' => 'success',
         'data' => $patients
     ]);
     exit();
