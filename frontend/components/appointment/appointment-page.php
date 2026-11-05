@@ -12,10 +12,7 @@ require PATH_COMPONENTS . '/appointment/appointment-filter.php';
 
         <?php require __DIR__ . '/appointment-table.php'; ?>
 
-        <div
-            class="appointment-pagination"
-            data-pagination>
-        </div>
+        <?php require __DIR__ . '/../pagination.php'; ?>
 
     </section>
 

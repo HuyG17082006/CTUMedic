@@ -1,5 +1,7 @@
 import { getDoctorList } from "../api/bacsi.js";
 import { getAppointmentList } from "../api/lichkham.js";
+import { normalVietNameseDate } from "../helper/time.js";
+import { initPagination } from "./pagination.js";
 
 const specialtySelectBox = document.querySelector('.specialty-select-box');
 const doctorSelectBox = document.querySelector('.doctor-select-box');
@@ -11,6 +13,19 @@ const filterBtnReset = document.querySelector('.appointment-filter__reset');
 const appointmentTable = document.querySelector('.appointment-table');
 const appointmentBody = appointmentTable.querySelector('[data-appointment-list]')
 const appointmentHead = appointmentTable.querySelectorAll('th');
+
+const paginationElement = document.querySelector('[data-pagination]');
+
+const pagination = initPagination({
+    container: paginationElement,
+
+    async onPageChange(page) {
+        params.pageNumber = page;
+
+        await renderAppointmentList();
+    }
+});
+
 
 const specialtyList = window.SPECIALTY_LIST;
 
@@ -125,11 +140,13 @@ const checkExistColumn = (key) => {
 const renderAppointmentList = async () => {
     changeUrl(params)
 
-    const appointmentList = await getAppointmentList({
+    const data = await getAppointmentList({
         ...params,
-        tableType : appointmentTable.dataset.tableType
+        tableType: appointmentTable.dataset.tableType
     })
-    console.log(appointmentList)
+
+    const appointmentList = data.list;
+
     appointmentBody.replaceChildren()
 
     if (appointmentList && !appointmentList.length) {
@@ -146,34 +163,64 @@ const renderAppointmentList = async () => {
         return;
     }
 
+    pagination.update(
+        data.pagination.pageNumber,
+        data.pagination.totalPages
+    );
+
     const columns = {
         maLichKham: item => `LK${String(item.id).padStart(4, '0')}`,
         benhNhan: item => item.hoTenBenhNhan,
         bacSi: item => item.hoTenBacSi,
         chuyenKhoa: item => item.chuyenKhoa,
-        ngayKham: item => item.ngayKham,
+        ngayKham: item => normalVietNameseDate(item.ngayKham),
         gioKham: item => item.gioKham,
         trangThai: item => item.trangThai
     };
 
-    appointmentList.forEach((appointment) => {
+    const statusClass = {
+        CONFIRMED: 'appointment-status--confirmed',
+        CANCELLED: 'appointment-status--cancelled',
+        COMPLETED: 'appointment-status--completed',
+    };
 
+    const statusLabels = {
+        CONFIRMED: 'Đã xác nhận',
+        CANCELLED: 'Đã hủy',
+        COMPLETED: 'Đã khám',
+    };
+
+    appointmentList.forEach((appointment) => {
         const row = document.createElement('tr');
 
         Object.keys(columns).forEach(key => {
-
             if (checkExistColumn(key)) {
                 const cell = document.createElement('td');
-                cell.textContent = columns[key](appointment) ?? '—';
+
+                if (key === 'trangThai') {
+                    const status = document.createElement('span');
+
+                    const statusValue = appointment.trangThai;
+
+                    status.className = `appointment-status ${statusClass[statusValue] || ''
+                        }`;
+
+                    status.textContent = statusLabels[appointment.trangThai] ?? 'Không xác định';
+
+                    cell.appendChild(status);
+                } else {
+                    cell.textContent = columns[key](appointment) ?? '—';
+                }
+
                 row.appendChild(cell);
             }
-
         });
 
         row.dataset.appointmentId = appointment.id;
-        appointmentBody.appendChild(row);
 
-    })
+        appointmentBody.appendChild(row);
+    });
+
 }
 
 
@@ -222,6 +269,6 @@ filterBtnReset.addEventListener('click', async () => {
         statusSelectBox.value = '';
 
     await renderDoctorList('');
-
+    pagination.update(1, 1);
     await renderAppointmentList();
 });
