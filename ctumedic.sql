@@ -51,7 +51,8 @@ CREATE TABLE lichKham (
 
     cancelledBy ENUM(
         'PATIENT',
-        'DOCTOR'
+        'DOCTOR',
+        'MANAGER'
     ) NULL,
 
     cancelledAt DATETIME NULL,
