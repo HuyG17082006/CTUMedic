@@ -1,6 +1,8 @@
 import { getDoctorList } from '../api/bacsi.js';
 import { getDoctorSchedule, appointmentBook } from '../api/lichkham.js';
+import finishedAction from '../helper/finishedAction.js';
 import { normalizedTime, getCurrentHour, getDate } from '../helper/time.js'
+import { renderBookingPeriods } from '../shared/booking-periods.js';
 
 const specialtySelectBox = document.querySelector('#booking-specialty');
 const doctorSelectBox = document.querySelector('#booking-doctor');
@@ -9,11 +11,7 @@ const reasonText = document.querySelector('#booking-reason');
 const bookingForm = document.querySelector('.booking-filter-form');
 const submitBookingBtn = document.querySelector('.booking-submit__button');
 
-const morningSlots = document.querySelector('#morning-slots');
-const afternoonSlots = document.querySelector('#afternoon-slots');
-
 const specialtyList = window.SPECIALTY_LIST;
-const timeList = window.WORKING_TIME_SLOTS;
 
 let values = {
     specialty: specialtySelectBox.value,
@@ -33,21 +31,20 @@ const hasEmptyField = (obj) => {
 };
 
 const renderSpecialtyList = () => {
-    specialtyList.forEach((specialty) => specialtySelectBox.append(renderSpecialty(specialty)))
+
+    specialtyList.forEach((specialty) => {
+
+        const option = document.createElement('option');
+    
+        option.innerText = specialty;
+        option.value = specialty;
+    
+        specialtySelectBox.append(option)
+    })
+
 }
-
-const renderSpecialty = (specialty) => {
-    const option = document.createElement('option');
-
-    option.innerText = specialty;
-    option.value = specialty;
-
-    return option
-}
-
 const renderDoctorList = async (specialty) => {
 
-    doctorSelectBox.innerHTML = ''
 
     if (!toggleDoctorSelectBox(specialty))
         return;
@@ -70,6 +67,7 @@ const renderDoctor = (doctor) => {
 }
 
 const toggleDoctorSelectBox = (specialty) => {
+    doctorSelectBox.innerHTML = ''
     if (specialty) {
         doctorSelectBox.disabled = false
 
@@ -82,7 +80,6 @@ const toggleDoctorSelectBox = (specialty) => {
         return true;
     }
     else {
-        doctorSelectBox.innerHTML = '';
 
         const option = document.createElement('option');
         option.value = '';
@@ -97,81 +94,14 @@ const toggleDoctorSelectBox = (specialty) => {
     }
 };
 
-const setBookingTime = (e) => {
-    values.time = e.target.value;
-    console.log(values)
+const selectBookingTime = (time) => {
+    values.time = time;
 };
 
 const renderTimeSlots = async () => {
-
-    values.specialty = specialtySelectBox.value
-    values.doctorId = doctorSelectBox.value
-    values.date = dateSelectBox.value
-    values.reason = reasonText.value
-
-    afternoonSlots.innerHTML = ""
-    morningSlots.innerHTML = ""
-
-    legalTimeSlot()
-
     const unavailableList = await getDoctorSchedule(values);
 
-    let timeSlotNumber = 0;
-
-    timeList.forEach(({ start, end }) => {
-        timeSlotNumber += 1;
-        let sameStart = false;
-
-        if (unavailableList) {
-            sameStart = unavailableList.some(({ gioKham }) => normalizedTime(gioKham) == start);
-        }
-
-        const timeSlot = renderTimeSlot({ start, end }, sameStart)
-
-        if (timeSlotNumber > 6) {
-            afternoonSlots.append(timeSlot)
-        } else {
-            morningSlots.append(timeSlot)
-        }
-    })
-}
-
-const renderTimeSlot = ({ start, end }, sameStart) => {
-    const button = document.createElement('button');
-
-    button.type = 'button';
-    button.className = `time-slot ${sameStart
-        ? 'time-slot--unavailable'
-        : 'time-slot--available'
-        }`;
-
-    button.value = start;
-    button.dataset.time = start;
-    button.textContent = `${start} - ${end}`;
-    button.disabled = sameStart;
-
-    button.onclick = setBookingTime
-
-    return button;
-}
-
-
-const legalTimeSlot = () => {
-
-    if (values.date == getDate()) {
-
-        if (getCurrentHour() >= 7) {
-            document.querySelector('.booking-period.morning').classList.add('unavailable')
-        }
-
-        if (getCurrentHour() >= 13) {
-            document.querySelector('.booking-period.afternoon').classList.add('unavailable')
-        }
-
-    } else {
-        document.querySelector('.booking-period.morning').classList.remove('unavailable')
-        document.querySelector('.booking-period.afternoon').classList.remove('unavailable')
-    }
+    renderBookingPeriods(unavailableList, selectBookingTime, values)
 }
 
 const booking = async () => {
@@ -180,13 +110,15 @@ const booking = async () => {
         return alert("Vui lòng nhập đầy đủ thông tin")
 
     const { status, message } = await appointmentBook(values)
-
-    if (status === 'failed')
-        alert(message)
-    else
-        alert(message)
+    finishedAction(status, message)
 }
 
+dateSelectBox.addEventListener('change', async (e) => {
+    values.date = e.target.value
+})
+doctorSelectBox.addEventListener('click', async (e) => {
+    values.doctorId = e.target.value
+})
 specialtySelectBox.addEventListener('change', async (e) => {
     values.specialty = e.target.value
     await renderDoctorList(values.specialty)
@@ -197,7 +129,12 @@ bookingForm.addEventListener('submit', async (e) => {
 })
 reasonText.addEventListener('input', (e) => values.reason = e.target.value)
 submitBookingBtn.addEventListener('click', booking)
-renderSpecialtyList();
-renderDoctorList();
 
+const render = async () => {
+    renderSpecialtyList();
+    if (values.specialty)
+        await renderDoctorList();
+}
+
+await render();
 

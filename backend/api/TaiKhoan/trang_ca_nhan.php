@@ -1,22 +1,6 @@
 <?php
-ini_set('display_errors', 0);
-error_reporting(E_ALL);
-
-header('Content-Type: application/json; charset=utf-8');
-
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-require_once(PATH_BACKEND . '/database.php');
-
-if (!isset($_SESSION['taiKhoanId'])) {
-    echo json_encode([
-        'status' => 'failed',
-        'message' => 'Unauthorized: Chưa đăng nhập phiên làm việc'
-    ]);
-    exit();
-}
+require_once __DIR__ . '/../../middleware/auth.php';
+require_once __DIR__ . '/../../database.php';
 
 $taiKhoanId = $_SESSION['taiKhoanId'];
 

@@ -15,3 +15,9 @@ export const getDate = () => {
 
     return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 };
+
+export const normalVietNameseDate = (date) => {
+    if (!date)
+        return
+    return date.split('-').reverse().join('-');
+}

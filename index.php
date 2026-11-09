@@ -12,11 +12,11 @@ if (isset($_GET['api'])) {
         "login"                     => PATH_API . '/TaiKhoan/login.php',
         "logout"                    => PATH_API . '/TaiKhoan/logout.php',
         "profile"                   => PATH_API . '/TaiKhoan/trang_ca_nhan.php',
-        
+
         "manager_get_patients"      => PATH_API . '/QuanLy/benhnhan.php',
         "manager_update_patient"    => PATH_API . '/QuanLy/manager_update_patient.php',
         "manager_delete_patient"    => PATH_API . '/QuanLy/manager_delete_patient.php',
-        
+
         "manager_get_doctors"       => PATH_API   . '/QuanLy/bacsi.php',
         "manager_add_doctor"        => PATH_API . '/QuanLy/manager_add_doctor.php',
         "manager_update_doctor"     => PATH_API . '/QuanLy/manager_update_doctor.php',
@@ -34,8 +34,7 @@ if (isset($_GET['api'])) {
     }
 }
 
-$_SESSION['role'] = "doctor";
-$role = $_SESSION['role'] ?? '';
+$role = $_SESSION['role'] ?? "";
 $page = $_GET['page'] ?? null;
 
 
@@ -82,21 +81,20 @@ if ($page !== 'login' && $page !== 'register') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CTUMedic</title>
-    <link rel="icon" href="./frontend/assets/images/IconCTUMedic.png">
-    <link rel="stylesheet" href="./frontend/assets/css/base.css">
-    <link rel="stylesheet" href="./frontend/assets/css/register.css">
-    <link rel="stylesheet" href="./frontend/assets/css/login.css">
+    <?php
+    require __DIR__ . '/frontend/assets/css/base/index-css.php';
+    require __DIR__ . '/frontend/assets/css/appointment/index-css.php';
+    require __DIR__ . '/frontend/assets/css/DangNhap/index-css.php';
+    ?>
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-    <?php if (in_array($page, $dashboardPages, true)): ?>
-        <link rel="stylesheet" href="./frontend/assets/css/dashboard.css">
-        <!-- <link rel="stylesheet" href="./frontend/assets/css/appointment-filter.css">
-        <link rel="stylesheet" href="./frontend/assets/css/appointment-page.css"> -->
-        <link rel="stylesheet" href="./frontend/assets/css/appointment-table-filter-test.css">
-        <link rel="stylesheet" href="./frontend/assets/css/appointment-detail-modal.css">
-        <link rel="stylesheet" href="./frontend/assets/css/popupLogout.css">
+    <?php
+    if (in_array($page, $dashboardPages, true)):
+        require __DIR__ . '/frontend/assets/css/shared/index-css.php';
+    ?>
+
         <script>
             window.SPECIALTY_LIST = <?= json_encode(
                                         SPECIALTY_LIST,
@@ -107,16 +105,22 @@ if ($page !== 'login' && $page !== 'register') {
                                             JSON_UNESCAPED_UNICODE
                                         ) ?>;
         </script>
-        <?php if ($role && $role == 'manager'): ?>
-            <link rel="stylesheet" href="./frontend/assets/css/QuanLy/benhnhan.css">
-        <?php endif; ?>
-        <?php if ($role && $role == 'doctor'): ?>
-            <link rel="stylesheet" href="./frontend/assets/css/doctor-schedule.css">
-        <?php endif; ?>
-        <?php if ($role && $role == 'patient'): ?>
-            <link rel="stylesheet" href="./frontend/assets/css/patient-booking.css">
-            <link rel="stylesheet" href="./frontend/assets/css/time-slot.css">
-        <?php endif; ?>
+        <?php 
+        if ($role && $role == 'manager'):
+            require __DIR__ . '/frontend/assets/css/QuanLy/index-css.php';
+        endif;
+        ?>
+        <?php 
+        if ($role && $role == 'doctor'):
+            require __DIR__ . '/frontend/assets/css/BacSi/index-css.php';
+        endif;
+        ?>
+        <?php 
+        if ($role && $role == 'patient'):
+            require __DIR__ . '/frontend/assets/css/BenhNhan/index-css.php';
+        endif;
+        ?>
+
     <?php endif; ?>
 </head>
 

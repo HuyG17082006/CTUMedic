@@ -232,7 +232,7 @@ a:focus-visible {
             rgba(239, 246, 255, 0.72),
             rgba(239, 246, 255, 0.72)
         ),
-        url("../images/hospital-bg.jpg") center center / cover no-repeat;
+        url("../../images/hospital-bg.jpg") center center / cover no-repeat;
 }
 
 /* Responsive */

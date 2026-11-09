@@ -7,104 +7,96 @@ header('Content-Type: application/json');
 
 try {
 
-    $data = json_decode(
-        file_get_contents('php://input'),
-        true
-    );
-
-    $doctorId = (int) ($data['doctorId'] ?? 0);
-    $date = trim($data['date'] ?? '');
-    $time = trim($data['time'] ?? '');
-    $reason = trim($data['reason'] ?? '');
-
-    if (
-        !$doctorId ||
-        !$date ||
-        !$time
-    ) {
-        throw new Exception('Thiếu thông tin đặt lịch.');
-    }
-
-    $taiKhoanId = $_SESSION['taiKhoanId'] ?? null;
-
-    if (!$taiKhoanId) {
-        throw new Exception('Vui lòng đăng nhập.');
-    }
+    $doctorId = (int) ($_POST['doctorId'] ?? 0);
+    $date = trim($_POST['date'] ?? '');
+    $time = trim($_POST['time'] ?? '');
+    $reason = trim($_POST['reason'] ?? '');
 
     $stmt = $pdo->prepare("
         SELECT id
         FROM benhNhan
         WHERE taiKhoanId = ?
-        LIMIT 1
     ");
 
-    $stmt->execute([
-        $taiKhoanId
-    ]);
+    $stmt->execute([$_SESSION['taiKhoanId']]);
 
-    $benhNhan = $stmt->fetch();
+    $patientId = $stmt->fetchColumn();
 
-    if (!$benhNhan) {
+    if (!$patientId) {
         throw new Exception('Không tìm thấy thông tin bệnh nhân.');
     }
 
+    /*
+     * Kiểm tra bệnh nhân đã có lịch
+     * tại đúng khung giờ này chưa
+     */
     $stmt = $pdo->prepare("
         SELECT 1
         FROM lichKham
-        WHERE benhNhanId = ? AND ngayKham = ? AND gioKham = ?
-        LIMIT 1
-    ");
-
-    $stmt->execute([$benhNhan['id'], $date, $time]);
-
-    $isBookingTimeDuplicate = $stmt->fetch();
-
-    if ($isBookingTimeDuplicate) {
-        echo json_encode([
-            'status' => 'failed',
-            'message' => 'Bạn đã có lịch khám vào khung giờ này.'
-        ]);
-        exit();
-    }
-
-    $stmt = $pdo->prepare("
-        SELECT id
-        FROM bacSi
-        WHERE id = ?
+        WHERE benhNhanId = ?
+          AND ngayKham = ?
+          AND gioKham = ?
+          AND trangThai IN ('CONFIRMED', 'COMPLETED')
         LIMIT 1
     ");
 
     $stmt->execute([
-        $doctorId
+        $patientId,
+        $date,
+        $time
     ]);
 
-    $bacSi = $stmt->fetch();
-
-    if (!$bacSi) {
-        throw new Exception('Không tìm thấy thông tin bác sĩ.');
+    if ($stmt->fetchColumn()) {
+        throw new Exception('Bạn đã có lịch khám vào khung giờ này.');
     }
 
+    /*
+     * Kiểm tra khung giờ của bác sĩ
+     */
     $stmt = $pdo->prepare("
-        INSERT INTO lichKham (
-            bacSiId,
-            benhNhanId,
-            ngayKham,
-            gioKham,
-            liDoKham,
-            trangThai
-        )
-        VALUES (
-            ?, ?, ?, ?, ?, 'CONFIRMED'
-        )
+        SELECT 1
+        FROM lichKham
+        WHERE bacSiId = ?
+          AND ngayKham = ?
+          AND gioKham = ?
+          AND (
+                trangThai IN ('CONFIRMED', 'COMPLETED')
+                OR (
+                    trangThai = 'CANCELLED'
+                    AND cancelledBy = 'DOCTOR'
+                )
+              )
+        LIMIT 1
     ");
 
     $stmt->execute([
         $doctorId,
-        $benhNhan['id'],
+        $date,
+        $time
+    ]);
+
+    if ($stmt->fetchColumn()) {
+        throw new Exception('Khung giờ này đã có người đặt.');
+    }
+
+    $stmt = $pdo->prepare("
+        INSERT INTO lichKham (bacSiId, benhNhanId, ngayKham, gioKham, liDoKham, trangThai)
+        SELECT id, ?, ?, ?, ?, 'CONFIRMED'
+        FROM bacSi
+        WHERE id = ?
+    ");
+
+    $stmt->execute([
+        $patientId,
         $date,
         $time,
-        $reason
+        $reason,
+        $doctorId
     ]);
+
+    if (!$stmt->rowCount()) {
+        throw new Exception('Không tìm thấy bác sĩ.');
+    }
 
     echo json_encode([
         'status' => 'success',

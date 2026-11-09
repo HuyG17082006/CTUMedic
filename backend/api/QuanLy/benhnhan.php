@@ -1,97 +1,128 @@
 <?php
-ini_set('display_errors', 0);
-error_reporting(E_ALL);
+
+require_once __DIR__ . '/../../middleware/auth.php';
+require_once __DIR__ . '/../../database.php';
 
 header('Content-Type: application/json; charset=utf-8');
-
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-require_once(PATH_BACKEND . '/database.php');
-
-if (!isset($_SESSION['taiKhoanId']) || (strtolower($_SESSION['role'] ?? '') !== 'manager' && strtolower($_SESSION['role'] ?? '') !== 'admin')) {
-    echo json_encode([
-        'status' => 'failed',
-        'message' => 'Unauthorized: Không có quyền truy cập'
-    ]);
-    exit();
-}
 
 try {
     $search   = trim($_GET['search'] ?? '');
     $ageGroup = trim($_GET['age_group'] ?? '');
     $sort     = trim($_GET['sort'] ?? 'id_desc');
 
-    // Chỉ lấy bệnh nhân có tk.isActive = 1 hoặc chưa có tài khoản
-    $query = "
-        SELECT 
-            bn.id, 
-            bn.hoTen, 
-            bn.ngaySinh, 
-            bn.email, 
-            bn.SDT, 
-            bn.CCCD, 
-            tk.username
-        FROM benhNhan bn
-        LEFT JOIN taiKhoan tk ON bn.taiKhoanId = tk.id
-        WHERE (tk.isActive = 1 OR tk.id IS NULL)
-    ";
+    $pageNumber = max(1, (int) ($_GET['pageNumber'] ?? 1));
+    $limit = 10;
+    $offset = ($pageNumber - 1) * $limit;
 
+    $conditions = ['(tk.isActive = 1 OR tk.id IS NULL)'];
     $params = [];
 
-    if (!empty($search)) {
-        $query .= " AND (bn.hoTen LIKE ? OR bn.SDT LIKE ? OR bn.CCCD LIKE ? OR bn.email LIKE ? OR tk.username LIKE ?)";
+    if ($search !== '') {
+        $conditions[] = '(bn.hoTen LIKE ? OR bn.SDT LIKE ? OR bn.CCCD LIKE ? OR bn.email LIKE ? OR tk.username LIKE ?)';
+
         $searchTerm = "%{$search}%";
         array_push($params, $searchTerm, $searchTerm, $searchTerm, $searchTerm, $searchTerm);
     }
 
-    if (!empty($ageGroup) && $ageGroup !== 'all') {
+    if ($ageGroup !== '' && $ageGroup !== 'all') {
         $currentYear = date('Y');
+
         if ($ageGroup === 'under_18') {
-            $query .= " AND bn.ngaySinh IS NOT NULL AND YEAR(bn.ngaySinh) > ?";
+            $conditions[] = 'bn.ngaySinh IS NOT NULL AND YEAR(bn.ngaySinh) > ?';
             $params[] = $currentYear - 18;
+
         } elseif ($ageGroup === '18_59') {
-            $query .= " AND bn.ngaySinh IS NOT NULL AND YEAR(bn.ngaySinh) BETWEEN ? AND ?";
+            $conditions[] = 'bn.ngaySinh IS NOT NULL AND YEAR(bn.ngaySinh) BETWEEN ? AND ?';
             $params[] = $currentYear - 59;
             $params[] = $currentYear - 18;
+
         } elseif ($ageGroup === 'over_60') {
-            $query .= " AND bn.ngaySinh IS NOT NULL AND YEAR(bn.ngaySinh) <= ?";
+            $conditions[] = 'bn.ngaySinh IS NOT NULL AND YEAR(bn.ngaySinh) <= ?';
             $params[] = $currentYear - 60;
         }
     }
 
+    $whereClause = 'WHERE ' . implode(' AND ', $conditions);
+
+    $countQuery = "
+        SELECT COUNT(*)
+        FROM benhNhan bn
+        LEFT JOIN taiKhoan tk ON bn.taiKhoanId = tk.id
+        $whereClause
+    ";
+
+    $countStmt = $pdo->prepare($countQuery);
+    $countStmt->execute($params);
+
+    $totalRecords = (int) $countStmt->fetchColumn();
+
     switch ($sort) {
         case 'id_asc':
-            $query .= " ORDER BY bn.id ASC";
+            $orderBy = 'bn.id ASC';
             break;
+
         case 'name_asc':
-            $query .= " ORDER BY bn.hoTen ASC";
+            $orderBy = 'bn.hoTen ASC';
             break;
+
         case 'name_desc':
-            $query .= " ORDER BY bn.hoTen DESC";
+            $orderBy = 'bn.hoTen DESC';
             break;
+
         case 'id_desc':
         default:
-            $query .= " ORDER BY bn.id DESC";
+            $orderBy = 'bn.id DESC';
             break;
     }
 
+    $query = "
+        SELECT
+            bn.id,
+            bn.hoTen,
+            bn.ngaySinh,
+            bn.email,
+            bn.SDT,
+            bn.CCCD,
+            tk.username
+
+        FROM benhNhan bn
+
+        LEFT JOIN taiKhoan tk
+            ON bn.taiKhoanId = tk.id
+
+        $whereClause
+
+        ORDER BY $orderBy
+
+        LIMIT $limit OFFSET $offset
+    ";
+
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
-    $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([
         'status' => 'success',
-        'data' => $patients
-    ]);
+        'list' => $list,
+        'pagination' => [
+            'pageNumber' => $pageNumber,
+            'limit' => $limit,
+            'totalRecords' => $totalRecords,
+            'totalPages' => (int) ceil($totalRecords / $limit)
+        ]
+    ], JSON_UNESCAPED_UNICODE);
+
     exit();
 
 } catch (Exception $e) {
+    http_response_code(500);
+
     echo json_encode([
         'status' => 'failed',
-        'message' => 'Lỗi truy vấn cơ sở dữ liệu: ' . $e->getMessage()
-    ]);
+        'message' => 'Lỗi truy vấn cơ sở dữ liệu.'
+    ], JSON_UNESCAPED_UNICODE);
+
     exit();
 }
 ?>

@@ -68,7 +68,14 @@ $isHistory = $tableType === 'history';
                 type="date"
                 id="date"
                 name="date"
-                class="date-input-box">
+                class="date-input-box"
+                value="<?= date('Y-m-d') ?>"
+                <?php if (!$isHistory):?>
+                    
+                    min="<?= date('Y-m-d') ?>"
+                
+                <?php endif; ?>
+            >
 
         </div>
 

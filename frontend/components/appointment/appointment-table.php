@@ -1,43 +1,86 @@
+
 <?php
+
 $tableType = $tableType ?? 'appointments';
 $role = $role ?? 'patient';
 
 $columnsByRole = [
     'patient' => [
-        'maLichKham' => 'Mã lịch khám',
-        'bacSi'      => 'Bác sĩ',
-        'chuyenKhoa' => 'Chuyên khoa',
-        'ngayKham'   => 'Ngày khám',
-        'gioKham'    => 'Giờ khám',
-        'trangThai'  => 'Trạng thái',
+        'appointments' => [
+            'maLichKham' => 'Mã lịch khám',
+            'bacSi'      => 'Bác sĩ',
+            'chuyenKhoa' => 'Chuyên khoa',
+            'ngayKham'   => 'Ngày khám',
+            'gioKham'    => 'Giờ khám',
+            'trangThai'  => 'Trạng thái',
+            'thaoTac'    => 'Thao tác',
+        ],
+
+        'history' => [
+            'maLichKham' => 'Mã lịch khám',
+            'bacSi'      => 'Bác sĩ',
+            'chuyenKhoa' => 'Chuyên khoa',
+            'ngayKham'   => 'Ngày khám',
+            'gioKham'    => 'Giờ khám',
+            'trangThai'  => 'Trạng thái',
+            'thaoTac'    => 'Thao tác',
+        ],
     ],
 
     'doctor' => [
-        'maLichKham' => 'Mã lịch khám',
-        'benhNhan'   => 'Bệnh nhân',
-        'ngayKham'   => 'Ngày khám',
-        'gioKham'    => 'Giờ khám',
-        'trangThai'  => 'Trạng thái',
+        'appointments' => [
+            'maLichKham' => 'Mã lịch khám',
+            'benhNhan'   => 'Bệnh nhân',
+            'ngayKham'   => 'Ngày khám',
+            'gioKham'    => 'Giờ khám',
+            'trangThai'  => 'Trạng thái',
+            'thaoTac'    => 'Thao tác',
+        ],
+
+        'history' => [
+            'maLichKham' => 'Mã lịch khám',
+            'benhNhan'   => 'Bệnh nhân',
+            'ngayKham'   => 'Ngày khám',
+            'gioKham'    => 'Giờ khám',
+            'trangThai'  => 'Trạng thái',
+            'thaoTac'    => 'Thao tác',
+        ],
     ],
 
     'manager' => [
-        'maLichKham' => 'Mã lịch khám',
-        'benhNhan'   => 'Bệnh nhân',
-        'bacSi'      => 'Bác sĩ',
-        'chuyenKhoa' => 'Chuyên khoa',
-        'ngayKham'   => 'Ngày khám',
-        'gioKham'    => 'Giờ khám',
-        'trangThai'  => 'Trạng thái',
+        'appointments' => [
+            'maLichKham' => 'Mã lịch khám',
+            'benhNhan'   => 'Bệnh nhân',
+            'bacSi'      => 'Bác sĩ',
+            'chuyenKhoa' => 'Chuyên khoa',
+            'ngayKham'   => 'Ngày khám',
+            'gioKham'    => 'Giờ khám',
+            'trangThai'  => 'Trạng thái',
+            'thaoTac'    => 'Thao tác',
+        ],
+
+        'history' => [
+            'maLichKham' => 'Mã lịch khám',
+            'benhNhan'   => 'Bệnh nhân',
+            'bacSi'      => 'Bác sĩ',
+            'chuyenKhoa' => 'Chuyên khoa',
+            'ngayKham'   => 'Ngày khám',
+            'gioKham'    => 'Giờ khám',
+            'trangThai'  => 'Trạng thái',
+            'thaoTac'    => 'Thao tác',
+        ],
     ],
 ];
 
-$columns = $columnsByRole[$role] ?? [];
+$columns = $columnsByRole[$role][$tableType] ?? [];
 ?>
 
 <div class="appointment-table-wrapper">
     <table
         class="appointment-table"
-        data-table-type="<?= htmlspecialchars($tableType) ?>">
+        data-table-type="<?= htmlspecialchars($tableType) ?>"
+        data-role="<?= htmlspecialchars($role) ?>">
+
         <thead>
             <tr>
                 <?php foreach ($columns as $key => $label): ?>
@@ -51,7 +94,7 @@ $columns = $columnsByRole[$role] ?? [];
         <tbody data-appointment-list>
             <tr>
                 <td
-                    colspan="<?= count($columns) ?>"
+                    colspan="<?= max(count($columns), 1) ?>"
                     class="appointment-table__empty">
                     Chưa có dữ liệu lịch khám.
                 </td>
@@ -60,4 +103,4 @@ $columns = $columnsByRole[$role] ?? [];
     </table>
 </div>
 
-<script type="module" src="/dashboard/CTUMedic/frontend/assets/js/shared/lich.js"></script>
+<script type="module" src="/dashboard/CTUMedic/frontend/assets/js/shared/lich/lich.js"></script>

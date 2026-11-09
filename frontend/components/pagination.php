@@ -1,4 +1,4 @@
-<div class="appointment-pagination" data-pagination>
+<div class="pagination" data-pagination>
     <button type="button" data-page-prev disabled>
         <i class="fa-solid fa-chevron-left"></i>
     </button>

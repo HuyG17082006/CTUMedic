@@ -1,0 +1,22 @@
+.appointment-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 105px;
+    padding: 6px 11px;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.appointment-page {
+    margin-top : 24px;
+    display: flex;
+    flex-direction: column;
+    min-height: 650px;
+}
+
+.appointment-table-wrapper {
+    flex: 1;
+}

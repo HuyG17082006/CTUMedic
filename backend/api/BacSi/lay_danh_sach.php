@@ -9,7 +9,7 @@ $stmt->execute([$chuyenKhoa]);
 $list = $stmt->fetchAll();
 
 echo json_encode([
-    'status' => true,
+    'status' => 'success',
     'list' => $list ?? []
 ])
 

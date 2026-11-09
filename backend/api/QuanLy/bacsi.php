@@ -1,58 +1,86 @@
 <?php
-ini_set('display_errors', 0);
-error_reporting(E_ALL);
+
+require_once __DIR__ . '/../../middleware/auth.php';
+require_once __DIR__ . '/../../database.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-require_once(PATH_BACKEND . '/database.php');
-
-if (!isset($_SESSION['taiKhoanId']) || (strtolower($_SESSION['role'] ?? '') !== 'manager' && strtolower($_SESSION['role'] ?? '') !== 'admin')) {
-    echo json_encode([
-        'status' => 'failed',
-        'message' => 'Unauthorized: Không có quyền truy cập'
-    ]);
-    exit();
-}
-
 try {
     $search = trim($_GET['search'] ?? '');
-    
-    // Chỉ lấy bác sĩ có tk.isActive = 1
-    $query = "
-        SELECT bs.id, bs.hoTen, bs.email, bs.chuyenKhoa, tk.username
-        FROM bacSi bs
-        JOIN taiKhoan tk ON bs.taiKhoanId = tk.id
-        WHERE tk.isActive = 1
-    ";
 
+    $pageNumber = max(1, (int) ($_GET['pageNumber'] ?? 1));
+    $limit = 10;
+    $offset = ($pageNumber - 1) * $limit;
+
+    $conditions = ['tk.isActive = 1'];
     $params = [];
-    if (!empty($search)) {
-        $query .= " AND (bs.hoTen LIKE ? OR bs.chuyenKhoa LIKE ? OR bs.email LIKE ? OR tk.username LIKE ?)";
+
+    if ($search !== '') {
+        $conditions[] = '(bs.hoTen LIKE ? OR bs.chuyenKhoa LIKE ? OR bs.email LIKE ? OR tk.username LIKE ?)';
+
         $searchTerm = "%{$search}%";
         $params = [$searchTerm, $searchTerm, $searchTerm, $searchTerm];
     }
 
-    $query .= " ORDER BY bs.id DESC;";
+    $whereClause = 'WHERE ' . implode(' AND ', $conditions);
+
+    $countQuery = "
+        SELECT COUNT(*)
+        FROM bacSi bs
+        JOIN taiKhoan tk ON bs.taiKhoanId = tk.id
+        $whereClause
+    ";
+
+    $countStmt = $pdo->prepare($countQuery);
+    $countStmt->execute($params);
+
+    $totalRecords = (int) $countStmt->fetchColumn();
+
+    $query = "
+        SELECT
+            bs.id,
+            bs.hoTen,
+            bs.email,
+            bs.chuyenKhoa,
+            tk.username
+
+        FROM bacSi bs
+
+        JOIN taiKhoan tk
+            ON bs.taiKhoanId = tk.id
+
+        $whereClause
+
+        ORDER BY bs.id DESC
+
+        LIMIT $limit OFFSET $offset
+    ";
 
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
-    $doctors = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([
         'status' => 'success',
-        'data' => $doctors
-    ]);
+        'list' => $list,
+        'pagination' => [
+            'pageNumber' => $pageNumber,
+            'limit' => $limit,
+            'totalRecords' => $totalRecords,
+            'totalPages' => (int) ceil($totalRecords / $limit)
+        ]
+    ], JSON_UNESCAPED_UNICODE);
+
     exit();
 
 } catch (Exception $e) {
+    http_response_code(500);
+
     echo json_encode([
         'status' => 'failed',
-        'message' => 'Lỗi truy vấn cơ sở dữ liệu: ' . $e->getMessage()
-    ]);
+        'message' => 'Lỗi truy vấn cơ sở dữ liệu.'
+    ], JSON_UNESCAPED_UNICODE);
+
     exit();
 }
-?>

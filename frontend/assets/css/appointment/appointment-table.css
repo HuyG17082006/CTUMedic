@@ -1,0 +1,267 @@
+/* =========================================
+   APPOINTMENT TABLE
+========================================= */
+
+.appointment-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.appointment-table {
+    width: 100%;
+    min-width: 820px;
+    border-collapse: separate;
+    border-spacing: 0;
+    color: var(--text);
+}
+
+/* TABLE HEADER */
+
+.appointment-table thead {
+    background: var(--background);
+}
+
+.appointment-table th {
+    padding: 15px 18px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .035em;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+/* TABLE BODY */
+
+.appointment-table tbody tr {
+    transition: background-color .15s ease;
+}
+
+.appointment-table tbody tr:hover:not(:has(.appointment-table__empty)) {
+    background: var(--primary-light);
+}
+
+.appointment-table td {
+    padding: 16px 18px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    line-height: 1.6;
+    vertical-align: middle;
+}
+
+.appointment-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.appointment-table tbody td:first-child {
+    color: var(--text);
+    font-weight: 600;
+}
+
+/* COLUMN WIDTHS */
+
+.appointment-table th[data-column="maLichKham"] {
+    width: 120px;
+}
+
+.appointment-table th[data-column="ngayKham"] {
+    width: 130px;
+}
+
+.appointment-table th[data-column="gioKham"] {
+    width: 100px;
+}
+
+.appointment-table th[data-column="trangThai"] {
+    width: 140px;
+}
+
+.appointment-table th[data-column="thaoTac"],
+.appointment-table td.appointment-table__actions {
+    width: 150px;
+    min-width: 150px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* EMPTY STATE */
+
+.appointment-table td.appointment-table__empty {
+    height: 160px;
+    padding: 40px 20px;
+    color: var(--text-secondary);
+    background: var(--background);
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* STATUS */
+
+.appointment-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 105px;
+    padding: 6px 11px;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.appointment-status--confirmed {
+    color: #15803D;
+    background: #DCFCE7;
+}
+
+.appointment-status--cancelled {
+    color: #B91C1C;
+    background: #FEE2E2;
+}
+
+.appointment-status--completed {
+    color: #1D4ED8;
+    background: #DBEAFE;
+}
+
+
+.appointment-action--complete {
+    color: #15803D;
+    background: #F0FDF4;
+    border-color: #DCFCE7;
+}
+
+.appointment-action--complete:hover {
+    color: #fff;
+    background: #16A34A;
+    border-color: #16A34A;
+}
+
+/* ACTIONS */
+
+.appointment-table td.appointment-table__actions {
+    padding: 12px 8px;
+}
+
+.appointment-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 7px 9px;
+    margin: 0 2px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .18s ease;
+}
+
+.appointment-action--detail {
+    color: var(--primary);
+    background: var(--primary-light);
+    border-color: var(--border);
+}
+
+.appointment-action--detail:hover {
+    color: #fff;
+    background: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+.appointment-action--cancel {
+    color: var(--danger);
+    background: #FEF2F2;
+    border-color: #FEE2E2;
+}
+
+.appointment-action--cancel:hover {
+    color: #fff;
+    background: var(--danger);
+    border-color: var(--danger);
+}
+
+.appointment-action i {
+    font-size: 11px;
+}
+
+/* PAGINATION */
+
+.appointment-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.appointment-pagination button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    min-height: 38px;
+    padding: 0 11px;
+    color: var(--text-secondary);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .18s ease;
+}
+
+.appointment-pagination button:hover:not(:disabled) {
+    color: var(--primary);
+    background: var(--primary-light);
+    border-color: var(--primary);
+}
+
+.appointment-pagination button.active,
+.appointment-pagination button[aria-current="page"] {
+    color: #fff;
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.appointment-pagination button:disabled {
+    color: var(--text-secondary);
+    background: var(--background);
+    cursor: not-allowed;
+    opacity: .5;
+}
+
+
+@media (max-width: 768px) {
+    .appointment-table {
+        min-width: 760px;
+    }
+
+    .appointment-table th,
+    .appointment-table td {
+        padding: 14px;
+    }
+
+    .appointment-table td.appointment-table__empty {
+        padding: 40px 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .appointment-table tbody tr,
+    .appointment-action,
+    .appointment-pagination button {
+        transition: none;
+    }
+}

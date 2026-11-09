@@ -29,7 +29,9 @@ define('WORKING_TIME_SLOTS', [
 ]);
 
 define('SPECIALTY_LIST', [
+    "Nội tổng quát",
     "Nội khoa",
+    'Nhi khoa',
     "Tim mạch",
     "Da liễu"
 ]);

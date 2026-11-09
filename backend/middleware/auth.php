@@ -15,9 +15,8 @@ if (empty($_SESSION['role'])) {
     exit;
 }
 
-// $userId = $_SESSION['userId'] || '';
-$userId = $_SESSION['userId'];
 $role = $_SESSION['role'] ?? '';
+$userId = $_SESSION['userId'] ?? null;
 
 $allowedRoles = ['patient', "doctor", "manager"];
 

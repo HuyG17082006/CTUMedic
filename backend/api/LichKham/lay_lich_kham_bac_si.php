@@ -2,54 +2,39 @@
 
 require_once __DIR__ . '/../../database.php';
 
-header('Content-Type: application/json; charset=utf-8');
+$doctorId = $_GET['doctorId'];
+$date = $_GET['date'] ?? '';
 
-$doctorId = trim($_GET['doctorId'] ?? '');
-$date     = trim($_GET['date'] ?? '');
-
-if (!$doctorId || !$date) {
-    http_response_code(400);
-
+if (!$doctorId) {
     echo json_encode([
-        'status' => false,
-        'message' => 'Vui lòng cung cấp bác sĩ và ngày khám.'
-    ]);
-
+        'status' => 'success',
+        'list' => []
+    ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$params = [$doctorId, $date];
-
-$query = '
+$stmt = $pdo->prepare("
     SELECT
-        lk.id,
-        lk.bacSiId,
-        lk.benhNhanId,
-        lk.ngayKham,
-        lk.gioKham,
-        lk.trangThai
+        id,
+        bacSiId,
+        benhNhanId,
+        ngayKham,
+        gioKham,
+        trangThai,
+        cancelledBy
+    FROM lichKham
+    WHERE bacSiId = ?
+      AND ngayKham = ?
+      AND (
+          benhNhanId IS NULL
+          OR trangThai IN ('CONFIRMED', 'COMPLETED', 'CANCELLED')
+      )
+    ORDER BY gioKham ASC
+");
 
-    FROM lichKham lk
-
-    WHERE
-        lk.bacSiId = ?
-        AND lk.ngayKham = ?
-        AND (
-            lk.benhNhanId IS NULL
-            OR lk.trangThai IN (
-                "CONFIRMED",
-                "COMPLETED",
-                "CANCELLED"
-            )
-        )
-
-    ORDER BY lk.gioKham
-';
-
-$stmt = $pdo->prepare($query);
-$stmt->execute($params);
+$stmt->execute([$doctorId, $date]);
 
 echo json_encode([
-    'status' => true,
-    'list' => $stmt->fetchAll(PDO::FETCH_ASSOC)
-]);
+    'status' => 'success',
+    'list' => $stmt->fetchAll()
+], JSON_UNESCAPED_UNICODE);

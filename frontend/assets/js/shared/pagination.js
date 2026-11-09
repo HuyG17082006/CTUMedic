@@ -9,7 +9,7 @@ export function initPagination({
     const pageInfo = container.querySelector('[data-page-info]');
 
     function render() {
-        pageInfo.textContent = `Trang ${currentPage} / ${totalPages}`;
+        pageInfo.textContent = `Trang ${currentPage} / ${totalPages > 0 ? totalPages : 1}`;
 
         prevBtn.disabled = currentPage <= 1;
         nextBtn.disabled = currentPage >= totalPages;
