@@ -6,9 +6,11 @@ require_once __DIR__ . '/../../database.php';
 header('Content-Type: application/json; charset=utf-8');
 
 try {
-    $appointmentId = (int) ($_POST['appointmentId'] ?? 0);
-    $newDate = trim($_POST['ngayKham'] ?? '');
-    $newTime = trim($_POST['gioKham'] ?? '');
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    $appointmentId = (int) ($data['appointmentId'] ?? 0);
+    $newDate = trim($data['ngayKham'] ?? '');
+    $newTime = trim($data['gioKham'] ?? '');
 
     if ($role !== 'patient') {
         throw new Exception('Bạn không có quyền đổi lịch khám.');

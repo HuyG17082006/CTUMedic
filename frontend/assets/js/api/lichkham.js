@@ -41,7 +41,7 @@ export const getAppointmentDetail = async (id) => {
 
 export const cancelAppointment = async (appointmentId, cancellationReason) => {
 
-    const result = await apiRequest(
+    return await apiRequest(
         '/LichKham/huy_lich_kham.php',
         {
             method: 'POST',
@@ -52,12 +52,11 @@ export const cancelAppointment = async (appointmentId, cancellationReason) => {
         }
     );
 
-    return result;
 }
 
 export const completeAppointment = async (appointmentId) => {
 
-    const result = await apiRequest(
+    return await apiRequest(
         '/LichKham/hoan_thanh.php',
         {
             method: 'POST',
@@ -67,8 +66,19 @@ export const completeAppointment = async (appointmentId) => {
         }
     );
 
-    return result;
 }
+
+export const noShowAppointment = async (appointmentId) => {
+    return await apiRequest(
+        '/LichKham/vang_mat.php',
+        {
+            method: 'POST',
+            body: JSON.stringify({
+                appointmentId
+            })
+        }
+    );
+};
 
 export const rescheduleAppointment = async (appointmentId, date, time) => {
     console.log(appointmentId, date, time)

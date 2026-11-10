@@ -132,6 +132,18 @@
     background: #DBEAFE;
 }
 
+/* Chờ cập nhật */
+.appointment-status--waiting-update {
+    color: #B45309;
+    background: #FEF3C7;
+}
+
+/* Bệnh nhân vắng mặt */
+.appointment-status--no-show {
+    color: #7E22CE;
+    background: #F3E8FF;
+}
+
 
 .appointment-action--complete {
     color: #15803D;

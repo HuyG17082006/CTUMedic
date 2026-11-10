@@ -15,26 +15,24 @@ export function initPagination({
         nextBtn.disabled = currentPage >= totalPages;
     }
 
-    prevBtn.onclick = () => {
+    prevBtn.onclick = async () => {
         if (currentPage <= 1) return;
 
         currentPage--;
+
         render();
 
-        if (onPageChange) {
-            onPageChange(currentPage);
-        }
+        await onPageChange?.(currentPage);
     };
 
-    nextBtn.onclick = () => {
+    nextBtn.onclick = async () => {
         if (currentPage >= totalPages) return;
 
         currentPage++;
+
         render();
 
-        if (onPageChange) {
-            onPageChange(currentPage);
-        }
+        await onPageChange?.(currentPage);
     };
 
     render();

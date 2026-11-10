@@ -44,6 +44,13 @@
                 Quay lại
             </button>
 
+            <button type="button"
+                class="complete-modal__button complete-modal__button--no-show"
+                id="confirm-no-show-appointment">
+                <i class="fa-solid fa-user-xmark"></i>
+                Bệnh nhân không đến
+            </button>
+
             <button type="button" class="complete-modal__button complete-modal__button--confirm" id="confirm-complete-appointment">
                 <i class="fa-solid fa-check"></i>
                 Hoàn thành

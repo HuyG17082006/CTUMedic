@@ -54,7 +54,6 @@ if ($status !== '') {
         $conditions[] = 'lk.trangThai = ?';
         $params[] = $status;
     }
-    
 }
 
 // Điều kiện lọc
@@ -100,9 +99,9 @@ $query = "
         lk.trangThai,
         lk.bacSiId,
         lk.benhNhanId,
-        bs.hoTen AS hoTenBacSi,
+        bs.hoTen AS tenBacSi,
         bs.chuyenKhoa,
-        bn.hoTen AS hoTenBenhNhan
+        bn.hoTen AS tenBenhNhan
 
     FROM lichKham lk
 

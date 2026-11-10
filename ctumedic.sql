@@ -46,7 +46,8 @@ CREATE TABLE lichKham (
     trangThai ENUM(
         'CONFIRMED',
         'CANCELLED',
-        'COMPLETED'
+        'COMPLETED',
+        'NO_SHOW'
     ) NOT NULL DEFAULT 'CONFIRMED',
 
     cancelledBy ENUM(

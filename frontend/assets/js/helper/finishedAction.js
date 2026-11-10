@@ -1,7 +1,7 @@
-export default (status, message) => {
+export default async (status, message, callBack = window.location.reload()) => {
     alert(message);
 
     if (status === 'success') {
-        window.location.reload();
+        await callBack()
     }
 };

@@ -1,7 +1,6 @@
 import { getDoctorList } from '../api/bacsi.js';
 import { getDoctorSchedule, appointmentBook } from '../api/lichkham.js';
 import finishedAction from '../helper/finishedAction.js';
-import { normalizedTime, getCurrentHour, getDate } from '../helper/time.js'
 import { renderBookingPeriods } from '../shared/booking-periods.js';
 
 const specialtySelectBox = document.querySelector('#booking-specialty');
@@ -35,10 +34,10 @@ const renderSpecialtyList = () => {
     specialtyList.forEach((specialty) => {
 
         const option = document.createElement('option');
-    
+
         option.innerText = specialty;
         option.value = specialty;
-    
+
         specialtySelectBox.append(option)
     })
 
@@ -116,13 +115,15 @@ const booking = async () => {
 dateSelectBox.addEventListener('change', async (e) => {
     values.date = e.target.value
 })
-doctorSelectBox.addEventListener('click', async (e) => {
+doctorSelectBox.addEventListener('change', async (e) => {
     values.doctorId = e.target.value
 })
 specialtySelectBox.addEventListener('change', async (e) => {
-    values.specialty = e.target.value
-    await renderDoctorList(values.specialty)
-})
+    values.specialty = e.target.value;
+    values.doctorId = '';
+    values.time = null;
+    await renderDoctorList(values.specialty);
+});
 bookingForm.addEventListener('submit', async (e) => {
     e.preventDefault()
     await renderTimeSlots()
@@ -133,7 +134,7 @@ submitBookingBtn.addEventListener('click', booking)
 const render = async () => {
     renderSpecialtyList();
     if (values.specialty)
-        await renderDoctorList();
+        await renderDoctorList(values.specialty);
 }
 
 await render();

@@ -7,6 +7,8 @@ import {
     renderBookingPeriods
 } from "../booking-periods.js"
 
+import { renderAppointmentList } from "./appointmentTable.js";
+
 import { normalVietNameseDate } from "../../helper/time.js";
 import { setFields } from "../../helper/setText.js";
 import finishedAction from "../../helper/finishedAction.js";
@@ -19,13 +21,10 @@ const afternoonContainer = document.querySelector('#afternoon-slots');
 const confirmButton = document.querySelector('#confirm-reschedule');
 const selectedTimeElement = document.querySelector('#reschedule-selected-time');
 
-const currentDateElement = document.querySelector('#reschedule-current-date');
-const currentTimeElement = document.querySelector('#reschedule-current-time');
-
 let currentAppointment = null;
 let selectedTime = null;
 
-const selectAnotherTime = (time) => {
+const selectTime = (time) => {
     selectedTime = time;
     selectedTimeElement.textContent = time
     confirmButton.disabled = false
@@ -84,13 +83,15 @@ const loadAvailableTimeSlots = async (appointment) => {
 
     renderBookingPeriods(
         unavailableList,
-        selectAnotherTime,
+        selectTime,
         { date: appointment.ngayKham }
     );
 };
 
-confirmButton?.addEventListener('click', async () => {
-    if (!currentAppointment || !selectedTime) return;
+const submitBooking = async () => {
+
+    if (!currentAppointment || !selectedTime)
+        return;
 
     const { status, messsage } = await rescheduleAppointment(
         currentAppointment.id,
@@ -98,5 +99,8 @@ confirmButton?.addEventListener('click', async () => {
         selectedTime
     );
 
-    finishedAction(status, messsage)
-});
+    finishedAction(status, messsage, renderAppointmentList)
+
+}
+
+confirmButton?.addEventListener('click', submitBooking);

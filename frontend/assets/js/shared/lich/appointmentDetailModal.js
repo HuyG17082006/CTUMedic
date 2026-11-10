@@ -13,6 +13,7 @@ const completeBtn = appointmentModal.querySelector('[data-action-complete]');
 // Lấy phần tử trong modal
 
 let currentAppointment = null;
+let refresh = null;
 
 const statusMap = {
     CONFIRMED: 'Đã xác nhận',
@@ -97,7 +98,7 @@ const renderAppointmentDetail = (appointment, role) => {
 };
 
 // Mở modal và lấy dữ liệu
-export const showAppointmentDetail = async (appointmentId, role) => {
+export const showAppointmentDetail = async (appointmentId, role, renderAppointmentList) => {
 
     if (!appointmentModal) return;
 
@@ -106,6 +107,7 @@ export const showAppointmentDetail = async (appointmentId, role) => {
     if (!appointment) return;
 
     currentAppointment = appointment;
+    refresh = renderAppointmentList;
 
     renderAppointmentDetail(appointment, role);
 
@@ -141,18 +143,18 @@ appointmentModal.querySelector(".appointment-modal__close")?.addEventListener("c
 
 cancelBtn?.addEventListener("click", () => {
     if (currentAppointment) {
-        showCancelModal(currentAppointment);
+        showCancelModal(currentAppointment, refresh);
     }
 });
 
 rescheduleBtn?.addEventListener("click", () => {
     if (currentAppointment) {
-        showRescheduleModal(currentAppointment);
+        showRescheduleModal(currentAppointment, refresh);
     }
 });
 
 completeBtn?.addEventListener("click", () => {
     if (currentAppointment) {
-        showCompleteModal(currentAppointment);
+        showCompleteModal(currentAppointment, refresh);
     }
 });

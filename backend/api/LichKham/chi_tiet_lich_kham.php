@@ -7,15 +7,8 @@ require_once __DIR__ . '/../../database.php';
 try {
     $appointmentId = (int) ($_GET['id'] ?? 0);
 
-    if (!$appointmentId || $appointmentId <= 0) {
-        http_response_code(400);
-
-        echo json_encode([
-            'success' => false,
-            'message' => 'ID lịch khám không hợp lệ'
-        ]);
-
-        exit;
+    if ($appointmentId <= 0) {
+        throw new Exception('ID lịch khám không hợp lệ');
     }
 
     $sql = "
@@ -67,28 +60,18 @@ try {
 
     $appointment = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$appointment) {
-        http_response_code(404);
-
-        echo json_encode([
-            'success' => false,
-            'message' => 'Không tìm thấy lịch khám'
-        ]);
-
-        exit;
-    }
+    if (!$appointment) 
+        throw new Exception('Không tìm thấy lịch khám');
 
     echo json_encode([
         'success' => true,
         'data' => $appointment
     ], JSON_UNESCAPED_UNICODE);
 
-} catch (PDOException $e) {
-
-    http_response_code(500);
+} catch (Throwable $e) {
 
     echo json_encode([
         'success' => false,
-        'message' => 'Lỗi hệ thống khi lấy chi tiết lịch khám'
+        'message' => $e->getMessage()
     ], JSON_UNESCAPED_UNICODE);
 }

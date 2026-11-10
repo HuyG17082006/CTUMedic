@@ -7,16 +7,14 @@ header('Content-Type: application/json');
 
 try {
 
-    $appointmentId = (int)($_POST['appointmentId'] ?? 0);
-    $reason = trim($_POST['cancellationReason'] ?? '');
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    $appointmentId = (int)($data['appointmentId'] ?? 0);
+    $reason = trim($data['cancellationReason'] ?? '');
 
     $where = match ($role) {
-        'patient' => 'AND lk.benhNhanId = (
-            SELECT id FROM benhNhan WHERE taiKhoanId = ?
-        )',
-        'doctor' => 'AND lk.bacSiId = (
-            SELECT id FROM bacSi WHERE taiKhoanId = ?
-        )',
+        'patient' => 'AND lk.benhNhanId = ?',
+        'doctor' => 'AND lk.bacSiId = ?',
         'manager' => '',
     };
 
@@ -27,7 +25,7 @@ try {
     ];
 
     if ($role !== 'manager') {
-        $params[] = $_SESSION['taiKhoanId'];
+        $params[] = $userId;
     }
 
     $stmt = $pdo->prepare("
