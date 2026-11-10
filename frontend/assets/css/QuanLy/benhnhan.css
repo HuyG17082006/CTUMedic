@@ -1,406 +1,145 @@
-
-/* ==============================
-   QUẢN LÝ BỆNH NHÂN
-============================== */
-
-.manage {
-    width: 100%;
+/* Styling riêng cho trang Quản lý Bệnh Nhân */
+.appointment-container {
+    padding: 20px;
+    font-family: system-ui, -apple-system, sans-serif;
+    color: #374151;
 }
 
-/* Thanh tìm kiếm */
-
-.manage-toolbar {
-    display: flex;
-    align-items: center;
-    gap: 14px;
+.appointment-filter-card {
     margin-bottom: 20px;
-}
-
-.manage-search {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 0 14px;
-    min-width: 0;
-    height: 44px;
-    background: #fff;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    color: #9ca3af;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.manage-search:focus-within {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.manage-search input {
-    flex: 1;
-    width: 100%;
-    border: none;
-    outline: none;
-    background: transparent;
-    font-size: 14px;
-    color: #111827;
-}
-
-.manage-search input::placeholder {
-    color: #9ca3af;
-}
-
-.manage-toolbar > button {
-    height: 44px;
-    padding: 0 18px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    white-space: nowrap;
-}
-
-/* Bảng */
-
-.manage-card {
-    overflow: hidden;
-    background: #fff;
+    background: #ffffff;
+    padding: 20px;
     border-radius: 12px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.manage-header {
+.filter-wrapper {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.filter-item-search { flex: 2; min-width: 260px; }
+.filter-item-select { flex: 1; min-width: 150px; }
+
+.form-input, .form-select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    background-color: #fff;
+}
+
+.filter-buttons { display: flex; gap: 8px; }
+
+.appointment-table-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.table-header {
     padding: 20px 24px;
     border-bottom: 1px solid #f3f4f6;
 }
 
-.manage-header h3 {
-    margin: 0;
-    color: #111827;
-    font-size: 18px;
-    font-weight: 600;
-}
-
-.manage-table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-}
-
-.manage-table {
+.patient-table {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
     font-size: 14px;
 }
 
-.manage-table thead {
+.patient-table th {
+    padding: 12px 16px;
+    font-weight: 600;
     background: #f9fafb;
     color: #4b5563;
-}
-
-.manage-table th {
-    padding: 14px 16px;
-    font-weight: 600;
-    white-space: nowrap;
     border-bottom: 1px solid #e5e7eb;
 }
 
-.manage-table td {
+.patient-table td {
     padding: 14px 16px;
-    color: #4b5563;
     border-bottom: 1px solid #f3f4f6;
+    color: #4b5563;
+    vertical-align: middle;
 }
 
-.manage-table tbody tr:hover {
-    background: #f9fafb;
+/* Dòng tài khoản bị khóa/xám mờ */
+tr.row-disabled {
+    background-color: #f8fafc !important;
+    opacity: 0.65;
+}
+tr.row-disabled td {
+    color: #94a3b8 !important;
 }
 
-.manage-table td:last-child {
-    white-space: nowrap;
-}
+/* Các nút Thao tác */
+td.action-column { text-align: center; padding: 8px 12px !important; }
 
-.manage-empty {
-    padding: 28px !important;
-    text-align: center;
-    color: #6b7280 !important;
-}
-
-/* Trạng thái */
-
-.manage-status {
+.btn-action-group {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    white-space: nowrap;
+    gap: 8px;
 }
 
-.manage-status.active {
-    color: #15803d;
-    background: #dcfce7;
-}
-
-.manage-status.inactive {
-    color: #dc2626;
-    background: #fee2e2;
-}
-
-/* Modal */
-
-.manage-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    display: none;
+.btn-action {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
-}
-
-.manage-modal.active {
-    display: flex;
-}
-
-.manage-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.5);
-    backdrop-filter: blur(2px);
-}
-
-.manage-modal-content {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 620px;
-    max-height: 90vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-}
-
-.manage-modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-    padding: 20px 24px;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.manage-modal-header h3 {
-    margin: 0;
-    color: #111827;
-    font-size: 18px;
-    font-weight: 600;
-}
-
-.manage-modal-header p {
-    margin: 5px 0 0;
-    color: #6b7280;
+    gap: 6px;
+    padding: 6px 12px;
+    height: 32px;
+    border-radius: 6px;
     font-size: 13px;
-}
-
-.manage-close {
-    flex-shrink: 0;
-    width: 34px;
-    height: 34px;
-    border: none;
-    border-radius: 8px;
-    background: transparent;
-    color: #6b7280;
-    font-size: 18px;
+    font-weight: 500;
     cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s ease-in-out;
 }
 
-.manage-close:hover {
-    background: #f3f4f6;
-    color: #dc2626;
-}
+.btn-action svg { width: 14px; height: 14px; fill: currentColor; }
 
-.manage-modal-body {
-    padding: 22px 24px;
-    overflow-y: auto;
-}
+.btn-edit { background-color: #fffbeb; color: #d97706; border-color: #fde68a; }
+.btn-edit:hover { background-color: #fef3c7; color: #b45309; }
 
-.manage-section + .manage-section {
-    margin-top: 24px;
-    padding-top: 22px;
-    border-top: 1px solid #e5e7eb;
-}
+.btn-disable { background-color: #fff7ed; color: #ea580c; border-color: #ffedd5; }
+.btn-disable:hover { background-color: #ffedd5; color: #c2410c; }
 
-.manage-section h4 {
+.btn-activate { background-color: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
+.btn-activate:hover { background-color: #dcfce7; color: #15803d; }
+
+.btn-force-delete { background-color: #fef2f2; color: #dc2626; border-color: #fecaca; }
+.btn-force-delete:hover { background-color: #fee2e2; color: #b91c1c; }
+
+/* Phân trang */
+.pagination-container {
     display: flex;
-    align-items: center;
-    gap: 9px;
-    margin: 0 0 18px;
-    color: #1f2937;
-    font-size: 15px;
-    font-weight: 600;
-}
-
-.manage-section h4 i {
-    color: #2563eb;
-}
-
-/* Thông tin chi tiết */
-
-.manage-info-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px 24px;
-}
-
-.manage-info-item {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-}
-
-.manage-info-item > span:first-child {
-    color: #6b7280;
-    font-size: 13px;
-}
-
-.manage-info-item strong {
-    color: #111827;
-    font-size: 14px;
-    font-weight: 500;
-    overflow-wrap: anywhere;
-}
-
-.manage-password {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    color: #9ca3af !important;
-    font-size: 13px !important;
-}
-
-/* Form */
-
-.manage-form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-}
-
-.manage-form-group {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-}
-
-.manage-form-group.full {
-    grid-column: 1 / -1;
-}
-
-.manage-form-group label {
-    color: #374151;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.manage-form-group input {
-    width: 100%;
-    height: 40px;
-    padding: 0 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    outline: none;
-    color: #111827;
-    font-size: 14px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.manage-form-group input:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-/* Footer */
-
-.manage-modal-footer {
-    display: flex;
-    align-items: center;
     justify-content: flex-end;
-    gap: 10px;
-    padding: 16px 24px;
-    border-top: 1px solid #e5e7eb;
-}
-
-.manage-modal-footer button {
-    min-height: 38px;
-    padding: 0 17px;
-    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 7px;
+    gap: 6px;
+    padding: 16px 24px;
+    border-top: 1px solid #f3f4f6;
 }
 
-.btn-secondary {
+.page-btn {
+    padding: 6px 12px;
     border: 1px solid #d1d5db;
-    border-radius: 8px;
     background: #fff;
-    color: #374151;
-    font-weight: 500;
+    border-radius: 6px;
     cursor: pointer;
+    font-size: 13px;
 }
 
-.btn-secondary:hover {
-    background: #f9fafb;
-}
-
-/* Responsive */
-
-@media (max-width: 768px) {
-    .manage-toolbar {
-        align-items: stretch;
-    }
-
-    .manage-toolbar > button {
-        padding: 0 12px;
-    }
-}
-
-@media (max-width: 550px) {
-    .manage-toolbar {
-        flex-direction: column;
-    }
-
-    .manage-toolbar > button {
-        width: 100%;
-    }
-
-    .manage-info-grid,
-    .manage-form-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .manage-form-group.full {
-        grid-column: auto;
-    }
-
-    .manage-modal {
-        padding: 10px;
-    }
-
-    .manage-modal-content {
-        max-height: 95vh;
-    }
-
-    .manage-modal-header,
-    .manage-modal-body,
-    .manage-modal-footer {
-        padding-left: 16px;
-        padding-right: 16px;
-    }
+.page-btn.active {
+    background: #2563eb;
+    color: #fff;
+    border-color: #2563eb;
 }

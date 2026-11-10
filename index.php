@@ -16,11 +16,16 @@ if (isset($_GET['api'])) {
         "manager_get_patients"      => PATH_API . '/QuanLy/benhnhan.php',
         "manager_update_patient"    => PATH_API . '/QuanLy/manager_update_patient.php',
         "manager_delete_patient"    => PATH_API . '/QuanLy/manager_delete_patient.php',
+        "manager_force_delete_patient" => PATH_API . '/QuanLy/manager_force_delete_patients.php',
+        "manager_toggle_status"     => PATH_API . '/QuanLy/manager_toggle_status.php',
 
         "manager_get_doctors"       => PATH_API   . '/QuanLy/bacsi.php',
         "manager_add_doctor"        => PATH_API . '/QuanLy/manager_add_doctor.php',
         "manager_update_doctor"     => PATH_API . '/QuanLy/manager_update_doctor.php',
         "manager_delete_doctor"     => PATH_API . '/QuanLy/manager_delete_doctor.php',
+        "manager_force_delete_doctor" => PATH_API . '/QuanLy/manager_force_delete_doctor.php',
+
+        "manager_get_account"       => PATH_API . '/QuanLy/manager_get_account.php',
     ];
 
     $apiName = $_GET['api'];

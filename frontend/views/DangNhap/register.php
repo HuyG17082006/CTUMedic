@@ -98,56 +98,5 @@
 </div>
 
 <script type="module" src="/dashboard/CTUMedic/frontend/assets/js/DangNhap/register.js">
-    // Hàm băm mật khẩu sử dụng Web Crypto API
-    async function hashSHA1(plainText) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(plainText);
-        // Ní có thể đổi thành 'SHA-1' hoặc 'SHA-256' tùy theo thiết kế backend
-        const hashBuffer = await crypto.subtle.digest('SHA-1', data); 
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    document.getElementById('registerForm').addEventListener('submit', async function(e) {
-        e.preventDefault(); // Ngăn form submit mặc định
-
-        const password = document.getElementById('password').value.trim();
-        const confirmPassword = document.getElementById('confirmPassword').value.trim();
-
-        // 1. Kiểm tra khớp mật khẩu
-        if (password !== confirmPassword) {
-            alert("Mật khẩu và xác nhận mật khẩu không khớp!");
-            document.getElementById('confirmPassword').focus();
-            return;
-        }
-
-        try {
-            // 2. Mã hóa mật khẩu
-            const hashedPassword = await hashSHA1(password);
-
-            // 3. Đưa dữ liệu vào FormData
-            const formData = new FormData(this);
-            formData.set('password', hashedPassword);
-            formData.delete('confirmPassword'); // Lược bỏ trường không cần thiết gửi lên server
-
-            // 4. Gửi dữ liệu bằng Fetch API lên PHP xử lý
-            const response = await fetch('index.php?api=register', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-
-            if (result.status === 'success') {
-                alert(result.message);
-                window.location.href = 'index.php?page=login';
-            } else {
-                alert(result.message);
-            }
-
-        } catch (error) {
-            console.error('Lỗi kết nối:', error);
-            alert('Có lỗi xảy ra, vui lòng thử lại.');
-        }
-    });
+    
 </script>

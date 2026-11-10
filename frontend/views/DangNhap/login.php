@@ -93,36 +93,5 @@
 </div>
 
 <script type="module" src="/dashboard/CTUMedic/frontend/assets/js/DangNhap/login.js">
-    // async function hashSHA1(message) {
-    //     const msgBuffer = new TextEncoder().encode(message);
-    //     const hashBuffer = await crypto.subtle.digest('SHA-1', msgBuffer);
-    //     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    //     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    // }
-    // document.getElementById('loginForm').addEventListener('submit', async function(e) {
-    //     e.preventDefault(); // Tạm dừng form submit để thực hiện mã hóa
-
-    //     const passwordHash = await hashSHA1(document.getElementById('loginPassword').value.trim());
-    //     const formData = new FormData(this);
-    //     formData.set('password', passwordHash);
-
-    //     try{
-    //         const response = await fetch('index.php?api=login',{
-    //             method: 'POST',
-    //             body: formData,
-    //         });
-
-    //         const result = await response.json();
-
-    //         if(result.status === 'success'){ 
-    //             window.location.href = 'index.php?page=' + result.role.toLowerCase();
-    //         }
-    //         else{
-    //             alert("Sai tai khoan hoac mat khau");
-    //         }
-    //     }
-    //     catch(error){
-    //         alert(error);
-    //     }
-    // });
+    
 </script>
