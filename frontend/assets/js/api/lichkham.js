@@ -51,7 +51,7 @@ export const cancelAppointment = async (appointmentId, cancellationReason) => {
             })
         }
     );
-   console.log(result) 
+
     return result;
 }
 

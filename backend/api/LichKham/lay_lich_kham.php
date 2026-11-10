@@ -50,19 +50,11 @@ if ($date !== '') {
 if ($status !== '') {
     $allowedStatuses = ['CONFIRMED', 'CANCELLED', 'COMPLETED'];
 
-    if (!in_array($status, $allowedStatuses, true)) {
-        http_response_code(400);
-
-        echo json_encode([
-            'status' => false,
-            'message' => 'Trạng thái không hợp lệ.'
-        ], JSON_UNESCAPED_UNICODE);
-
-        exit;
+    if (in_array($status, $allowedStatuses, true)) {
+        $conditions[] = 'lk.trangThai = ?';
+        $params[] = $status;
     }
-
-    $conditions[] = 'lk.trangThai = ?';
-    $params[] = $status;
+    
 }
 
 // Điều kiện lọc

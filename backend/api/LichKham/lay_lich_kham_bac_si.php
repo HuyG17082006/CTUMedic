@@ -27,7 +27,11 @@ $stmt = $pdo->prepare("
       AND ngayKham = ?
       AND (
           benhNhanId IS NULL
-          OR trangThai IN ('CONFIRMED', 'COMPLETED', 'CANCELLED')
+          OR (
+                trangThai IN ('CONFIRMED', 'COMPLETED', 'CANCELLED')
+                AND
+                cancelledBy = 'DOCTOR'
+                )
       )
     ORDER BY gioKham ASC
 ");

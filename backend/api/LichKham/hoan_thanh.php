@@ -8,7 +8,6 @@ header('Content-Type: application/json');
 try {
 
     $appointmentId = (int) ($_POST['appointmentId'] ?? 0);
-    $role = $_SESSION['role'];
 
     if ($role !== 'doctor' && $role !== 'manager')
         throw new Exception('Bạn không có quyền hoàn thành lịch khám.');

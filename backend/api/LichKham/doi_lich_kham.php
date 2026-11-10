@@ -10,10 +10,10 @@ try {
     $newDate = trim($_POST['ngayKham'] ?? '');
     $newTime = trim($_POST['gioKham'] ?? '');
 
-    if (($_SESSION['role'] ?? '') !== 'patient') {
+    if ($role !== 'patient') {
         throw new Exception('Bạn không có quyền đổi lịch khám.');
     }
-
+    
     if (!$appointmentId || !$newDate || !$newTime) {
         throw new Exception('Vui lòng cung cấp đầy đủ thông tin.');
     }
@@ -73,6 +73,7 @@ try {
           AND id <> ?
         FOR UPDATE
     ");
+    
     $stmt->execute([
         $oldAppointment['bacSiId'],
         $newDate,

@@ -9,7 +9,6 @@ try {
 
     $appointmentId = (int)($_POST['appointmentId'] ?? 0);
     $reason = trim($_POST['cancellationReason'] ?? '');
-    $role = $_SESSION['role'];
 
     $where = match ($role) {
         'patient' => 'AND lk.benhNhanId = (

@@ -73,6 +73,8 @@ if ($account) {
         $user = $account;
     }
 
+    $_SESSION['userId'] = 'manager';
+
     if ($user && isset($user['id']) && $roleLower !== 'manager') {
         $_SESSION['userId'] = $user['id'];
         $_SESSION['hoTen'] = $user['hoTen'];
