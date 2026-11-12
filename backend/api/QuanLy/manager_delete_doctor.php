@@ -1,51 +1,58 @@
 <?php
-ini_set('display_errors', 0);
-error_reporting(E_ALL);
+
+require_once __DIR__ . '/../../middleware/auth.php';
+require_once __DIR__ . '/../../database.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-require_once(PATH_BACKEND . '/database.php');
-
-if (!isset($_SESSION['taiKhoanId']) || (strtolower($_SESSION['role'] ?? '') !== 'manager' && strtolower($_SESSION['role'] ?? '') !== 'admin')) {
-    echo json_encode(['status' => 'failed', 'message' => 'Unauthorized: Không có quyền']);
-    exit();
-}
-
-$id = intval($_GET['id'] ?? 0);
-
-if ($id <= 0) {
-    echo json_encode(['status' => 'failed', 'message' => 'ID bác sĩ không hợp lệ']);
-    exit();
-}
-
 try {
-    // 1. Lấy taiKhoanId của bác sĩ
-    $stmtSelect = $pdo->prepare("SELECT taiKhoanId FROM bacSi WHERE id = ?");
-    $stmtSelect->execute([$id]);
-    $doctor = $stmtSelect->fetch(PDO::FETCH_ASSOC);
+    $doctorId = (int) ($_GET['id'] ?? $_POST['id'] ?? 0);
 
-    if (!$doctor) {
-        echo json_encode(['status' => 'failed', 'message' => 'Không tìm thấy thông tin bác sĩ']);
+    if ($doctorId <= 0) {
+        http_response_code(400);
+        echo json_encode([
+            'status' => 'failed',
+            'message' => 'Thiếu ID bác sĩ cần xóa.'
+        ], JSON_UNESCAPED_UNICODE);
         exit();
     }
 
-    if (!empty($doctor['taiKhoanId'])) {
-        // 2. Đổi isActive = 0 (Xóa mềm)
-        $stmtUpdate = $pdo->prepare("UPDATE taiKhoan SET isActive = 0 WHERE id = ?");
-        $stmtUpdate->execute([$doctor['taiKhoanId']]);
+    $stmtFind = $pdo->prepare("SELECT taiKhoanId FROM bacSi WHERE id = ?");
+    $stmtFind->execute([$doctorId]);
+    $taiKhoanId = $stmtFind->fetchColumn();
 
-        echo json_encode(['status' => 'success', 'message' => 'Đã vô hiệu hóa tài khoản bác sĩ thành công']);
+    if (!$taiKhoanId) {
+        http_response_code(404);
+        echo json_encode([
+            'status' => 'failed',
+            'message' => 'Không tìm thấy bác sĩ.'
+        ], JSON_UNESCAPED_UNICODE);
+        exit();
+    }
+
+    // Xóa ở taiKhoan sẽ tự động CASCADE xóa ở bacSi
+    // Nếu bác sĩ đang có lịch khám (ON DELETE RESTRICT), DB sẽ báo lỗi 23000 để bảo vệ dữ liệu
+    $stmtDel = $pdo->prepare("DELETE FROM taiKhoan WHERE id = ?");
+    $stmtDel->execute([$taiKhoanId]);
+
+    echo json_encode([
+        'status' => 'success',
+        'message' => 'Đã xóa vĩnh viễn bác sĩ khỏi hệ thống!'
+    ], JSON_UNESCAPED_UNICODE);
+    exit();
+
+} catch (PDOException $e) {
+    http_response_code(400);
+    if ($e->getCode() == 23000) {
+        echo json_encode([
+            'status' => 'failed',
+            'message' => 'Không thể xóa bác sĩ này vì đang có lịch khám trong hệ thống. Hãy chọn "Vô hiệu hóa" thay thế!'
+        ], JSON_UNESCAPED_UNICODE);
     } else {
-        echo json_encode(['status' => 'failed', 'message' => 'Bác sĩ chưa gắn tài khoản']);
+        echo json_encode([
+            'status' => 'failed',
+            'message' => 'Lỗi cơ sở dữ liệu: ' . $e->getMessage()
+        ], JSON_UNESCAPED_UNICODE);
     }
     exit();
-
-} catch (Exception $e) {
-    echo json_encode(['status' => 'failed', 'message' => 'Lỗi DB: ' . $e->getMessage()]);
-    exit();
 }
-?>

@@ -1,315 +1,181 @@
 <div class="appointment-container">
-    <!-- Thanh tìm kiếm và Nút Thêm Bác sĩ -->
-    <div class="appointment-filter-card" style="margin-bottom: 20px; background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-        <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
-            <div style="flex: 2; min-width: 260px;">
-                <input type="text" id="searchDoctorInput" placeholder="Tìm kiếm theo họ tên, chuyên khoa, email, tên đăng nhập..." 
-                    style="width: 100%; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; outline: none;">
+    <!-- Card Bộ lọc -->
+    <div class="appointment-filter-card">
+        <div class="filter-wrapper">
+            <div class="filter-item filter-item-search">
+                <label for="searchDoctorInput" class="filter-label">Từ khóa tìm kiếm</label>
+                <input type="text" id="searchDoctorInput" class="form-input" placeholder="Tìm theo họ tên, email, tên đăng nhập...">
             </div>
-            <div style="display: flex; gap: 8px;">
-                <button type="button" class="btn-primary" id="btnSearchDoctor" style="padding: 10px 18px; font-size: 14px; cursor: pointer; border-radius: 8px;">Tìm kiếm</button>
-                <button type="button" id="btnResetDoctorFilter" style="padding: 10px 14px; font-size: 14px; cursor: pointer; border: 1px solid #d1d5db; background: #f9fafb; border-radius: 8px; color: #374151;">Đặt lại</button>
-                <button type="button" onclick="openAddDoctorModal()" style="padding: 10px 18px; font-size: 14px; cursor: pointer; border-radius: 8px; background: #10b981; color: #fff; border: none;">+ Thêm bác sĩ</button>
+
+            <div class="filter-item">
+                <label for="filterSpecialty" class="filter-label">Chuyên khoa</label>
+                <select id="filterSpecialty" class="form-select">
+                    <option value="">Tất cả chuyên khoa</option>
+                    <option value="Nội tổng quát">Nội tổng quát</option>
+                    <option value="Nội khoa">Nội khoa</option>
+                    <option value="Nhi khoa">Nhi khoa</option>
+                    <option value="Tim mạch">Tim mạch</option>
+                    <option value="Da liễu">Da liễu</option>
+                </select>
+            </div>
+
+            <div class="filter-item">
+                <label for="filterDoctorStatus" class="filter-label">Trạng thái tài khoản</label>
+                <select id="filterDoctorStatus" class="form-select">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="1">Đang hoạt động</option>
+                    <option value="0">Đã vô hiệu hóa</option>
+                </select>
+            </div>
+
+            <div class="filter-item">
+                <label for="sortDoctorBy" class="filter-label">Sắp xếp theo</label>
+                <select id="sortDoctorBy" class="form-select">
+                    <option value="id_desc">Mới nhất</option>
+                    <option value="id_asc">Cũ nhất</option>
+                    <option value="name_asc">Tên (A &rarr; Z)</option>
+                    <option value="name_desc">Tên (Z &rarr; A)</option>
+                </select>
+            </div>
+
+            <div class="filter-buttons">
+                <button type="button" class="btn-primary-filter" id="btnSearchDoctor">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                    <span>Tìm kiếm</span>
+                </button>
+                <button type="button" class="btn-secondary-reset" id="btnResetDoctorFilter">Đặt lại</button>
             </div>
         </div>
     </div>
 
-    <!-- Bảng danh sách bác sĩ -->
-    <div class="appointment-table-card" style="background: #ffffff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow: hidden;">
-        <div style="padding: 20px 24px; border-bottom: 1px solid #f3f4f6;">
-            <h3 style="font-size: 18px; font-weight: 600; color: #111827; margin: 0;">Danh sách bác sĩ trong hệ thống</h3>
+    <!-- Card Bảng dữ liệu -->
+    <div class="appointment-table-card">
+        <div class="table-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 class="table-title">Danh sách bác sĩ trong hệ thống</h3>
+            <button type="button" class="btn-primary-filter" onclick="openAddDoctorModal()">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                <span>Thêm bác sĩ</span>
+            </button>
         </div>
-        
-        <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
+
+        <div class="table-responsive">
+            <table class="patient-table">
                 <thead>
-                    <tr style="background: #f9fafb; color: #4b5563; border-bottom: 1px solid #e5e7eb;">
-                        <th style="padding: 12px 16px; font-weight: 600;">STT</th>
-                        <th style="padding: 12px 16px; font-weight: 600;">Họ và tên</th>
-                        <th style="padding: 12px 16px; font-weight: 600;">Tên đăng nhập</th>
-                        <th style="padding: 12px 16px; font-weight: 600;">Chuyên khoa</th>
-                        <th style="padding: 12px 16px; font-weight: 600;">Email</th>
-                        <th style="padding: 12px 16px; font-weight: 600; text-align: center;">Hành động</th>
+                    <tr>
+                        <th style="width: 60px;">STT</th>
+                        <th>Họ và tên</th>
+                        <th>Tên đăng nhập</th>
+                        <th>Email</th>
+                        <th>Chuyên khoa</th>
+                        <th>Trạng thái</th>
+                        <th style="text-align: center; width: 220px;">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody id="doctorTableBody">
                     <tr>
-                        <td colspan="6" style="padding: 24px; text-align: center; color: #6b7280;">Đang tải dữ liệu...</td>
+                        <td colspan="7" class="table-empty-state">Đang tải dữ liệu...</td>
                     </tr>
                 </tbody>
             </table>
         </div>
+
+        <div class="pagination-container" id="doctorPaginationWrapper"></div>
     </div>
 </div>
 
-<!-- Modal Thêm Bác Sĩ -->
-<div id="addDoctorModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
-    <div style="background: #ffffff; width: 100%; max-width: 500px; border-radius: 12px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);">
-        <h3 style="margin-top: 0; font-size: 18px; color: #111827;">Thêm bác sĩ mới</h3>
+<!-- Modal Thêm Bác Sĩ Mới -->
+<div id="addDoctorModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Thêm bác sĩ mới</h3>
+            <button type="button" class="modal-close-btn" onclick="closeAddDoctorModal()">&times;</button>
+        </div>
+
         <form id="addDoctorForm">
-            <div style="margin-bottom: 12px;">
-                <label style="display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px;">Tên đăng nhập (*)</label>
-                <input type="text" id="addUsername" required style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; box-sizing: border-box;">
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label for="addDoctorUsername" class="form-label">Tên đăng nhập <span class="required">*</span></label>
+                    <input type="text" id="addDoctorUsername" required class="form-input" placeholder="VD: bs_nguyenvana">
+                </div>
+
+                <div class="form-group">
+                    <label for="addDoctorPassword" class="form-label">Mật khẩu <span class="required">*</span></label>
+                    <input type="password" id="addDoctorPassword" required class="form-input" placeholder="Nhập mật khẩu">
+                </div>
             </div>
-            <div style="margin-bottom: 12px;">
-                <label style="display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px;">Mật khẩu (*)</label>
-                <input type="password" id="addPassword" required style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; box-sizing: border-box;">
+
+            <div class="form-group">
+                <label for="addDoctorHoTen" class="form-label">Họ và tên <span class="required">*</span></label>
+                <input type="text" id="addDoctorHoTen" required class="form-input" placeholder="Nhập họ và tên bác sĩ">
             </div>
-            <div style="margin-bottom: 12px;">
-                <label style="display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px;">Họ và tên bác sĩ (*)</label>
-                <input type="text" id="addHoTen" required style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; box-sizing: border-box;">
+
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label for="addDoctorEmail" class="form-label">Email <span class="required">*</span></label>
+                    <input type="email" id="addDoctorEmail" required class="form-input" placeholder="doctor@ctumedic.vn">
+                </div>
+
+                <div class="form-group">
+                    <label for="addDoctorChuyenKhoa" class="form-label">Chuyên khoa <span class="required">*</span></label>
+                    <select id="addDoctorChuyenKhoa" required class="form-select">
+                        <option value="">-- Chọn chuyên khoa --</option>
+                        <option value="Nội tổng quát">Nội tổng quát</option>
+                        <option value="Nội khoa">Nội khoa</option>
+                        <option value="Nhi khoa">Nhi khoa</option>
+                        <option value="Tim mạch">Tim mạch</option>
+                        <option value="Da liễu">Da liễu</option>
+                    </select>
+                </div>
             </div>
-            <div style="margin-bottom: 12px;">
-                <label style="display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px;">Chuyên khoa</label>
-                <input type="text" id="addChuyenKhoa" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; box-sizing: border-box;">
-            </div>
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px;">Email</label>
-                <input type="email" id="addEmail" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; box-sizing: border-box;">
-            </div>
-            <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                <button type="button" onclick="closeAddDoctorModal()" style="padding: 8px 16px; border: 1px solid #d1d5db; background: #fff; border-radius: 6px; cursor: pointer;">Hủy</button>
-                <button type="submit" style="padding: 8px 16px; background: #10b981; color: #fff; border: none; border-radius: 6px; cursor: pointer;">Tạo mới</button>
+
+            <div class="modal-footer">
+                <button type="button" onclick="closeAddDoctorModal()" class="btn-secondary-reset">Hủy</button>
+                <button type="submit" class="btn-primary-filter">Tạo tài khoản</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- Modal Sửa Bác Sĩ -->
-<div id="editDoctorModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
-    <div style="background: #ffffff; width: 100%; max-width: 500px; border-radius: 12px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);">
-        <h3 style="margin-top: 0; font-size: 18px; color: #111827;">Chỉnh sửa thông tin bác sĩ</h3>
+<!-- Modal Sửa Thông Tin Bác Sĩ -->
+<div id="editDoctorModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Chỉnh sửa thông tin bác sĩ</h3>
+            <button type="button" class="modal-close-btn" onclick="closeEditDoctorModal()">&times;</button>
+        </div>
+
         <form id="editDoctorForm">
             <input type="hidden" id="editDoctorId">
-            <div style="margin-bottom: 12px;">
-                <label style="display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px;">Họ và tên (*)</label>
-                <input type="text" id="editHoTen" required style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; box-sizing: border-box;">
+
+            <div class="form-group">
+                <label for="editDoctorHoTen" class="form-label">Họ và tên <span class="required">*</span></label>
+                <input type="text" id="editDoctorHoTen" required class="form-input" placeholder="Nhập họ và tên">
             </div>
-            <div style="margin-bottom: 12px;">
-                <label style="display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px;">Chuyên khoa</label>
-                <input type="text" id="editChuyenKhoa" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; box-sizing: border-box;">
+
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label for="editDoctorEmail" class="form-label">Email <span class="required">*</span></label>
+                    <input type="email" id="editDoctorEmail" required class="form-input" placeholder="doctor@ctumedic.vn">
+                </div>
+
+                <div class="form-group">
+                    <label for="editDoctorChuyenKhoa" class="form-label">Chuyên khoa <span class="required">*</span></label>
+                    <select id="editDoctorChuyenKhoa" required class="form-select">
+                        <option value="Nội tổng quát">Nội tổng quát</option>
+                        <option value="Nội khoa">Nội khoa</option>
+                        <option value="Nhi khoa">Nhi khoa</option>
+                        <option value="Tim mạch">Tim mạch</option>
+                        <option value="Da liễu">Da liễu</option>
+                    </select>
+                </div>
             </div>
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px;">Email</label>
-                <input type="email" id="editEmail" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; box-sizing: border-box;">
-            </div>
-            <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                <button type="button" onclick="closeEditDoctorModal()" style="padding: 8px 16px; border: 1px solid #d1d5db; background: #fff; border-radius: 6px; cursor: pointer;">Hủy</button>
-                <button type="submit" style="padding: 8px 16px; background: #2563eb; color: #fff; border: none; border-radius: 6px; cursor: pointer;">Lưu thay đổi</button>
+
+            <div class="modal-footer">
+                <button type="button" onclick="closeEditDoctorModal()" class="btn-secondary-reset">Hủy</button>
+                <button type="submit" class="btn-primary-filter">Lưu thay đổi</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- Modal Xác Nhận Xóa Bác Sĩ (Custom Popup HTML/CSS Thuần) -->
-<div id="confirmDeleteDoctorModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1050; align-items: center; justify-content: center;">
-    <div style="background: #ffffff; width: 100%; max-width: 400px; border-radius: 12px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); text-align: center;">
-        <div style="width: 48px; height: 48px; background: #fee2e2; color: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 24px; font-weight: bold;">!</div>
-        <h3 style="margin: 0 0 8px; font-size: 18px; color: #111827;">Xác nhận xóa bác sĩ?</h3>
-        <p id="deleteConfirmMessage" style="font-size: 14px; color: #4b5563; margin: 0 0 20px;"></p>
-        
-        <input type="hidden" id="deleteDoctorId">
-        
-        <div style="display: flex; justify-content: center; gap: 12px;">
-            <button type="button" onclick="closeDeleteDoctorModal()" style="padding: 9px 18px; border: 1px solid #d1d5db; background: #fff; border-radius: 6px; cursor: pointer; font-size: 14px; color: #374151;">Hủy bỏ</button>
-            <button type="button" onclick="confirmExecuteDeleteDoctor()" style="padding: 9px 18px; background: #ef4444; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500;">Đồng ý xóa</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    let globalDoctors = [];
-
-    // Hàm mã hóa SHA-1 bằng Web Crypto API tích hợp sẵn của JS
-    async function sha1(str) {
-        const buffer = new TextEncoder().encode(str);
-        const digest = await crypto.subtle.digest('SHA-1', buffer);
-        return Array.from(new Uint8Array(digest))
-            .map(x => x.toString(16).padStart(2, '0'))
-            .join('');
-    }
-
-    // 1. Tải danh sách bác sĩ
-    async function loadDoctors() {
-        const tbody = document.getElementById('doctorTableBody');
-        tbody.innerHTML = `<tr><td colspan="6" style="padding: 24px; text-align: center; color: #6b7280;">Đang tải dữ liệu...</td></tr>`;
-
-        const search = document.getElementById('searchDoctorInput').value.trim();
-        const queryParams = new URLSearchParams({
-            api: 'manager_get_doctors',
-            search: search
-        });
-
-        try {
-            const response = await fetch(`index.php?${queryParams.toString()}`, { method: 'GET', credentials: 'include' });
-            const result = await response.json();
-
-            if (result.status === 'success') {
-                globalDoctors = result.data;
-                if (globalDoctors.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="6" style="padding: 24px; text-align: center; color: #6b7280;">Không tìm thấy bác sĩ nào.</td></tr>`;
-                    return;
-                }
-
-                let html = '';
-                globalDoctors.forEach((d, index) => {
-                    const safeName = (d.hoTen || '').replace(/'/g, "\\'");
-                    html += `
-                        <tr style="border-bottom: 1px solid #f3f4f6;">
-                            <td style="padding: 14px 16px;">${index + 1}</td>
-                            <td style="padding: 14px 16px; font-weight: 500;">${d.hoTen || 'Chưa cập nhật'}</td>
-                            <td style="padding: 14px 16px; color: #4b5563;">${d.username || ''}</td>
-                            <td style="padding: 14px 16px; color: #4b5563;">${d.chuyenKhoa || ''}</td>
-                            <td style="padding: 14px 16px; color: #4b5563;">${d.email || ''}</td>
-                            <td style="padding: 14px 16px; text-align: center;">
-                                <button type="button" onclick="openEditDoctorModal(${d.id})" 
-                                    style="padding: 4px 10px; background: #eab308; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; margin-right: 4px;">Sửa</button>
-                                <button type="button" onclick="deleteDoctor(${d.id}, '${safeName}')" 
-                                    style="padding: 4px 10px; background: #ef4444; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">Xóa</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-                tbody.innerHTML = html;
-            } else {
-                tbody.innerHTML = `<tr><td colspan="6" style="padding: 24px; text-align: center; color: #dc2626;">Lỗi: ${result.message}</td></tr>`;
-            }
-        } catch (error) {
-            tbody.innerHTML = `<tr><td colspan="6" style="padding: 24px; text-align: center; color: #dc2626;">Lỗi kết nối máy chủ!</td></tr>`;
-        }
-    }
-
-    // 2. Điều khiển Modal Thêm
-    function openAddDoctorModal() { document.getElementById('addDoctorModal').style.display = 'flex'; }
-    function closeAddDoctorModal() { 
-        document.getElementById('addDoctorModal').style.display = 'none'; 
-        document.getElementById('addDoctorForm').reset();
-    }
-
-    // 3. Điều khiển Modal Sửa
-    function openEditDoctorModal(doctorId) {
-        const d = globalDoctors.find(item => item.id == doctorId);
-        if (!d) return;
-
-        document.getElementById('editDoctorId').value = d.id;
-        document.getElementById('editHoTen').value = d.hoTen || '';
-        document.getElementById('editChuyenKhoa').value = d.chuyenKhoa || '';
-        document.getElementById('editEmail').value = d.email || '';
-
-        document.getElementById('editDoctorModal').style.display = 'flex';
-    }
-    function closeEditDoctorModal() { document.getElementById('editDoctorModal').style.display = 'none'; }
-
-    // 4. Điều khiển Modal Xác Nhận Xóa
-    function deleteDoctor(id, name) {
-        document.getElementById('deleteDoctorId').value = id;
-        document.getElementById('deleteConfirmMessage').innerText = `Bạn có chắc chắn muốn vô hiệu hóa tài khoản của bác sĩ "${name}" không?`;
-        document.getElementById('confirmDeleteDoctorModal').style.display = 'flex';
-    }
-
-    function closeDeleteDoctorModal() {
-        document.getElementById('confirmDeleteDoctorModal').style.display = 'none';
-    }
-
-    async function confirmExecuteDeleteDoctor() {
-        const id = document.getElementById('deleteDoctorId').value;
-        closeDeleteDoctorModal();
-
-        try {
-            const response = await fetch(`index.php?api=manager_delete_doctor&id=${id}`, {
-                method: 'GET',
-                credentials: 'include'
-            });
-
-            const result = await response.json();
-
-            if (result.status === 'success') {
-                alert(result.message || 'Đã vô hiệu hóa tài khoản bác sĩ thành công!');
-                loadDoctors();
-            } else {
-                alert('Lỗi: ' + result.message);
-            }
-        } catch (error) {
-            console.error(error);
-            alert('Đã xảy ra lỗi kết nối máy chủ!');
-        }
-    }
-
-    // 5. Gắn sự kiện khi DOM tải xong
-    document.addEventListener("DOMContentLoaded", function() {
-        loadDoctors();
-
-        // Tìm kiếm & Đặt lại
-        document.getElementById('btnSearchDoctor').addEventListener('click', loadDoctors);
-        document.getElementById('searchDoctorInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') loadDoctors(); });
-        document.getElementById('btnResetDoctorFilter').addEventListener('click', () => {
-            document.getElementById('searchDoctorInput').value = '';
-            loadDoctors();
-        });
-
-        // Submit Form Thêm Bác sĩ (Mã hóa SHA-1 trước khi gửi)
-        document.getElementById('addDoctorForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const rawPassword = document.getElementById('addPassword').value;
-            const passwordHash = await sha1(rawPassword);
-
-            const payload = {
-                username: document.getElementById('addUsername').value.trim(),
-                password: passwordHash, // Gửi chuỗi hash SHA-1
-                hoTen: document.getElementById('addHoTen').value.trim(),
-                chuyenKhoa: document.getElementById('addChuyenKhoa').value.trim(),
-                email: document.getElementById('addEmail').value.trim()
-            };
-
-            try {
-                const res = await fetch('index.php?api=manager_add_doctor', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify(payload)
-                });
-                const result = await res.json();
-                if (result.status === 'success') {
-                    alert('Thêm bác sĩ thành công!');
-                    closeAddDoctorModal();
-                    loadDoctors();
-                } else {
-                    alert('Lỗi: ' + result.message);
-                }
-            } catch (err) {
-                alert('Không thể kết nối máy chủ!');
-            }
-        });
-
-        // Submit Form Sửa Bác sĩ
-        document.getElementById('editDoctorForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const payload = {
-                id: document.getElementById('editDoctorId').value,
-                hoTen: document.getElementById('editHoTen').value.trim(),
-                chuyenKhoa: document.getElementById('editChuyenKhoa').value.trim(),
-                email: document.getElementById('editEmail').value.trim()
-            };
-
-            try {
-                const res = await fetch('index.php?api=manager_update_doctor', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify(payload)
-                });
-                const result = await res.json();
-                if (result.status === 'success') {
-                    alert('Cập nhật thông tin bác sĩ thành công!');
-                    closeEditDoctorModal();
-                    loadDoctors();
-                } else {
-                    alert('Lỗi: ' + result.message);
-                }
-            } catch (err) {
-                alert('Không thể cập nhật thông tin!');
-            }
-        });
-    });
-</script>
+<script type="module" src="/dashboard/CTUMedic/frontend/assets/js/QuanLy/bacsi.js"></script>
