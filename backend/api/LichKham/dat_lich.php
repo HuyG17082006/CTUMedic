@@ -47,7 +47,7 @@ try {
           AND ngayKham = ?
           AND gioKham = ?
           AND (
-                trangThai IN ('CONFIRMED', 'COMPLETED', 'NO_SHOW)
+                trangThai IN ('CONFIRMED', 'COMPLETED', 'NO_SHOW')
                 OR (
                     trangThai = 'CANCELLED'
                     AND cancelledBy = 'DOCTOR'

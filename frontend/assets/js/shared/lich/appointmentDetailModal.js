@@ -80,8 +80,8 @@ const renderAppointmentDetail = (appointment, role) => {
 
     if (!isCancelled) return;
 
-
-    setFields({
+    console.log(appointment)
+    setFields(appointmentModal, {
         "[data-detail-cancelled-by]":
             cancelledByMap[cancelledBy] || cancelledBy,
 

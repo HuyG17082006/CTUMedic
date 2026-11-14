@@ -15,25 +15,21 @@ if (!$doctorId) {
 
 $stmt = $pdo->prepare("
     SELECT
-        id,
-        bacSiId,
-        benhNhanId,
-        ngayKham,
-        gioKham,
-        trangThai,
-        cancelledBy
-    FROM lichKham
-    WHERE bacSiId = ?
-      AND ngayKham = ?
-      AND (
-          benhNhanId IS NULL
-          OR (
-                trangThai IN ('CONFIRMED', 'COMPLETED', 'CANCELLED')
-                AND
-                cancelledBy = 'DOCTOR'
-                )
+    id,
+    bacSiId,
+    benhNhanId,
+    ngayKham,
+    gioKham,
+    trangThai,
+    cancelledBy
+FROM lichKham
+WHERE bacSiId = ?
+  AND ngayKham = ?
+  AND NOT (
+        trangThai = 'CANCELLED'
+        AND cancelledBy = 'PATIENT'
       )
-    ORDER BY gioKham ASC
+ORDER BY gioKham ASC
 ");
 
 $stmt->execute([$doctorId, $date]);

@@ -24,8 +24,8 @@ $cccd           = !empty($_POST['CCCD']) ? trim($_POST['CCCD']) : null;
 $email          = !empty($_POST['email']) ? trim($_POST['email']) : null;
 
 if (empty($username) || empty($passwordHash) || empty($hoTen) || empty($sdt)) {
-    echo json_encode([
-        'status' => 'error',
+    echo json_encode ([
+        'status' => 'failed',
         'message' => 'Vui lòng điền đầy đủ các thông tin bắt buộc (*)'
     ], JSON_UNESCAPED_UNICODE);
     exit();

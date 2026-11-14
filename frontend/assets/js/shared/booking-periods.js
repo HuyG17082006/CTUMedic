@@ -12,7 +12,7 @@ const renderTimeSlot = ({ start, end }, unavailableList, onSelect) => {
     const sameStart = unavailableList.some(
         ({ gioKham, cancelledBy }) => {
             
-            return (normalizedTime(gioKham) === start) && (cancelledBy === "PATIENT")
+            return (normalizedTime(gioKham) === start) && (cancelledBy !== "PATIENT")
         }
     );
 

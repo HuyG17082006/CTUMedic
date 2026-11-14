@@ -131,7 +131,7 @@
             formData.delete('confirmPassword'); // Lược bỏ trường không cần thiết gửi lên server
 
             // 4. Gửi dữ liệu bằng Fetch API lên PHP xử lý
-            const response = await fetch('index.php?api=register', {
+            const response = await fetch('/dashboard/CTUMedic/backend/api/TaiKhoan/register.php', {
                 method: 'POST',
                 body: formData
             });

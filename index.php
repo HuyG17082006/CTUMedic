@@ -34,7 +34,6 @@ if (isset($_GET['api'])) {
     }
 }
 
-$_SESSION['role'] = 'manager';
 $role = $_SESSION['role'] ?? "";
 $page = $_GET['page'] ?? null;
 

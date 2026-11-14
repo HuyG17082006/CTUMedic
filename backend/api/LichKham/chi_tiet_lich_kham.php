@@ -47,16 +47,14 @@ try {
         INNER JOIN bacSi bs
             ON lk.bacSiId = bs.id
 
-        WHERE lk.id = :id
+        WHERE lk.id = ?
 
         LIMIT 1
     ";
 
     $stmt = $pdo->prepare($sql);
 
-    $stmt->execute([
-        ':id' => $appointmentId
-    ]);
+    $stmt->execute([$appointmentId]);
 
     $appointment = $stmt->fetch(PDO::FETCH_ASSOC);
 

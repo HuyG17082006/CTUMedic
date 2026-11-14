@@ -261,7 +261,7 @@
             const cccd = document.getElementById('modal_cccd').value;
 
             try {
-                const response = await fetch('index.php?api=profile', {
+                const response = await fetch('/dashboard/CTUMedic/api/TaiKhoan/trang_ca_nhanh.php', {
                     method: 'POST',
                     credentials: 'include',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

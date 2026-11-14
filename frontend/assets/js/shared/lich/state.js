@@ -47,9 +47,9 @@ export const changeUrl = () => {
 
 export const resetParams = () => {
 
-    state.specialty = '';
-    state.doctorId = '';
-    state.date = '';
-    state.status = '';
-    state.pageNumber = 1;
+    params.specialty = '';
+    params.doctorId = '';
+    params.date = '';
+    params.status = '';
+    params.pageNumber = 1;
 };

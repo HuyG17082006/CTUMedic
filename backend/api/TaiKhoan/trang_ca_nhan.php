@@ -86,7 +86,7 @@ try {
     $merged['role'] = $roleLower;
 
     echo json_encode([
-        'status' => 'status',
+        'status' => 'success',
         'information' => $merged
     ]);
     exit();

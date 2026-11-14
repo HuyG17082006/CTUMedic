@@ -26,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $loginIdentifier = trim($_POST['loginIdentifier'] ?? '');
 $passwordHash = trim($_POST['password'] ?? '');
 
-
 // Kiểm tra tài khoản
 $stmt = $pdo->prepare("
         SELECT tk.id AS taiKhoanId, tk.username, tk.role
@@ -48,48 +47,45 @@ $stmt->execute([
 
 $account = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($account) {
-    $roleLower = strtolower($account['role']);
-    if ($roleLower === 'admin') {
-        $roleLower = "manager";
-    }
-
-    // Lưu thông tin vào Session chuẩn xác
-    $_SESSION['taiKhoanId'] = $account['taiKhoanId'];
-    $_SESSION['role'] = $roleLower;
-    // $_SESSION['user_name'] = $account['username'];
-
-    // Lấy thông tin chi tiết dựa theo từng Role
-    $user = null;
-    if ($roleLower === 'patient') {
-        $stmtUser = $pdo->prepare('SELECT * FROM benhNhan WHERE taiKhoanId = ?;');
-        $stmtUser->execute([$account['taiKhoanId']]);
-        $user = $stmtUser->fetch(PDO::FETCH_ASSOC);
-    } elseif ($roleLower === 'doctor') {
-        $stmtUser = $pdo->prepare('SELECT * FROM bacSi WHERE taiKhoanId = ?;');
-        $stmtUser->execute([$account['taiKhoanId']]);
-        $user = $stmtUser->fetch(PDO::FETCH_ASSOC);
-    } elseif ($roleLower === 'manager') {
-        $user = $account;
-    }
-
-    $_SESSION['userId'] = 'manager';
-
-    if ($user && isset($user['id']) && $roleLower !== 'manager') {
-        $_SESSION['userId'] = $user['id'];
-        $_SESSION['hoTen'] = $user['hoTen'];
-    }
-
-    echo json_encode([
-        'status' => 'success',
-        'role' => $roleLower,
-        'user' => $user,
-    ]);
-    exit();
-} else {
+if (!$account) {
     echo json_encode([
         'status' => 'failed',
         'message' => 'Sai tên đăng nhập, CCCD hoặc mật khẩu!',
     ]);
     exit();
 }
+
+$roleLower = strtolower($account['role']);
+
+// Lưu thông tin vào Session chuẩn xác
+$_SESSION['taiKhoanId'] = $account['taiKhoanId'];
+$_SESSION['role'] = $roleLower;
+
+// Lấy thông tin chi tiết dựa theo từng Role
+$user = null;
+if ($roleLower === 'patient') {
+    $stmtUser = $pdo->prepare('SELECT * FROM benhNhan WHERE taiKhoanId = ?;');
+    $stmtUser->execute([$account['taiKhoanId']]);
+    $user = $stmtUser->fetch(PDO::FETCH_ASSOC);
+} elseif ($roleLower === 'doctor') {
+    $stmtUser = $pdo->prepare('SELECT * FROM bacSi WHERE taiKhoanId = ?;');
+    $stmtUser->execute([$account['taiKhoanId']]);
+    $user = $stmtUser->fetch(PDO::FETCH_ASSOC);
+} elseif ($roleLower === 'manager') {
+    $user = $account;
+}
+
+$_SESSION['userId'] = 'manager';
+
+if ($user && isset($user['id']) && $roleLower !== 'manager') {
+    $_SESSION['userId'] = $user['id'];
+    $_SESSION['hoTen'] = $user['hoTen'];
+}
+
+echo json_encode([
+    'status' => 'success',
+    'role' => $roleLower,
+    'user' => $user,
+]);
+
+exit();
