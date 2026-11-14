@@ -1,406 +1,447 @@
 
-/* ==============================
-   QUẢN LÝ BỆNH NHÂN
-============================== */
-
-.manage {
+.appointment-container {
     width: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1f2937;
 }
 
-/* Thanh tìm kiếm */
-
-.manage-toolbar {
-    display: flex;
-    align-items: center;
-    gap: 14px;
+.page-header-block {
     margin-bottom: 20px;
 }
 
-.manage-search {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 0 14px;
-    min-width: 0;
-    height: 44px;
-    background: #fff;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    color: #9ca3af;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.manage-search:focus-within {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.manage-search input {
-    flex: 1;
-    width: 100%;
-    border: none;
-    outline: none;
-    background: transparent;
-    font-size: 14px;
+.page-title {
+    margin: 0 0 4px 0;
+    font-size: 24px;
+    font-weight: 700;
     color: #111827;
 }
 
-.manage-search input::placeholder {
-    color: #9ca3af;
+.page-subtitle {
+    margin: 0;
+    font-size: 14px;
+    color: #6b7280;
 }
 
-.manage-toolbar > button {
-    height: 44px;
-    padding: 0 18px;
+/* ================= CARD BỘ LỌC ================= */
+.appointment-filter-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e5e7eb;
+    margin-bottom: 24px;
+}
+
+.filter-wrapper {
+    display: grid;
+    grid-template-columns: 2fr repeat(4, 1fr) auto;
+    gap: 14px;
+    align-items: end;
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.filter-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #4b5563;
+}
+
+.form-input,
+.form-select {
+    width: 100%;
+    height: 40px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #111827;
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+
+.form-input:focus,
+.form-select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-primary-filter {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
+    height: 40px;
+    padding: 0 18px;
+    background-color: #2563eb;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
     white-space: nowrap;
+    transition: background-color 0.2s;
 }
 
-/* Bảng */
+.btn-primary-filter:hover {
+    background-color: #1d4ed8;
+}
 
-.manage-card {
-    overflow: hidden;
-    background: #fff;
+.btn-secondary-reset {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 16px;
+    background-color: #f3f4f6;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s;
+}
+
+.btn-secondary-reset:hover {
+    background-color: #e5e7eb;
+}
+
+/* ================= BẢNG DỮ LIỆU ================= */
+.appointment-table-card {
+    background: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
 }
 
-.manage-header {
-    padding: 20px 24px;
-    border-bottom: 1px solid #f3f4f6;
+.table-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.manage-header h3 {
+.table-title {
     margin: 0;
-    color: #111827;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 600;
+    color: #111827;
 }
 
-.manage-table-wrapper {
+.table-responsive {
     width: 100%;
     overflow-x: auto;
 }
 
-.manage-table {
+.patient-table {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
     font-size: 14px;
 }
 
-.manage-table thead {
-    background: #f9fafb;
-    color: #4b5563;
-}
-
-.manage-table th {
-    padding: 14px 16px;
-    font-weight: 600;
-    white-space: nowrap;
+.patient-table thead {
+    background-color: #f9fafb;
     border-bottom: 1px solid #e5e7eb;
 }
 
-.manage-table td {
-    padding: 14px 16px;
-    color: #4b5563;
-    border-bottom: 1px solid #f3f4f6;
-}
-
-.manage-table tbody tr:hover {
-    background: #f9fafb;
-}
-
-.manage-table td:last-child {
-    white-space: nowrap;
-}
-
-.manage-empty {
-    padding: 28px !important;
-    text-align: center;
-    color: #6b7280 !important;
-}
-
-/* Trạng thái */
-
-.manage-status {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5px 10px;
-    border-radius: 20px;
+.patient-table th {
+    padding: 12px 16px;
     font-size: 12px;
     font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #4b5563;
     white-space: nowrap;
 }
 
-.manage-status.active {
+.patient-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f3f4f6;
+    color: #1f2937;
+    vertical-align: middle;
+}
+
+.patient-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Dòng tài khoản bị vô hiệu hóa */
+.patient-table tbody tr.row-disabled {
+    background-color: #f9fafb;
+    color: #9ca3af;
+}
+
+.patient-table tbody tr.row-disabled td {
+    color: #9ca3af;
+}
+
+.table-empty-state {
+    text-align: center;
+    padding: 32px !important;
+    color: #6b7280;
+}
+
+/* ================= BADGE TRẠNG THÁI & GIỚI TÍNH ================= */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.badge-active {
+    background-color: #dcfce7;
     color: #15803d;
-    background: #dcfce7;
 }
 
-.manage-status.inactive {
-    color: #dc2626;
-    background: #fee2e2;
+.badge-disabled {
+    background-color: #fee2e2;
+    color: #b91c1c;
 }
 
-/* Modal */
+.badge-gender-male {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+}
 
-.manage-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    display: none;
+.badge-gender-female {
+    background-color: #fce7f3;
+    color: #be185d;
+}
+
+/* ================= NÚT THAO TÁC TRONG BẢNG ================= */
+.btn-action-group {
+    display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    gap: 6px;
 }
 
-.manage-modal.active {
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+
+.btn-action svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+}
+
+.btn-edit {
+    background-color: #eff6ff;
+    color: #2563eb;
+    border-color: #bfdbfe;
+}
+
+.btn-edit:hover {
+    background-color: #dbeafe;
+}
+
+.btn-disable {
+    background-color: #fffbeb;
+    color: #d97706;
+    border-color: #fde68a;
+}
+
+.btn-disable:hover {
+    background-color: #fef3c7;
+}
+
+.btn-activate {
+    background-color: #f0fdf4;
+    color: #16a34a;
+    border-color: #bbf7d0;
+}
+
+.btn-activate:hover {
+    background-color: #dcfce7;
+}
+
+.btn-force-delete {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border-color: #fecaca;
+}
+
+.btn-force-delete:hover {
+    background-color: #fee2e2;
+}
+
+/* ================= PHÂN TRANG ================= */
+.pagination-container {
     display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 6px;
+    padding: 16px 20px;
+    border-top: 1px solid #e5e7eb;
 }
 
-.manage-overlay {
-    position: absolute;
+.page-btn {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid #d1d5db;
+    background-color: #ffffff;
+    color: #374151;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.page-btn:hover {
+    background-color: #f3f4f6;
+}
+
+.page-btn.active {
+    background-color: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+}
+
+/* ================= MODAL CHỈNH SỬA ================= */
+.modal-overlay {
+    position: fixed;
     inset: 0;
-    background: rgba(15, 23, 42, 0.5);
+    background-color: rgba(17, 24, 39, 0.55);
     backdrop-filter: blur(2px);
-}
-
-.manage-modal-content {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 620px;
-    max-height: 90vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-}
-
-.manage-modal-header {
     display: flex;
     align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 16px;
+}
+
+.modal-content {
+    background: #ffffff;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    animation: modalFadeIn 0.2s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+    display: flex;
     justify-content: space-between;
-    gap: 15px;
-    padding: 20px 24px;
+    align-items: center;
+    padding-bottom: 14px;
+    margin-bottom: 18px;
     border-bottom: 1px solid #e5e7eb;
 }
 
-.manage-modal-header h3 {
+.modal-title {
     margin: 0;
-    color: #111827;
     font-size: 18px;
     font-weight: 600;
+    color: #111827;
 }
 
-.manage-modal-header p {
-    margin: 5px 0 0;
-    color: #6b7280;
-    font-size: 13px;
-}
-
-.manage-close {
-    flex-shrink: 0;
-    width: 34px;
-    height: 34px;
+.modal-close-btn {
+    background: none;
     border: none;
-    border-radius: 8px;
-    background: transparent;
+    font-size: 24px;
+    line-height: 1;
     color: #6b7280;
-    font-size: 18px;
     cursor: pointer;
 }
 
-.manage-close:hover {
-    background: #f3f4f6;
+.modal-close-btn:hover {
+    color: #111827;
+}
+
+.form-group {
+    margin-bottom: 14px;
+}
+
+.form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 6px;
+}
+
+.required {
     color: #dc2626;
 }
 
-.manage-modal-body {
-    padding: 22px 24px;
-    overflow-y: auto;
-}
-
-.manage-section + .manage-section {
-    margin-top: 24px;
-    padding-top: 22px;
-    border-top: 1px solid #e5e7eb;
-}
-
-.manage-section h4 {
+.modal-footer {
     display: flex;
-    align-items: center;
-    gap: 9px;
-    margin: 0 0 18px;
-    color: #1f2937;
-    font-size: 15px;
-    font-weight: 600;
-}
-
-.manage-section h4 i {
-    color: #2563eb;
-}
-
-/* Thông tin chi tiết */
-
-.manage-info-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px 24px;
-}
-
-.manage-info-item {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-}
-
-.manage-info-item > span:first-child {
-    color: #6b7280;
-    font-size: 13px;
-}
-
-.manage-info-item strong {
-    color: #111827;
-    font-size: 14px;
-    font-weight: 500;
-    overflow-wrap: anywhere;
-}
-
-.manage-password {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    color: #9ca3af !important;
-    font-size: 13px !important;
-}
-
-/* Form */
-
-.manage-form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-}
-
-.manage-form-group {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-}
-
-.manage-form-group.full {
-    grid-column: 1 / -1;
-}
-
-.manage-form-group label {
-    color: #374151;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.manage-form-group input {
-    width: 100%;
-    height: 40px;
-    padding: 0 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    outline: none;
-    color: #111827;
-    font-size: 14px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.manage-form-group input:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-/* Footer */
-
-.manage-modal-footer {
-    display: flex;
-    align-items: center;
     justify-content: flex-end;
     gap: 10px;
-    padding: 16px 24px;
+    margin-top: 22px;
+    padding-top: 16px;
     border-top: 1px solid #e5e7eb;
 }
 
-.manage-modal-footer button {
-    min-height: 38px;
-    padding: 0 17px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-}
-
-.btn-secondary {
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    background: #fff;
-    color: #374151;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-.btn-secondary:hover {
-    background: #f9fafb;
-}
-
-/* Responsive */
-
-@media (max-width: 768px) {
-    .manage-toolbar {
-        align-items: stretch;
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1200px) {
+    .filter-wrapper {
+        grid-template-columns: repeat(3, 1fr);
     }
-
-    .manage-toolbar > button {
-        padding: 0 12px;
+    .filter-item-search {
+        grid-column: span 3;
+    }
+    .filter-buttons {
+        grid-column: span 3;
+        justify-content: flex-end;
     }
 }
 
-@media (max-width: 550px) {
-    .manage-toolbar {
-        flex-direction: column;
-    }
-
-    .manage-toolbar > button {
-        width: 100%;
-    }
-
-    .manage-info-grid,
-    .manage-form-grid {
+@media (max-width: 640px) {
+    .filter-wrapper {
         grid-template-columns: 1fr;
     }
-
-    .manage-form-group.full {
-        grid-column: auto;
+    .filter-item-search,
+    .filter-buttons {
+        grid-column: span 1;
     }
-
-    .manage-modal {
-        padding: 10px;
-    }
-
-    .manage-modal-content {
-        max-height: 95vh;
-    }
-
-    .manage-modal-header,
-    .manage-modal-body,
-    .manage-modal-footer {
-        padding-left: 16px;
-        padding-right: 16px;
+    .form-row-2 {
+        grid-template-columns: 1fr;
     }
 }

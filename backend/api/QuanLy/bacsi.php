@@ -6,59 +6,78 @@ require_once __DIR__ . '/../../database.php';
 header('Content-Type: application/json; charset=utf-8');
 
 try {
-    $search = trim($_GET['search'] ?? '');
+    $search     = trim($_GET['search'] ?? '');
+    $specialty  = trim($_GET['specialty'] ?? '');
+    $status     = trim($_GET['status'] ?? ''); // '1' | '0' | ''
+    $sort       = trim($_GET['sort'] ?? 'id_desc');
 
     $pageNumber = max(1, (int) ($_GET['pageNumber'] ?? 1));
     $limit = 10;
     $offset = ($pageNumber - 1) * $limit;
 
-    $conditions = ['tk.isActive = 1'];
+    $conditions = [];
     $params = [];
 
     if ($search !== '') {
-        $conditions[] = '(bs.hoTen LIKE ? OR bs.chuyenKhoa LIKE ? OR bs.email LIKE ? OR tk.username LIKE ?)';
-
-        $searchTerm = "%{$search}%";
-        $params = [$searchTerm, $searchTerm, $searchTerm, $searchTerm];
+        $conditions[] = '(bs.hoTen LIKE ? OR bs.email LIKE ? OR tk.username LIKE ?)';
+        $term = "%{$search}%";
+        array_push($params, $term, $term, $term);
     }
 
-    $whereClause = 'WHERE ' . implode(' AND ', $conditions);
+    if ($specialty !== '') {
+        $conditions[] = 'bs.chuyenKhoa = ?';
+        $params[] = $specialty;
+    }
 
-    $countQuery = "
+    if ($status === '1') {
+        $conditions[] = 'tk.isActive = 1';
+    } elseif ($status === '0') {
+        $conditions[] = 'tk.isActive = 0';
+    }
+
+    $whereClause = count($conditions) > 0 ? 'WHERE ' . implode(' AND ', $conditions) : '';
+
+    $countStmt = $pdo->prepare("
         SELECT COUNT(*)
         FROM bacSi bs
-        JOIN taiKhoan tk ON bs.taiKhoanId = tk.id
+        INNER JOIN taiKhoan tk ON bs.taiKhoanId = tk.id
         $whereClause
-    ";
-
-    $countStmt = $pdo->prepare($countQuery);
+    ");
     $countStmt->execute($params);
-
     $totalRecords = (int) $countStmt->fetchColumn();
 
-    $query = "
+    switch ($sort) {
+        case 'id_asc':
+            $orderBy = 'bs.id ASC';
+            break;
+        case 'name_asc':
+            $orderBy = 'bs.hoTen ASC';
+            break;
+        case 'name_desc':
+            $orderBy = 'bs.hoTen DESC';
+            break;
+        case 'id_desc':
+        default:
+            $orderBy = 'bs.id DESC';
+            break;
+    }
+
+    $stmt = $pdo->prepare("
         SELECT
             bs.id,
+            bs.taiKhoanId,
             bs.hoTen,
             bs.email,
             bs.chuyenKhoa,
-            tk.username
-
+            tk.username,
+            tk.isActive
         FROM bacSi bs
-
-        JOIN taiKhoan tk
-            ON bs.taiKhoanId = tk.id
-
+        INNER JOIN taiKhoan tk ON bs.taiKhoanId = tk.id
         $whereClause
-
-        ORDER BY bs.id DESC
-
+        ORDER BY $orderBy
         LIMIT $limit OFFSET $offset
-    ";
-
-    $stmt = $pdo->prepare($query);
+    ");
     $stmt->execute($params);
-
     $list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([
@@ -71,16 +90,13 @@ try {
             'totalPages' => (int) ceil($totalRecords / $limit)
         ]
     ], JSON_UNESCAPED_UNICODE);
-
     exit();
 
 } catch (Exception $e) {
     http_response_code(500);
-
     echo json_encode([
         'status' => 'failed',
-        'message' => 'Lỗi truy vấn cơ sở dữ liệu.'
+        'message' => 'Lỗi truy vấn danh sách bác sĩ: ' . $e->getMessage()
     ], JSON_UNESCAPED_UNICODE);
-
     exit();
 }

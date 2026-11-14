@@ -1,331 +1,130 @@
-<div class="thong-tin-tai-khoan">
-    <form id="profileDisplayForm">
-        <div class="form-section">
-            <h3>Thông tin tài khoản</h3>
-
-            <div class="form-group">
-                <label for="username">Tên đăng nhập <span>*</span></label>
-                <input type="text" id="username" name="username"
-                    placeholder="Nhập tên đăng nhập"
-                    maxlength="50" autocomplete="username" required readonly>
-            </div>
+<div class="appointment-container">
+    <!-- Card 1: Thông tin tài khoản hệ thống -->
+    <div class="appointment-table-card" style="margin-bottom: 20px;">
+        <div class="table-header">
+            <h3 class="table-title">Thông tin tài khoản đăng nhập</h3>
         </div>
 
-        <div class="form-section">
-            <h3>Thông tin cá nhân</h3>
-
-            <div class="form-group">
-                <label for="hoTen">Họ và tên <span>*</span></label>
-                <input type="text" id="hoTen" name="hoTen"
-                    placeholder="Nhập họ và tên"
-                    maxlength="100" autocomplete="name" required readonly>
-            </div>
-
-            <!-- Trường chuyên khoa (Chỉ hiển thị khi là Bác sĩ) -->
-            <div class="form-group" id="groupChuyenKhoa" style="display: none; margin-top: 15px;">
-                <label for="chuyenKhoa">Chuyên khoa</label>
-                <input type="text" id="chuyenKhoa" name="chuyenKhoa" class="form-control" readonly>
-            </div>
-
-            <!-- Các trường thông tin riêng của Bệnh nhân -->
-            <div class="patient-fields">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="ngaySinh">Ngày sinh</label>
-                        <input type="date" id="ngaySinh" name="ngaySinh" readonly>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="SDT">Số điện thoại <span>*</span></label>
-                        <input type="tel" id="SDT" name="SDT"
-                            placeholder="Nhập số điện thoại"
-                            maxlength="10" pattern="0[0-9]{9}"
-                            autocomplete="tel" readonly>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="CCCD">CCCD/CMND</label>
-                        <input type="text" id="CCCD" name="CCCD"
-                            placeholder="Nhập số CCCD/CMND"
-                            maxlength="12" readonly>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">Email <span>*</span></label>
-                        <input type="email" id="email" name="email"
-                            placeholder="Nhập địa chỉ email"
-                            maxlength="255" autocomplete="email" readonly>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Trường Email dành riêng cho Bác sĩ -->
-            <div class="doctor-fields" style="display: none; margin-top: 15px;">
+        <div style="padding: 20px;">
+            <div class="form-row-2">
                 <div class="form-group">
-                    <label for="doctor_email">Email <span>*</span></label>
-                    <input type="email" id="doctor_email" name="email" class="form-control" readonly>
-                </div>
-            </div>
-        </div>
-
-        <!-- Khu vực nút bấm -->
-        <div class="appointment-modal__actions" style="border-top: none; margin-top: 20px; padding-top: 0;">
-            <button type="button" class="btn-secondary" id="btnExit">Thoát</button>
-            <button type="button" class="btn-secondary" id="btnOpenChangeInfo" style="display: none;">Sửa thông tin</button>
-            <button type="button" class="btn-primary" id="btnOpenChangePassword" style="display: none;">Thay đổi mật khẩu</button>
-        </div>
-    </form>
-</div>
-
-<!-- POPUP MODAL SỬA THÔNG TIN (Dành cho Bệnh nhân) -->
-<div id="editModal" class="appointment-modal" hidden>
-    <div class="appointment-modal__backdrop"></div>
-    <div class="appointment-modal__dialog" style="max-width: 550px;">
-        <div class="appointment-modal__header">
-            <div>
-                <h2>Chỉnh sửa thông tin cá nhân</h2>
-                <p>Cập nhật thông tin liên lạc của bạn</p>
-            </div>
-            <button type="button" class="appointment-modal__close" id="btnCloseModal">&times;</button>
-        </div>
-        
-        <form id="editProfileForm">
-            <div style="padding: 22px 24px;">
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <label for="modal_email" style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px;">Email mới <span>*</span></label>
-                    <input type="email" id="modal_email" name="email" class="form-control" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px;" required>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <label for="modal_sdt" style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px;">Số điện thoại mới <span>*</span></label>
-                    <input type="tel" id="modal_sdt" name="sdt" class="form-control" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px;" maxlength="10" pattern="0[0-9]{9}" required>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <label for="modal_ngaySinh" style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px;">Ngày sinh mới</label>
-                    <input type="date" id="modal_ngaySinh" name="ngaySinh" class="form-control" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px;">
+                    <label class="form-label">Tên đăng nhập</label>
+                    <input type="text" id="profileUsername" class="form-input" disabled style="background-color: #f3f4f6; font-weight: 600;">
                 </div>
 
                 <div class="form-group">
-                    <label for="modal_cccd" style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px;">CCCD/CMND mới</label>
-                    <input type="text" id="modal_cccd" name="cccd" class="form-control" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px;" maxlength="12">
+                    <label class="form-label">Vai trò hệ thống</label>
+                    <input type="text" id="profileRole" class="form-input" disabled style="background-color: #f3f4f6;">
                 </div>
             </div>
 
-            <div class="appointment-modal__actions" style="padding: 16px 24px; background: #f8fafc;">
-                <button type="button" class="btn-secondary" id="btnCancelModal">Hủy</button>
-                <button type="submit" class="btn-primary">Lưu thay đổi</button>
+            <div class="form-group" style="margin-top: 12px;">
+                <label class="form-label">Trạng thái hoạt động</label>
+                <div id="profileStatusBadge" style="padding-top: 6px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 2: Thông tin hồ sơ cá nhân (Tự động hiện nếu là Bệnh nhân hoặc Bác sĩ) -->
+    <div id="personalProfileCard" class="appointment-table-card" style="display: none; margin-bottom: 20px;">
+        <div class="table-header">
+            <h3 class="table-title">Thông tin hồ sơ cá nhân</h3>
+        </div>
+
+        <form id="updateProfileForm" style="padding: 20px;">
+            <!-- Form dành cho Bệnh nhân -->
+            <div id="patientProfileFields" style="display: none;">
+                <div class="form-group">
+                    <label for="pfPatientHoTen" class="form-label">Họ và tên <span class="required">*</span></label>
+                    <input type="text" id="pfPatientHoTen" class="form-input" placeholder="Nhập họ và tên">
+                </div>
+
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="pfPatientNgaySinh" class="form-label">Ngày sinh</label>
+                        <input type="date" id="pfPatientNgaySinh" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pfPatientSDT" class="form-label">Số điện thoại</label>
+                        <input type="text" id="pfPatientSDT" class="form-input" placeholder="09xxxxxxxx">
+                    </div>
+                </div>
+
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="pfPatientEmail" class="form-label">Email</label>
+                        <input type="email" id="pfPatientEmail" class="form-input" placeholder="example@email.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pfPatientCCCD" class="form-label">CCCD</label>
+                        <input type="text" id="pfPatientCCCD" class="form-input" placeholder="Nhập số CCCD">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form dành cho Bác sĩ -->
+            <div id="doctorProfileFields" style="display: none;">
+                <div class="form-group">
+                    <label for="pfDoctorHoTen" class="form-label">Họ và tên <span class="required">*</span></label>
+                    <input type="text" id="pfDoctorHoTen" class="form-input" placeholder="Nhập họ và tên">
+                </div>
+
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="pfDoctorEmail" class="form-label">Email <span class="required">*</span></label>
+                        <input type="email" id="pfDoctorEmail" class="form-input" placeholder="doctor@ctumedic.vn">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pfDoctorChuyenKhoa" class="form-label">Chuyên khoa <span class="required">*</span></label>
+                        <select id="pfDoctorChuyenKhoa" class="form-select">
+                            <option value="Nội tổng quát">Nội tổng quát</option>
+                            <option value="Nội khoa">Nội khoa</option>
+                            <option value="Nhi khoa">Nhi khoa</option>
+                            <option value="Tim mạch">Tim mạch</option>
+                            <option value="Da liễu">Da liễu</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
+                <button type="submit" class="btn-primary-filter">Lưu thông tin cá nhân</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Card 3: Đổi mật khẩu -->
+    <div class="appointment-table-card">
+        <div class="table-header">
+            <h3 class="table-title">Đổi mật khẩu</h3>
+        </div>
+
+        <form id="changePasswordForm" style="padding: 20px;">
+            <div class="form-group">
+                <label for="oldPassword" class="form-label">Mật khẩu hiện tại <span class="required">*</span></label>
+                <input type="password" id="oldPassword" required class="form-input" placeholder="Nhập mật khẩu đang sử dụng">
+            </div>
+
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label for="newPassword" class="form-label">Mật khẩu mới <span class="required">*</span></label>
+                    <input type="password" id="newPassword" required minlength="6" class="form-input" placeholder="Tối thiểu 6 ký tự">
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Xác nhận mật khẩu mới <span class="required">*</span></label>
+                    <input type="password" id="confirmPassword" required minlength="6" class="form-input" placeholder="Nhập lại mật khẩu mới">
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
+                <button type="submit" class="btn-primary-filter">Cập nhật mật khẩu</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- POPUP MODAL ĐỔI MẬT KHẨU -->
-<div id="passwordModal" class="appointment-modal" hidden>
-    <div class="appointment-modal__backdrop"></div>
-    <div class="appointment-modal__dialog" style="max-width: 500px;">
-        <div class="appointment-modal__header">
-            <div>
-                <h2>Đổi mật khẩu tài khoản</h2>
-                <p>Bảo mật tài khoản bằng mật khẩu mạnh</p>
-            </div>
-            <button type="button" class="appointment-modal__close" id="btnClosePasswordModal">&times;</button>
-        </div>
-        
-        <form id="changePasswordForm">
-            <div style="padding: 22px 24px;">
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <label for="old_password" style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px;">Mật khẩu cũ <span>*</span></label>
-                    <input type="password" id="old_password" name="old_password" class="form-control" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px;" placeholder="Nhập mật khẩu cũ" autocomplete="current-password" required>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <label for="new_password" style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px;">Mật khẩu mới <span>*</span></label>
-                    <input type="password" id="new_password" name="new_password" class="form-control" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px;" placeholder="Nhập mật khẩu mới" autocomplete="new-password" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="confirm_password" style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px;">Xác nhận mật khẩu mới <span>*</span></label>
-                    <input type="password" id="confirm_password" name="confirm_password" class="form-control" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px;" placeholder="Nhập lại mật khẩu mới" autocomplete="new-password" required>
-                </div>
-            </div>
-
-            <div class="appointment-modal__actions" style="padding: 16px 24px; background: #f8fafc;">
-                <button type="button" class="btn-secondary" id="btnCancelPasswordModal">Hủy</button>
-                <button type="submit" class="btn-primary">Xác nhận đổi</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-    let globalUserRole = '';
-    const editModal = document.getElementById('editModal');
-    const passwordModal = document.getElementById('passwordModal');
-
-    async function hashSHA1(str) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(str);
-        const hashBuffer = await crypto.subtle.digest('SHA-1', data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    async function fetchUserInformation(){
-        try {
-            const response = await fetch('index.php?api=profile', {
-                method: 'POST',
-                credentials: 'include', // Bắt buộc để truyền cookie session
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ message: 'get user information' })
-            });
-
-            const result = await response.json();
-
-            if(result.status === 'success'){
-                const user = result.information || result.user;
-                globalUserRole = (user.role || 'patient').toLowerCase();
-
-                document.getElementById('username').value = user.username || '';
-                document.getElementById('hoTen').value = user.hoTen || '';
-
-                const btnEditInfo = document.getElementById('btnOpenChangeInfo');
-                const btnChangePwd = document.getElementById('btnOpenChangePassword');
-
-                if (globalUserRole === 'doctor' || globalUserRole === 'bacsi') {
-                    document.getElementById('groupChuyenKhoa').style.display = 'block';
-                    document.getElementById('chuyenKhoa').value = user.chuyenKhoa || 'Chưa cập nhật';
-                    
-                    document.querySelector('.patient-fields').style.display = 'none';
-                    document.querySelector('.doctor-fields').style.display = 'block';
-                    document.getElementById('doctor_email').value = user.email || '';
-
-                    if (btnEditInfo) btnEditInfo.style.display = 'none';
-                    if (btnChangePwd) btnChangePwd.style.display = 'none';
-                } else {
-                    document.getElementById('groupChuyenKhoa').style.display = 'none';
-                    document.querySelector('.patient-fields').style.display = 'block';
-                    document.querySelector('.doctor-fields').style.display = 'none';
-
-                    document.getElementById('ngaySinh').value = user.ngaySinh || '';
-                    document.getElementById('CCCD').value = user.CCCD || '';
-                    document.getElementById('email').value = user.email || '';
-                    document.getElementById('SDT').value = user.SDT || '';
-
-                    document.getElementById('modal_email').value = user.email || '';
-                    document.getElementById('modal_sdt').value = user.SDT || '';
-                    document.getElementById('modal_ngaySinh').value = user.ngaySinh || '';
-                    document.getElementById('modal_cccd').value = user.CCCD || '';
-
-                    if (btnEditInfo) btnEditInfo.style.display = 'inline-flex';
-                    if (btnChangePwd) btnChangePwd.style.display = 'inline-flex';
-                }
-            } else {
-                alert('Lỗi từ Server: ' + (result.message || 'Không thể tải thông tin tài khoản!'));
-            }
-        } catch(error) {
-            console.error(error);
-            alert('Đã xảy ra lỗi kết nối!');
-        }
-    }
-
-    fetchUserInformation();
-
-    document.getElementById('btnExit').addEventListener('click', () => {
-        window.location.href = 'index.php?page=' + globalUserRole;
-    });
-
-    const btnEditInfo = document.getElementById('btnOpenChangeInfo');
-    if (btnEditInfo) {
-        btnEditInfo.addEventListener('click', () => { editModal.removeAttribute('hidden'); });
-    }
-    document.getElementById('btnCloseModal').addEventListener('click', () => { editModal.setAttribute('hidden', ''); });
-    document.getElementById('btnCancelModal').addEventListener('click', () => { editModal.setAttribute('hidden', ''); });
-
-    const btnChangePwd = document.getElementById('btnOpenChangePassword');
-    if (btnChangePwd) {
-        btnChangePwd.addEventListener('click', () => { passwordModal.removeAttribute('hidden'); });
-    }
-    document.getElementById('btnClosePasswordModal').addEventListener('click', () => { passwordModal.setAttribute('hidden', ''); });
-    document.getElementById('btnCancelPasswordModal').addEventListener('click', () => { passwordModal.setAttribute('hidden', ''); });
-
-    const editForm = document.getElementById('editProfileForm');
-    if (editForm) {
-        editForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const email = document.getElementById('modal_email').value;
-            const sdt = document.getElementById('modal_sdt').value;
-            const ngaySinh = document.getElementById('modal_ngaySinh').value;
-            const cccd = document.getElementById('modal_cccd').value;
-
-            try {
-                const response = await fetch('/dashboard/CTUMedic/api/TaiKhoan/trang_ca_nhanh.php', {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams({ 
-                        action: 'update_contact', 
-                        email: email, 
-                        sdt: sdt, 
-                        ngaySinh: ngaySinh, 
-                        cccd: cccd 
-                    })
-                });
-
-                const result = await response.json();
-                if(result.status === 'success') {
-                    alert('Cập nhật thông tin thành công!');
-                    editModal.setAttribute('hidden', '');
-                    fetchUserInformation();
-                } else {
-                    alert(result.message || 'Cập nhật thất bại!');
-                }
-            } catch(err) {
-                console.error(err);
-                alert('Lỗi kết nối máy chủ!');
-            }
-        });
-    }
-
-    document.getElementById('changePasswordForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const oldPasswordRaw = document.getElementById('old_password').value;
-        const newPasswordRaw = document.getElementById('new_password').value;
-        const confirmPasswordRaw = document.getElementById('confirm_password').value;
-
-        if (newPasswordRaw !== confirmPasswordRaw) {
-            alert('Mật khẩu mới và xác nhận mật khẩu không khớp nhau!');
-            return;
-        }
-
-        try {
-            const oldPasswordHash = await hashSHA1(oldPasswordRaw);
-            const newPasswordHash = await hashSHA1(newPasswordRaw);
-
-            const response = await fetch('index.php?api=profile', {
-                method: 'POST',
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ 
-                    action: 'change_password', 
-                    old_password: oldPasswordHash, 
-                    new_password: newPasswordHash 
-                })
-            });
-
-            const result = await response.json();
-            if(result.status === 'success') {
-                alert('Đổi mật khẩu thành công!');
-                passwordModal.setAttribute('hidden', '');
-                document.getElementById('changePasswordForm').reset();
-            } else {
-                alert(result.message || 'Đổi mật khẩu thất bại!');
-            }
-        } catch(err) {
-            console.error(err);
-            alert('Lỗi kết nối máy chủ!');
-        }
-    });
-</script>
+<script type="module" src="/dashboard/CTUMedic/frontend/assets/js/shared/profile.js"></script>

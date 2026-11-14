@@ -17,7 +17,7 @@ if (isset($_GET['api'])) {
         "manager_update_patient"    => PATH_API . '/QuanLy/manager_update_patient.php',
         "manager_delete_patient"    => PATH_API . '/QuanLy/manager_delete_patient.php',
 
-        "manager_get_doctors"       => PATH_API   . '/QuanLy/bacsi.php',
+        "manager_get_doctors"       => PATH_API . '/QuanLy/bacsi.php',
         "manager_add_doctor"        => PATH_API . '/QuanLy/manager_add_doctor.php',
         "manager_update_doctor"     => PATH_API . '/QuanLy/manager_update_doctor.php',
         "manager_delete_doctor"     => PATH_API . '/QuanLy/manager_delete_doctor.php',
@@ -27,35 +27,35 @@ if (isset($_GET['api'])) {
 
     if (array_key_exists($apiName, $allowedApis)) {
         require_once $allowedApis[$apiName];
-        exit(); // <-- Thêm dòng này để dừng lại, không chạy xuống code bên dưới nữa!
+        exit();
     } else {
         http_response_code(404);
         exit('API not found');
     }
 }
 
-$role = $_SESSION['role'] ?? "";
+// KHÔNG được gán $_SESSION['role'] = '' ở đây!
+$role = strtolower(trim($_SESSION['role'] ?? ''));
 $page = $_GET['page'] ?? null;
 
-
 $allowedPages = [
-    'login'                 => 'DangNhap/login.php',
-    'register'              => 'DangNhap/register.php',
-    'patient'               => 'BenhNhan/benhnhan.php',
-    'doctor'                => 'BacSi/bacsi.php',
-    'manager'               => 'QuanLy/quanly.php',
+    'login'    => 'DangNhap/login.php',
+    'register' => 'DangNhap/register.php',
+    'patient'  => 'BenhNhan/benhnhan.php',
+    'doctor'   => 'BacSi/bacsi.php',
+    'manager'  => 'QuanLy/quanly.php',
 ];
 
 $dashboardPages = ['patient', 'doctor', 'manager'];
 
-// 2. Nếu người dùng truy cập vào trang chủ không có tham số ?page
+// 2. Nếu truy cập vào trang chủ không có tham số ?page
 if ($page === null) {
     if (!empty($role) && array_key_exists($role, $allowedPages)) {
         header("Location: index.php?page=" . $role);
     } else {
         header("Location: index.php?page=login");
     }
-    exit;
+    exit();
 }
 
 // 3. Kiểm tra trang yêu cầu có tồn tại trong hệ thống không
@@ -64,18 +64,28 @@ if (!array_key_exists($page, $allowedPages)) {
     exit('Page not found');
 }
 
-// 4. Kiểm tra phân quyền truy cập (Authorization)
-// Cho phép truy cập tự do trang login và register
-if ($page !== 'login' && $page !== 'register') {
-    if (empty($role) || $role !== $page) {
-        http_response_code(403);
-        exit('Access denied');
+// 4. Nếu đã đăng nhập mà vào lại trang login/register -> chuyển thẳng về dashboard đúng role
+if (!empty($role) && ($page === 'login' || $page === 'register')) {
+    if (in_array($role, $dashboardPages, true)) {
+        header("Location: index.php?page=" . $role);
+        exit();
     }
 }
 
+// 5. Kiểm tra phân quyền truy cập (Authorization)
+if ($page !== 'login' && $page !== 'register') {
+    if (empty($role)) {
+        header("Location: index.php?page=login");
+        exit();
+    }
+    if ($role !== $page) {
+        header("Location: index.php?page=" . $role);
+        exit();
+    }
+}
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
@@ -106,17 +116,17 @@ if ($page !== 'login' && $page !== 'register') {
                                         ) ?>;
         </script>
         <?php 
-        if ($role && $role == 'manager'):
+        if ($role === 'manager'):
             require __DIR__ . '/frontend/assets/css/QuanLy/index-css.php';
         endif;
         ?>
         <?php 
-        if ($role && $role == 'doctor'):
+        if ($role === 'doctor'):
             require __DIR__ . '/frontend/assets/css/BacSi/index-css.php';
         endif;
         ?>
         <?php 
-        if ($role && $role == 'patient'):
+        if ($role === 'patient'):
             require __DIR__ . '/frontend/assets/css/BenhNhan/index-css.php';
         endif;
         ?>
