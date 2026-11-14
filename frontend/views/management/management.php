@@ -2,10 +2,6 @@
 $role = 'manager';
 
 $tabConfigs = [
-    'quanly' => [
-        'title' => 'Quản lý lịch nghỉ',
-        'description' => 'Theo dõi lịch nghỉ và đăng ký nghỉ làm theo buổi.',
-    ],
     'lichkham' => [
         'title' => 'Quản lý lịch khám',
         'description' => 'Theo dõi và quản lý lịch khám toàn hệ thống.',
@@ -38,13 +34,12 @@ if (!isset($tabConfigs[$tab])) {
 $pageTitle = $tabConfigs[$tab]['title'];
 $pageDescription = $tabConfigs[$tab]['description'];
 
-$sharedTabs = ['lichkham', 'lichsu', 'taikhoan', 'quanly'];
+$sharedTabs = ['lichkham', 'lichsu', 'taikhoan'];
 
 $sharedTabFiles = [
     'lichkham' => 'appointments',
     'lichsu' => 'appointment_history',
-    'taikhoan' => 'account',
-    'quanly' => 'work_calender'
+    'taikhoan' => 'account'
 ];
 
 $managementTabFiles = [

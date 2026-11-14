@@ -18,7 +18,6 @@ $menus = [
         'label' => 'DOCTOR PORTAL',
         'items' => [
             'lichkham' => ['icon' => '▦', 'label' => 'Lịch khám của tôi'],
-            'quanly'   => ['icon' => '▤', 'label' => 'Quản lý lịch làm việc'],
             'lichsu'   => ['icon' => '◷', 'label' => 'Lịch sử khám'],
         ],
     ],
@@ -27,7 +26,6 @@ $menus = [
         'label' => 'MANAGEMENT',
         'items' => [
             'lichkham' => ['icon' => '▦', 'label' => 'Quản lý lịch khám'],
-            'quanly'   => ['icon' => '▤', 'label' => 'Quản lý lịch làm việc'],
             'lichsu'   => ['icon' => '◷', 'label' => 'Lịch sử khám'],
             'benhnhan' => ['icon' => '♙', 'label' => 'Quản lý bệnh nhân'],
             'bacsi'    => ['icon' => '✚', 'label' => 'Quản lý bác sĩ'],

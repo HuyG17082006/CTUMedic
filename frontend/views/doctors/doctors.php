@@ -15,11 +15,6 @@ $tabConfigs = [
         'description' => 'Xem lại lịch sử các cuộc hẹn đã hoàn thành.',
     ],
 
-    'quanly' => [
-        'title' => 'Quản lý lịch nghỉ',
-        'description' => 'Theo dõi lịch nghỉ và đăng ký nghỉ làm theo buổi.',
-    ],
-
     'taikhoan' => [
         'title' => 'Thông tin tài khoản',
         'description' => 'Cập nhật thông tin cá nhân và đổi mật khẩu.',
@@ -36,15 +31,13 @@ $pageDescription = $tabConfigs[$tab]['description'];
 $sharedTabs = [
     'lichkham',
     'lichsu',
-    'taikhoan',
-    'quanly'
+    'taikhoan'
 ];
 
 $sharedTabFiles = [
     'lichkham' => 'appointments',
     'lichsu' => 'appointment_history',
-    'taikhoan' => 'account',
-    'quanly' => 'work_calender'
+    'taikhoan' => 'account'
 ];
 
 $contentFile = in_array($tab, $sharedTabs, true)
