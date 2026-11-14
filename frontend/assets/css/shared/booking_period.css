@@ -1,0 +1,119 @@
+/* ========================================
+   BOOKING PERIODS
+======================================== */
+
+.schedule-periods {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+}
+
+.schedule-period {
+    min-width: 0;
+
+    padding: var(--space-lg);
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
+}
+
+/* ========================================
+   PERIOD HEADER
+======================================== */
+
+.schedule-period__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.schedule-period__heading {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.schedule-period__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 44px;
+    height: 44px;
+
+    flex-shrink: 0;
+
+    border-radius: var(--radius-md);
+
+    font-size: 19px;
+}
+
+.schedule-period__icon--morning {
+    color: #B45309;
+    background: #FEF3C7;
+}
+
+.schedule-period__icon--afternoon {
+    color: #1D4ED8;
+    background: #DBEAFE;
+}
+
+.schedule-period__heading h4 {
+    margin-bottom: 5px;
+
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.schedule-period__heading p {
+    margin: 0;
+
+    color: var(--text-secondary);
+
+    font-size: 13px;
+}
+
+/* ========================================
+   PERIOD UNAVAILABLE
+======================================== */
+
+.schedule-period.unavailable {
+    opacity: .65;
+}
+
+.schedule-period.unavailable .booking-slots {
+    pointer-events: none;
+}
+
+.schedule-period.unavailable .schedule-period__heading h4,
+.schedule-period.unavailable .schedule-period__heading p {
+    color: #94A3B8;
+}
+
+.schedule-period.unavailable .schedule-period__icon {
+    opacity: .6;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 640px) {
+
+    .schedule-period {
+        padding: var(--space-md);
+        border-radius: var(--radius-md);
+    }
+
+    .schedule-period__header {
+        align-items: flex-start;
+    }
+}

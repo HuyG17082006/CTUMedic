@@ -1,3 +1,4 @@
+
 <?php
 $tab = $tab ?? 'lichkham';
 
@@ -17,7 +18,7 @@ $menus = [
         'label' => 'DOCTOR PORTAL',
         'items' => [
             'lichkham' => ['icon' => '▦', 'label' => 'Lịch khám của tôi'],
-            'quanly'   => ['icon' => '', 'label' => 'Quản lý lịch làm việc'],
+            'quanly'   => ['icon' => '▤', 'label' => 'Quản lý lịch làm việc'],
             'lichsu'   => ['icon' => '◷', 'label' => 'Lịch sử khám'],
         ],
     ],
@@ -25,11 +26,11 @@ $menus = [
     'manager' => [
         'label' => 'MANAGEMENT',
         'items' => [
-            'lichkham'  => ['icon' => '▦', 'label' => 'Quản lý lịch khám'],
-            'lichsu'    => ['icon' => '◷', 'label' => 'Lịch sử khám'],
-            'benhnhan'  => ['icon' => '♙', 'label' => 'Quản lý bệnh nhân'],
-            'bacsi'     => ['icon' => '✚', 'label' => 'Quản lý bác sĩ'],
-            'nguoidung' => ['icon' => '✚', 'label' => 'Quản lý tài khoản'],
+            'lichkham' => ['icon' => '▦', 'label' => 'Quản lý lịch khám'],
+            'quanly'   => ['icon' => '▤', 'label' => 'Quản lý lịch làm việc'],
+            'lichsu'   => ['icon' => '◷', 'label' => 'Lịch sử khám'],
+            'benhnhan' => ['icon' => '♙', 'label' => 'Quản lý bệnh nhân'],
+            'bacsi'    => ['icon' => '✚', 'label' => 'Quản lý bác sĩ'],
         ],
     ],
 ];
@@ -46,9 +47,11 @@ $isActive = static fn(string $key): bool => $tab === $key;
 
     <a
         class="sidebar-brand"
-        href="<?= $baseUrl ?>&tab=tongquan">
+        href="<?= $baseUrl ?>&tab=lichkham">
+
         <span class="brand-icon">+</span>
         <span>CTU<span class="brand-highlight">Medic</span></span>
+
     </a>
 
     <p class="sidebar-caption">
@@ -90,63 +93,8 @@ $isActive = static fn(string $key): bool => $tab === $key;
 
         </a>
 
-        <a
-            href="#"
-            class="sidebar-logout"
-            onclick="openLogoutModal(event)">
-            <span class="sidebar-icon">↪</span>
-            <span>Đăng xuất</span>
-        </a>
-
-        <div
-            id="logoutModal"
-            class="custom-modal-overlay"
-            style="display:none;">
-
-            <div class="custom-modal-card">
-
-                <div class="custom-modal-header">
-                    <h3>Xác nhận đăng xuất</h3>
-                </div>
-
-                <div class="custom-modal-body">
-                    <p>
-                        Bạn có chắc chắn muốn thoát khỏi phiên làm việc hiện tại không?
-                    </p>
-                </div>
-
-                <div class="custom-modal-footer">
-
-                    <button
-                        type="button"
-                        class="btn-cancel"
-                        onclick="closeLogoutModal()">
-                        Hủy
-                    </button>
-
-                    <a
-                        href="<?= $baseUrl ?>&api=logout"
-                        class="btn-confirm-logout">
-                        Đăng xuất
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
+        <?php require PATH_COMPONENTS . '/logout.php'; ?>
 
     </div>
 
 </aside>
-
-<script>
-    function openLogoutModal(event) {
-        event.preventDefault();
-        document.getElementById('logoutModal').style.display = 'flex';
-    }
-
-    function closeLogoutModal() {
-        document.getElementById('logoutModal').style.display = 'none';
-    }
-</script>

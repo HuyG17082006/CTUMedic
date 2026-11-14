@@ -3,39 +3,6 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 define('BASE_PATH', __DIR__);
 
-define('BASE_URL', '/dashboard/CTUMedic');
-define("API_URL", BASE_URL . '/backend/api');
-
-define('PATH_FRONTEND', BASE_PATH . '/frontend');
-define('PATH_BACKEND', BASE_PATH . '/backend');
-define('PATH_VIEWS', PATH_FRONTEND . '/views');
-define('PATH_COMPONENTS', PATH_FRONTEND . '/components');
-define('PATH_API', PATH_BACKEND . '/api');
-
-define('WORKING_TIME_SLOTS', [
-    ['start' => '07:00', 'end' => '07:40'],
-    ['start' => '07:40', 'end' => '08:20'],
-    ['start' => '08:20', 'end' => '09:00'],
-    ['start' => '09:00', 'end' => '09:40'],
-    ['start' => '09:40', 'end' => '10:20'],
-    ['start' => '10:20', 'end' => '11:00'],
-
-    ['start' => '13:00', 'end' => '13:40'],
-    ['start' => '13:40', 'end' => '14:20'],
-    ['start' => '14:20', 'end' => '15:00'],
-    ['start' => '15:00', 'end' => '15:40'],
-    ['start' => '15:40', 'end' => '16:20'],
-    ['start' => '16:20', 'end' => '17:00'],
-]);
-
-define('SPECIALTY_LIST', [
-    "Nội tổng quát",
-    "Nội khoa",
-    'Nhi khoa',
-    "Tim mạch",
-    "Da liễu"
-]);
-
-?>
-
+define('PATH_VIEWS', BASE_PATH . '/frontend/views');
+define('PATH_COMPONENTS', BASE_PATH . '/frontend/components');
 

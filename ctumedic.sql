@@ -102,6 +102,42 @@ CREATE TABLE lichKham (
     )
 );
 
+CREATE TABLE lichNghi (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    bacSiId INT NULL,
+
+    ngayNghi DATE NOT NULL,
+
+    buoi ENUM(
+        'MORNING',
+        'AFTERNOON',
+        'FULL_DAY'
+    ) NOT NULL,
+
+    lyDo VARCHAR(500) NOT NULL,
+
+    nguoiTao ENUM(
+        'DOCTOR',
+        'MANAGER'
+    ) NOT NULL,
+
+    createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (bacSiId)
+        REFERENCES bacSi(id)
+        ON DELETE RESTRICT,
+
+    INDEX idx_lichNghi_bacSi_ngay (
+        bacSiId,
+        ngayNghi
+    ),
+
+    INDEX idx_lichNghi_ngay (
+        ngayNghi
+    )
+);
+
 -- ==========================
 -- TAI KHOAN
 -- ==========================

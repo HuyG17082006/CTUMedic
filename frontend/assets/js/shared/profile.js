@@ -1,4 +1,8 @@
-import { getMyProfile, updateMyProfile, changeMyPassword } from '../api/profile.js';
+import {
+    getCurrentUserProfile,
+    updateCurrentUserProfile,
+    changePassword
+} from '../api/profile.js';
 
 const ROLE_LABELS = {
     manager: 'Quản lý',
@@ -12,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function loadProfileData() {
         try {
-            const res = await getMyProfile();
+            const res = await getCurrentUserProfile();
             if (!res || res.status !== 'success') {
                 alert(res?.message || 'Không thể tải thông tin tài khoản.');
                 return;
@@ -99,7 +103,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             try {
-                const res = await updateMyProfile(payload);
+                const res = await updateCurrentUserProfile(payload);
                 if (res?.status === 'success') {
                     alert(res.message || 'Cập nhật thông tin cá nhân thành công!');
                     await loadProfileData();
@@ -137,7 +141,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             try {
-                const res = await changeMyPassword({
+                const res = await changePassword({
                     oldPassword,
                     newPassword,
                     confirmPassword,

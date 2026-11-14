@@ -1,0 +1,447 @@
+
+/* ========================================
+   QUẢN LÝ LỊCH LÀM VIỆC - CTUMEDIC
+======================================== */
+
+.work-schedule-page {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* ========================================
+   1. CARD CHUNG
+======================================== */
+
+.work-schedule-calendar-section,
+.work-schedule-detail-section,
+.leave-form-card {
+    width: 100%;
+    padding: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ========================================
+   2. HEADER LỊCH
+======================================== */
+
+.work-schedule-calendar-header,
+.work-schedule-detail-header,
+.leave-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.work-schedule-calendar-header h3,
+.work-schedule-detail-header h3,
+.leave-form-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.work-schedule-calendar-header p,
+.work-schedule-detail-header p,
+.leave-form-header p {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+/* ========================================
+   3. ĐIỀU HƯỚNG THÁNG
+======================================== */
+
+.work-schedule-calendar-navigation {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.work-schedule-calendar-navigation span {
+    min-width: 130px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.work-schedule-calendar-navigation button {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    background: #F1F5F9;
+    border-radius: var(--radius-sm);
+    transition: 0.2s ease;
+}
+
+.work-schedule-calendar-navigation button:hover {
+    color: var(--primary);
+    background: var(--primary-light);
+}
+
+/* ========================================
+   4. LỊCH THÁNG
+======================================== */
+
+/* JS cần render các phần tử theo những class này */
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.calendar-weekday {
+    padding: 10px 4px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.calendar-day {
+    min-height: 76px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 7px;
+    padding: 10px 5px;
+    color: var(--text);
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.calendar-day:hover {
+    background: var(--primary-light);
+    border-color: var(--primary);
+}
+
+.calendar-day-number {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.calendar-day.other-month {
+    opacity: 0.35;
+}
+
+.calendar-day.today {
+    background: var(--primary-light);
+    border-color: var(--primary);
+}
+
+.calendar-day.selected {
+    color: #FFFFFF;
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.calendar-day.selected .calendar-day-number {
+    color: #FFFFFF;
+}
+
+/* Dấu hiệu ngày có lịch nghỉ */
+
+.calendar-day-indicators {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.calendar-day-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--danger);
+}
+
+.calendar-day.selected .calendar-day-indicator {
+    background: #FFFFFF;
+}
+
+/* ========================================
+   5. CHI TIẾT BUỔI LÀM VIỆC
+======================================== */
+
+.work-schedule-detail-header {
+    margin-bottom: 20px;
+}
+
+.work-schedule-detail-header .btn {
+    flex-shrink: 0;
+}
+
+.work-schedule-detail-header .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+#work-schedule-sessions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+/* Card từng buổi - JS sử dụng class này */
+
+.work-session-card {
+    padding: 18px;
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.work-session-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.work-session-card h4 {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.work-session-time {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.work-session-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 20px;
+}
+
+.work-session-status.available {
+    color: var(--success);
+    background: #DCFCE7;
+}
+
+.work-session-status.leave {
+    color: var(--danger);
+    background: #FEE2E2;
+}
+
+.work-session-reason {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* ========================================
+   6. TRẠNG THÁI TRỐNG
+======================================== */
+
+.work-schedule-empty {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 150px;
+    padding: 24px;
+    color: var(--text-secondary);
+    background: #F8FAFC;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-md);
+    text-align: center;
+}
+
+.work-schedule-empty i {
+    font-size: 28px;
+    color: #94A3B8;
+}
+
+.work-schedule-empty p {
+    font-size: 13px;
+}
+
+/* ========================================
+   7. FORM ĐĂNG KÝ NGHỈ
+======================================== */
+
+.leave-form-card {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.leave-form-header {
+    margin-bottom: 0;
+}
+
+.leave-scope-badge {
+    flex-shrink: 0;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 20px;
+}
+
+.leave-scope-badge.doctor {
+    color: var(--primary-hover);
+    background: var(--primary-light);
+}
+
+.leave-scope-badge.system {
+    color: #92400E;
+    background: #FEF3C7;
+}
+
+.leave-form-body {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.leave-form-body .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.leave-form-body .form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.leave-form-body input,
+.leave-form-body select,
+.leave-form-body textarea {
+    width: 100%;
+    font-size: 14px;
+}
+
+.leave-form-body textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+/* Thông báo phạm vi nghỉ */
+
+.leave-scope-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 13px 15px;
+    color: #1D4ED8;
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.leave-scope-notice i {
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+/* Nút thao tác */
+
+.leave-form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 6px;
+}
+
+.leave-form-actions .btn {
+    min-width: 120px;
+}
+
+/* ========================================
+   8. RESPONSIVE
+======================================== */
+
+@media (max-width: 768px) {
+
+    .work-schedule-calendar-section,
+    .work-schedule-detail-section,
+    .leave-form-card {
+        padding: 18px;
+    }
+
+    .work-schedule-calendar-header,
+    .work-schedule-detail-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .work-schedule-detail-header .btn {
+        width: 100%;
+    }
+
+    #work-schedule-sessions {
+        grid-template-columns: 1fr;
+    }
+
+    .calendar-grid {
+        gap: 4px;
+    }
+
+    .calendar-day {
+        min-height: 60px;
+        padding: 8px 2px;
+    }
+
+    .calendar-day-number {
+        font-size: 12px;
+    }
+
+    .calendar-weekday {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .work-schedule-calendar-navigation {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .work-schedule-calendar-navigation span {
+        flex: 1;
+    }
+
+    .leave-form-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .leave-form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .leave-form-actions .btn {
+        width: 100%;
+    }
+}
