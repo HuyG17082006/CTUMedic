@@ -107,14 +107,13 @@ CREATE TABLE lichKham (
 -- Password mặc định: 123456
 -- ==========================
 INSERT INTO taiKhoan (id, username, passwordHash, role) VALUES
-('550e8400-e29b-41d4-a716-446655440001', 'manager01', '$2y$10$YourHash123456', 'manager'),
-('550e8400-e29b-41d4-a716-446655440003', 'patient01', '$2y$10$YourHash123456', 'patient');
-('550e8400-e29b-41d4-a716-446655440011', 'doctor01', '$2y$10$YourHash123456', 'doctor'),
-('550e8400-e29b-41d4-a716-446655440012', 'doctor02', '$2y$10$YourHash123456', 'doctor'),
-('550e8400-e29b-41d4-a716-446655440013', 'doctor03', '$2y$10$YourHash123456', 'doctor'),
-('550e8400-e29b-41d4-a716-446655440014', 'doctor04', '$2y$10$YourHash123456', 'doctor'),
-('550e8400-e29b-41d4-a716-446655440015', 'doctor05', '$2y$10$YourHash123456', 'doctor');
-
+('550e8400-e29b-41d4-a716-446655440001', 'manager01', '7c4a8d09ca3762af61e59520943dc26494f8941b', 'manager'),
+('550e8400-e29b-41d4-a716-446655440003', 'patient01', '7c4a8d09ca3762af61e59520943dc26494f8941b', 'patient'),
+('550e8400-e29b-41d4-a716-446655440011', 'doctor01', '7c4a8d09ca3762af61e59520943dc26494f8941b', 'doctor'),
+('550e8400-e29b-41d4-a716-446655440012', 'doctor02', '7c4a8d09ca3762af61e59520943dc26494f8941b', 'doctor'),
+('550e8400-e29b-41d4-a716-446655440013', 'doctor03', '7c4a8d09ca3762af61e59520943dc26494f8941b', 'doctor'),
+('550e8400-e29b-41d4-a716-446655440014', 'doctor04', '7c4a8d09ca3762af61e59520943dc26494f8941b', 'doctor'),
+('550e8400-e29b-41d4-a716-446655440015', 'doctor05', '7c4a8d09ca3762af61e59520943dc26494f8941b', 'doctor');
 -- ==========================
 -- THONG TIN BAC SI
 -- ==========================
