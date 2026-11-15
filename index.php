@@ -66,9 +66,7 @@ if ($page !== 'login' && $page !== 'register') {
     require __DIR__ . '/frontend/assets/css/appointment/index_css.php';
     require __DIR__ . '/frontend/assets/css/authentication/index_css.php';
     ?>
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="./frontend/assets/css/vendor/fontawesome/css/all.min.css">
 
     <?php
     if (in_array($page, $dashboardPages, true)):
