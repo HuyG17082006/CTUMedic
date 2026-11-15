@@ -51,7 +51,6 @@ const renderDoctorList = async (specialty) => {
 
     if (!doctorList)
         return;
-    console.log(doctorList)
     doctorList.forEach((doctor) => doctorSelectBox.append(renderDoctor(doctor)))
 }
 
@@ -137,4 +136,3 @@ const render = async () => {
 }
 
 await render();
-

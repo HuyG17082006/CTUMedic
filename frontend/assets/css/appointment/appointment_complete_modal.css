@@ -240,7 +240,7 @@
     grid-template-columns: 1fr;
     gap: 12px;
     padding: 20px 24px 24px;
-    border-top: 1px solid #E5E7EB;
+    border-top: 1px solid var(--border);
 }
 
 /* Kiểu chung cho các nút */
@@ -307,7 +307,7 @@
 }
 
 .complete-modal__button:focus-visible {
-    outline: 3px solid rgba(59, 130, 246, 0.25);
+    outline: 3px solid var(--focus-ring);
     outline-offset: 2px;
 }
 

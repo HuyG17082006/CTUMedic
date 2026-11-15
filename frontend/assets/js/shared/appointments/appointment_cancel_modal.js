@@ -14,7 +14,6 @@ let refresh = null;
 
 export const showCancelModal = (appointment, reRender) => {
     if (!cancelModal) return;
-    console.log(appointment)
     currentAppointmentId = appointment.id;
     refresh = reRender;
     cancelModal.hidden = false;

@@ -105,17 +105,13 @@ export const showAppointmentDetail = async (
     role,
     renderAppointmentList
 ) => {
-    console.log(1)
     if (!appointmentModal) return;
-    console.log(1)
     const appointment = await getAppointmentDetail(appointmentId);
-    console.log(1)
     if (!appointment) return;
-    console.log(1)
     currentAppointment = appointment;
     refresh = renderAppointmentList;
 
-    renderAppointmentDetail(appointment, role);
+    renderAppointmentDetail(appointment);
 
     toggleActionButton(appointment, role)
 

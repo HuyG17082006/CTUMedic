@@ -52,7 +52,7 @@
 .appointment-filter__field select:focus,
 .appointment-filter__field input:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, .12);
+    box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .appointment-filter__field select:disabled,

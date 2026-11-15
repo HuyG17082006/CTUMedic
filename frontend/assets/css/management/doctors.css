@@ -10,10 +10,11 @@
 
 .doctor-filter-card {
     margin-bottom: 20px;
-    padding: 20px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    padding: 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
 }
 
 .doctor-filter-group {
@@ -31,16 +32,16 @@
 .doctor-search-box input {
     width: 100%;
     padding: 11px 14px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md);
     outline: none;
     font-size: 14px;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .doctor-search-box input:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .doctor-filter-group .btn-primary {
@@ -57,22 +58,23 @@
 /* Bảng bác sĩ */
 
 .doctor-table-card {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
     overflow: hidden;
 }
 
 .doctor-table-header {
     padding: 20px 24px;
-    border-bottom: 1px solid #f3f4f6;
+    border-bottom: 1px solid var(--border);
 }
 
 .doctor-table-header h3 {
     margin: 0;
     font-size: 18px;
     font-weight: 600;
-    color: #111827;
+    color: var(--text);
 }
 
 .doctor-table-wrapper {
@@ -88,21 +90,21 @@
 }
 
 .doctor-table thead {
-    background: #f9fafb;
-    color: #4b5563;
+    background: var(--surface-muted);
+    color: var(--text-secondary);
 }
 
 .doctor-table th {
     padding: 13px 16px;
     font-weight: 600;
     white-space: nowrap;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--border);
 }
 
 .doctor-table td {
     padding: 14px 16px;
-    color: #4b5563;
-    border-bottom: 1px solid #f3f4f6;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
 }
 
 .doctor-table tbody tr {
@@ -110,28 +112,28 @@
 }
 
 .doctor-table tbody tr:hover {
-    background: #f9fafb;
+    background: var(--primary-light);
 }
 
 .doctor-table td:first-child {
-    color: #111827;
+    color: var(--text);
 }
 
 .doctor-table .doctor-name {
     font-weight: 500;
-    color: #111827;
+    color: var(--text);
     white-space: nowrap;
 }
 
 .doctor-table .doctor-specialty {
-    color: #2563eb;
+    color: var(--primary);
     font-weight: 500;
 }
 
 .doctor-table-message {
     padding: 24px !important;
     text-align: center;
-    color: #6b7280 !important;
+    color: var(--text-secondary) !important;
 }
 
 .doctor-table-message.error {
@@ -141,6 +143,10 @@
 /* Responsive */
 
 @media (max-width: 600px) {
+    .doctor-filter-card {
+        padding: 16px;
+    }
+
     .doctor-filter-group {
         flex-direction: column;
         align-items: stretch;
