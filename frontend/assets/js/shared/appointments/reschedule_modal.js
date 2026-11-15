@@ -7,6 +7,8 @@ import {
     renderSchedulePeriods
 } from "../schedule_periods.js"
 
+import { closeAppointmentDetail } from "./appointment_detail_modal.js";
+
 import { renderAppointmentList } from "./appointment_table.js";
 
 import { normalVietNameseDate } from "../../helper/time.js";
@@ -106,4 +108,5 @@ const submitBooking = async () => {
 confirmButton?.addEventListener('click', async () => {
     await submitBooking()
     closeRescheduleModal()
+    closeAppointmentDetail()
 });

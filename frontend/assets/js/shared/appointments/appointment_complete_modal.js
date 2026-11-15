@@ -3,6 +3,8 @@ import finishedAction from "../../helper/finished_action.js";
 import { normalVietNameseDate } from "../../helper/time.js";
 import { setFields } from "../../helper/set_text.js";
 
+import { closeAppointmentDetail } from "./appointment_detail_modal.js";
+
 const completeModal = document.querySelector("#complete-appointment-modal");
 const confirmCompleteButton = document.querySelector("#confirm-complete-appointment");
 const confirmNoShowButton = document.querySelector('#confirm-no-show-appointment')
@@ -37,12 +39,14 @@ confirmCompleteButton?.addEventListener("click", async () => {
     if (!currentAppointment) return;
     await submitComplete();
     closeCompleteModal();
+    closeAppointmentDetail();
 });
 
 confirmNoShowButton?.addEventListener("click", async () => {
     if (!currentAppointment) return;
     await submitNoShow();
     closeCompleteModal();
+    closeAppointmentDetail();
 });
 
 const submitNoShow = async () => {

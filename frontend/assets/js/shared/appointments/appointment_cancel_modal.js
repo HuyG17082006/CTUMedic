@@ -3,6 +3,8 @@ import finishedAction from "../../helper/finished_action.js";
 import { normalVietNameseDate } from "../../helper/time.js";
 import { setFields } from "../../helper/set_text.js";
 
+import { closeAppointmentDetail } from "./appointment_detail_modal.js";
+
 const cancelModal = document.querySelector("#cancel-appointment-modal");
 const cancelReason = document.querySelector("#cancel-appointment-reason");
 const confirmCancelButton = document.querySelector("#confirm-cancel-appointment");
@@ -50,6 +52,7 @@ confirmCancelButton?.addEventListener("click", async () => {
 
     await submitCancel();
     closeCancelModal();
+    closeAppointmentDetail();
 });
 
 cancelModal?.querySelectorAll("[data-cancel-close]").forEach(btn =>btn.addEventListener("click", closeCancelModal));

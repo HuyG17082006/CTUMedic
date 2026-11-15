@@ -18,9 +18,11 @@ export async function changePassword({ oldPassword, newPassword, confirmPassword
     const newPasswordHash = await hashSHA1(newPassword);
     const confirmPasswordHash = await hashSHA1(confirmPassword);
 
-    return await apiRequest('/accounts/change_password.php', {
+    const result = await apiRequest('/accounts/change_password.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ oldPasswordHash, newPasswordHash, confirmPasswordHash }),
     });
+    location.reload()
+    return result;
 }

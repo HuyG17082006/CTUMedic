@@ -65,11 +65,13 @@ const renderAppointmentDetail = (appointment) => {
 
     const status = appointmentModal.querySelector('[data-detail-status]');
 
-    status.textContent =
-        statusMap[trangThai] || 'WAITING-UPDATE';
+    const isOutDate = !isWaitingForUpdate(appointment)
+
+    status.textContent =  isOutDate ?
+        statusMap[trangThai] : 'Chờ cập nhật'
 
     status.className =
-        `appointment-status appointment-status--${trangThai.toLowerCase()}`;
+        `appointment-status appointment-status--${!isOutDate ? 'waiting-update' : trangThai.toLowerCase()}`;
 
     const cancellationSection = appointmentModal.querySelector(
         "[data-detail-cancellation]"
@@ -101,8 +103,7 @@ const renderAppointmentDetail = (appointment) => {
 export const showAppointmentDetail = async (
     appointmentId,
     role,
-    renderAppointmentList,
-    canAction = true
+    renderAppointmentList
 ) => {
     console.log(1)
     if (!appointmentModal) return;
@@ -133,7 +134,7 @@ const toggleActionButton = (appointment, role) => {
         role === 'patient' || (!isConfirmed && !waitingForUpdate);
 }
 
-const closeAppointmentDetail = () => {
+export const closeAppointmentDetail = () => {
     appointmentModal.hidden = true;
     appointmentModal.setAttribute('aria-hidden', 'true');
 }

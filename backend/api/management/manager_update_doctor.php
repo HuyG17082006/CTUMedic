@@ -34,6 +34,8 @@ try {
     ");
     $stmt->execute([$hoTen, $email, $chuyenKhoa, $id]);
 
+    $_SESSION['hoTen'] = $hoTen;
+    var_dump($_SESSION['hoTen']);
     echo json_encode([
         'status' => 'success',
         'message' => 'Cập nhật thông tin bác sĩ thành công!'
