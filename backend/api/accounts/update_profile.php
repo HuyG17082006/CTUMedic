@@ -135,6 +135,8 @@ try {
         $stmt->execute([$hoTen, $email, $chuyenKhoa, $taiKhoanId]);
     }
 
+    $_SESSION['hoTen'] = $hoTen;
+
     ob_clean();
     echo json_encode([
         'status' => 'success',

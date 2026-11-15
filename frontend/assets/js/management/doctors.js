@@ -19,9 +19,7 @@ const pagination = initPagination({
 
     async onPageChange(page) {
 
-        params.pageNumber = page;
-
-        await loadDoctors();
+        await loadDoctors(page);
     }
 });
 

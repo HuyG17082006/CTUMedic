@@ -6,11 +6,15 @@ export async function getCurrentUserProfile() {
 }
 
 export async function updateCurrentUserProfile(payload) {
-    return await apiRequest('/accounts/update_profile.php', {
+    const result =  await apiRequest('/accounts/update_profile.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
     });
+
+    location.reload()
+
+    return result;
 }
 
 export async function changePassword({ oldPassword, newPassword, confirmPassword }) {
@@ -23,6 +27,6 @@ export async function changePassword({ oldPassword, newPassword, confirmPassword
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ oldPasswordHash, newPasswordHash, confirmPasswordHash }),
     });
-    location.reload()
+
     return result;
 }
