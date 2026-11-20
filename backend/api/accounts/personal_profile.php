@@ -37,7 +37,7 @@ try {
         $updated = $stmtUpdate->execute([$email, $sdt, $ngaySinh, $cccd, $taiKhoanId]);
 
         if ($updated) {
-            echo json_encode(['status' => 'status', 'message' => 'Cập nhật thành công!']);
+            echo json_encode(['status' => 'failed', 'message' => 'Cập nhật thành công!']);
         } else {
             echo json_encode(['status' => 'failed', 'message' => 'Cập nhật thất bại!']);
         }
@@ -62,7 +62,7 @@ try {
         $updatedPwd = $stmtUpdatePwd->execute([$newPasswordHashClient, $taiKhoanId]);
 
         if ($updatedPwd) {
-            echo json_encode(['status' => 'status', 'message' => 'Đổi mật khẩu thành công!']);
+            echo json_encode(['status' => 'failed', 'message' => 'Đổi mật khẩu thành công!']);
         } else {
             echo json_encode(['status' => 'failed', 'message' => 'Không thể đổi mật khẩu!']);
         }
