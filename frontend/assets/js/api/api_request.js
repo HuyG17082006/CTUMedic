@@ -16,10 +16,8 @@ export default async (url, {
 
     const data = await res.json();
 
-    if (!res.ok) {
-        throw new Error(
-            res.message || 'Có lỗi xảy ra.'
-        );
+    if (!res.ok || data.status === 'failed' || data.success === false) {
+        throw new Error(data.message || 'Có lỗi xảy ra.');
     }
 
     return data;

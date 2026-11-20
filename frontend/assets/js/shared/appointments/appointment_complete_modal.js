@@ -35,34 +35,36 @@ const closeCompleteModal = () => {
     completeModal.setAttribute("aria-hidden", "true");
 };
 
-confirmCompleteButton?.addEventListener("click", async () => {
+const runAppointmentAction = async (action, failureMessage) => {
     if (!currentAppointment) return;
-    await submitComplete();
-    closeCompleteModal();
-    closeAppointmentDetail();
+
+    try {
+        const result = await action(currentAppointment.id);
+        if (result.status !== 'success') {
+            alert(result.message || failureMessage);
+            return;
+        }
+
+        closeCompleteModal();
+        closeAppointmentDetail();
+        await finishedAction(result.status, result.message, refresh);
+    } catch (error) {
+        alert(error.message || failureMessage);
+    }
+};
+
+confirmCompleteButton?.addEventListener("click", async () => {
+    await runAppointmentAction(
+        completeAppointment,
+        'Không thể hoàn thành lịch khám.'
+    );
 });
 
 confirmNoShowButton?.addEventListener("click", async () => {
-    if (!currentAppointment) return;
-    await submitNoShow();
-    closeCompleteModal();
-    closeAppointmentDetail();
+    await runAppointmentAction(
+        noShowAppointment,
+        'Không thể đánh dấu bệnh nhân vắng mặt.'
+    );
 });
-
-const submitNoShow = async () => {
-    const { status, message } = await noShowAppointment(
-        currentAppointment.id
-    );
-
-    finishedAction(status, message, refresh);
-}
-
-const submitComplete = async () => {
-    const { status, message } = await completeAppointment(
-        currentAppointment.id
-    );
-
-    finishedAction(status, message, refresh);
-}
 
 completeModal?.querySelectorAll("[data-complete-close]").forEach(btn => btn.addEventListener("click", closeCompleteModal));

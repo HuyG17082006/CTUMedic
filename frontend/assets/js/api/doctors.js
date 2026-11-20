@@ -11,15 +11,35 @@ export const getDoctorList = async (params = {}) => {
     return await apiRequest(url, { method: 'GET' });
 };
 
-export const getFilterDoctorList = async (specialty) => {
-    if (!specialty)
-        return;
-    const {list} = await apiRequest(`/doctors/get_doctor_list.php?specialty=${specialty}`, {
-        method: 'GET'
-    })
+export const getDoctorsForFilter = async (specialty = '') => {
+    const query = new URLSearchParams();
+    if (specialty) query.set('specialty', specialty);
 
-    return list
-}
+    const queryString = query.toString();
+    const url = queryString
+        ? `/doctors/get_doctors_for_filter.php?${queryString}`
+        : '/doctors/get_doctors_for_filter.php';
+    const { list } = await apiRequest(url, {
+        method: 'GET'
+    });
+
+    return list;
+};
+
+export const getAvailableDoctorsForBooking = async (specialty = '') => {
+    const query = new URLSearchParams();
+    if (specialty) query.set('specialty', specialty);
+
+    const queryString = query.toString();
+    const url = queryString
+        ? `/doctors/get_available_doctors_for_booking.php?${queryString}`
+        : '/doctors/get_available_doctors_for_booking.php';
+    const { list } = await apiRequest(url, {
+        method: 'GET'
+    });
+
+    return list;
+};
 
 // 2. Thêm bác sĩ mới
 export const createDoctor = async (payload) => {

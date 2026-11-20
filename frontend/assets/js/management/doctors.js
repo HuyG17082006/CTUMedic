@@ -6,7 +6,15 @@ import {
     deleteDoctor
 } from '../api/doctors.js';
 
+import {
+    SPECIALTY_LIST
+} from '../helper/base.js'
+
 import { initPagination } from '../shared/pagination.js';
+
+
+const filterSpecialtyBox = document.querySelector('#filterSpecialty')
+const addDoctorSpecialtyBox = document.querySelector('#addDoctorChuyenKhoa')
 
 let globalDoctors = [];
 let currentPage = 1;
@@ -23,6 +31,20 @@ const pagination = initPagination({
     }
 });
 
+const renderSpecialty = (specialtySelectBox) => {
+    
+    SPECIALTY_LIST.forEach(specialty => {
+
+        const option = document.createElement('option')
+
+        option.innerText = specialty;
+        option.value = specialty
+
+        specialtySelectBox.append(option)
+
+    })
+
+}
 
 async function loadDoctors(page = 1) {
     currentPage = page;
@@ -207,6 +229,10 @@ window.toggleDoctorStatus = toggleDoctorStatus;
 window.forceDeleteDoctor = forceDeleteDoctor;
 
 document.addEventListener('DOMContentLoaded', function () {
+
+    renderSpecialty(filterSpecialtyBox)
+    renderSpecialty(addDoctorSpecialtyBox)
+
     loadDoctors(1);
 
     document.getElementById('btnSearchDoctor')?.addEventListener('click', () => loadDoctors(1));

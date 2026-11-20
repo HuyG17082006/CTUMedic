@@ -1,4 +1,4 @@
-import { getFilterDoctorList } from "../../api/doctors.js";
+import { getDoctorsForFilter } from "../../api/doctors.js";
 import { renderAppointmentList } from "./appointment_table.js";
 import { SPECIALTY_LIST } from "../../helper/base.js";
 import {
@@ -39,7 +39,7 @@ export const renderDoctorList = async (specialty) => {
     if (!toggleDoctorSelectBox(specialty))
         return;
 
-    const doctorList = await getFilterDoctorList(specialty);
+    const doctorList = await getDoctorsForFilter(specialty);
 
     if (doctorList) {
         doctorList.forEach(doctor => {

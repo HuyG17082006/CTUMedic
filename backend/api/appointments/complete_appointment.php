@@ -11,16 +11,25 @@ try {
 
     $appointmentId = (int) ($data['appointmentId'] ?? 0);
 
+    if ($appointmentId <= 0) {
+        throw new Exception('Mã lịch khám không hợp lệ.');
+    }
+
     if ($role !== 'doctor' && $role !== 'manager')
         throw new Exception('Bạn không có quyền hoàn thành lịch khám.');
 
+    $completionCutoff = (new DateTimeImmutable(
+        'now',
+        new DateTimeZone('Asia/Ho_Chi_Minh')
+    ))->modify('-40 minutes')->format('Y-m-d H:i:s');
+
     $where = '';
 
-    $params = [$appointmentId];
+    $params = [$appointmentId, $completionCutoff];
 
     if ($role === 'doctor') {
         $where = 'AND lk.bacSiId = ?';
-        $params[] = $_SESSION['userId'];
+        $params[] = $userId;
     }
 
     $stmt = $pdo->prepare("
@@ -28,13 +37,14 @@ try {
         SET trangThai = 'COMPLETED'
         WHERE lk.id = ?
           AND lk.trangThai = 'CONFIRMED'
+          AND DATE_ADD(TIMESTAMP(lk.ngayKham, lk.gioKham), INTERVAL 40 MINUTE) <= ?
           $where
     ");
 
     $stmt->execute($params);
 
     if (!$stmt->rowCount()) {
-        throw new Exception('Không thể hoàn thành lịch khám.');
+        throw new Exception('Chỉ có thể hoàn thành lịch đã xác nhận sau khi đã kết thúc ít nhất 40 phút.');
     }
 
     echo json_encode([

@@ -1,7 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../../middleware/auth.php';
+require_once __DIR__ . '/../../middleware/patient.php';
 require_once __DIR__ . '/../../database.php';
+require_once __DIR__ . '/../../helpers/appointment_schedule.php';
 
 header('Content-Type: application/json');
 
@@ -9,8 +10,12 @@ try {
     $data = json_decode(file_get_contents('php://input'), true);
 
     $doctorId = (int) ($data['doctorId'] ?? 0);
-    $date = trim($data['date'] ?? '');
-    $time = trim($data['time'] ?? '');
+    $slot = normalizeAppointmentSlot(
+        $data['date'] ?? null,
+        $data['time'] ?? null
+    );
+    $date = $slot['date'];
+    $time = $slot['time'];
     $reason = trim($data['reason'] ?? '');
 
     /*
@@ -68,9 +73,11 @@ try {
 
     $stmt = $pdo->prepare("
         INSERT INTO lichKham (bacSiId, benhNhanId, ngayKham, gioKham, liDoKham, trangThai)
-        SELECT id, ?, ?, ?, ?, 'CONFIRMED'
-        FROM bacSi
-        WHERE id = ?
+        SELECT bs.id, ?, ?, ?, ?, 'CONFIRMED'
+        FROM bacSi bs
+        INNER JOIN taiKhoan tk ON tk.id = bs.taiKhoanId
+        WHERE bs.id = ?
+          AND tk.isActive = 1
     ");
 
     $stmt->execute([
@@ -82,7 +89,7 @@ try {
     ]);
 
     if (!$stmt->rowCount()) {
-        throw new Exception('Không tìm thấy bác sĩ.');
+        throw new Exception('Bác sĩ không tồn tại hoặc hiện không nhận đặt lịch.');
     }
 
     echo json_encode([

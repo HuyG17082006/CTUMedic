@@ -18,13 +18,18 @@ try {
     if ($appointmentId <= 0)
         throw new Exception('Mã lịch khám không hợp lệ.');
 
+    $completionCutoff = (new DateTimeImmutable(
+        'now',
+        new DateTimeZone('Asia/Ho_Chi_Minh')
+    ))->modify('-40 minutes')->format('Y-m-d H:i:s');
+
     $where = '';
 
-    $params = [$appointmentId];
+    $params = [$appointmentId, $completionCutoff];
 
     if ($role === 'doctor') {
         $where = 'AND lk.bacSiId = ?';
-        $params[] = $_SESSION['userId'];
+        $params[] = $userId;
     }
 
     $stmt = $pdo->prepare("
@@ -32,12 +37,13 @@ try {
         SET trangThai = 'NO_SHOW'
         WHERE lk.id = ?
           AND lk.trangThai = 'CONFIRMED'
+          AND DATE_ADD(TIMESTAMP(lk.ngayKham, lk.gioKham), INTERVAL 40 MINUTE) <= ?
           $where
     ");
 
     $stmt->execute($params);
     if (!$stmt->rowCount()) {
-        throw new Exception('Không thể cập nhật lịch khám.');
+        throw new Exception('Chỉ có thể đánh dấu vắng mặt cho lịch đã xác nhận sau khi đã kết thúc ít nhất 40 phút.');
     }
 
     echo json_encode([

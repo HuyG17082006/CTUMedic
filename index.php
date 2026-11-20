@@ -4,7 +4,8 @@ require __DIR__ . '/BASE.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-// $_SESSION['role'] = 'doctor';
+
+
 $role = strtolower(trim($_SESSION['role'] ?? ''));
 $page = $_GET['page'] ?? null;
 

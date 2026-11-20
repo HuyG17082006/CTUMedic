@@ -1,7 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../../middleware/auth.php';
+require_once __DIR__ . '/../../middleware/patient.php';
 require_once __DIR__ . '/../../database.php';
+require_once __DIR__ . '/../../helpers/appointment_schedule.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -9,18 +10,16 @@ try {
     $data = json_decode(file_get_contents('php://input'), true);
 
     $appointmentId = (int) ($data['appointmentId'] ?? 0);
-    $newDate = trim($data['ngayKham'] ?? '');
-    $newTime = trim($data['gioKham'] ?? '');
+    $slot = normalizeAppointmentSlot(
+        $data['ngayKham'] ?? null,
+        $data['gioKham'] ?? null
+    );
+    $newDate = $slot['date'];
+    $newTime = $slot['time'];
 
-    if ($role !== 'patient') {
-        throw new Exception('Bạn không có quyền đổi lịch khám.');
-    }
-    
     if (!$appointmentId || !$newDate || !$newTime) {
         throw new Exception('Vui lòng cung cấp đầy đủ thông tin.');
     }
-
-    $newTime = strlen($newTime) === 5 ? "{$newTime}:00" : $newTime;
 
     $pdo->beginTransaction();
 
@@ -56,13 +55,40 @@ try {
         throw new Exception('Lịch khám này không thể thay đổi.');
     }
 
-    $stmt = $pdo->prepare(
-        "SELECT TIMESTAMP(?, ?) <= NOW()"
-    );
-    $stmt->execute([$newDate, $newTime]);
+    $stmt = $pdo->prepare("
+        SELECT 1
+        FROM bacSi bs
+        INNER JOIN taiKhoan tk ON tk.id = bs.taiKhoanId
+        WHERE bs.id = ?
+          AND tk.isActive = 1
+        LIMIT 1
+    ");
+    $stmt->execute([$oldAppointment['bacSiId']]);
+
+    if (!$stmt->fetchColumn()) {
+        throw new Exception('Bác sĩ hiện không nhận đặt hoặc đổi lịch.');
+    }
+
+    $stmt = $pdo->prepare("
+        SELECT 1
+        FROM lichKham
+        WHERE benhNhanId = ?
+          AND ngayKham = ?
+          AND gioKham = ?
+          AND trangThai IN ('CONFIRMED', 'COMPLETED')
+          AND id <> ?
+        LIMIT 1
+        FOR UPDATE
+    ");
+    $stmt->execute([
+        $patientId,
+        $newDate,
+        $newTime,
+        $appointmentId
+    ]);
 
     if ($stmt->fetchColumn()) {
-        throw new Exception('Không thể chọn khung giờ đã qua.');
+        throw new Exception('Bạn đã có lịch khám vào khung giờ này.');
     }
 
     $stmt = $pdo->prepare("
@@ -71,7 +97,13 @@ try {
         WHERE bacSiId = ?
           AND ngayKham = ?
           AND gioKham = ?
-          AND trangThai = 'CONFIRMED'
+          AND (
+                trangThai IN ('CONFIRMED', 'COMPLETED', 'NO_SHOW')
+                OR (
+                    trangThai = 'CANCELLED'
+                    AND cancelledBy = 'DOCTOR'
+                )
+              )
           AND id <> ?
         FOR UPDATE
     ");
@@ -83,7 +115,7 @@ try {
         $appointmentId
     ]);
 
-    if ($stmt->fetch()) {
+    if ($stmt->fetchColumn()) {
         throw new Exception('Khung giờ này đã có bệnh nhân đặt.');
     }
 
@@ -127,6 +159,11 @@ try {
         $appointmentId
     ]);
 
+    $newAppointmentId = (int) $pdo->lastInsertId();
+    if ($newAppointmentId <= 0) {
+        throw new RuntimeException('Không thể xác định mã lịch khám mới.');
+    }
+
     $pdo->commit();
 
     echo json_encode([
@@ -134,7 +171,7 @@ try {
         'message' => 'Đổi lịch khám thành công.',
         'data' => [
             'oldAppointmentId' => $appointmentId,
-            'newAppointmentId' => $pdo->lastInsertId(),
+            'newAppointmentId' => $newAppointmentId,
             'ngayKham' => $newDate,
             'gioKham' => $newTime
         ]

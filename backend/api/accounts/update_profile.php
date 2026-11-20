@@ -71,6 +71,20 @@ try {
     $taiKhoanId = $account['id'];
     $role = $account['role'];
 
+    if ($role === 'patient') {
+        require_once __DIR__ . '/../../middleware/patient.php';
+    } elseif ($role === 'doctor') {
+        require_once __DIR__ . '/../../middleware/doctor.php';
+    } else {
+        ob_clean();
+        http_response_code(403);
+        echo json_encode([
+            'status' => 'failed',
+            'message' => 'Bạn không có quyền cập nhật hồ sơ này.'
+        ], JSON_UNESCAPED_UNICODE);
+        exit();
+    }
+
     $data = json_decode(file_get_contents('php://input'), true);
     if (!is_array($data)) {
         $data = $_POST;

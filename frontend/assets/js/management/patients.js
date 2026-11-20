@@ -46,7 +46,8 @@ async function loadPatients(page = 1) {
 
             if (globalPatients.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="9" class="table-empty-state">Không tìm thấy bệnh nhân nào phù hợp.</td></tr>`;
-                renderPagination(0, 1);
+                currentPage = 1;
+                pagination.update(1, 1);
                 return;
             }
 
@@ -56,7 +57,7 @@ async function loadPatients(page = 1) {
             const offset = (pageNumber - 1) * limit;
 
             renderPatientTable(globalPatients, offset);
-            pagination.update(totalPages, pageNumber);
+            pagination.update(pageNumber, totalPages);
         } else {
             tbody.innerHTML = `<tr><td colspan="9" class="table-empty-state" style="color: #dc2626;">Lỗi: ${result.message}</td></tr>`;
         }
@@ -119,21 +120,6 @@ function renderPatientTable(list, offset) {
     tbody.innerHTML = html;
 }
 
-function renderPagination(totalPages, page) {
-    const wrapper = document.getElementById('paginationWrapper');
-    if (!wrapper) return;
-
-    if (totalPages <= 1) {
-        wrapper.innerHTML = '';
-        return;
-    }
-
-    let html = '';
-    for (let i = 1; i <= totalPages; i++) {
-        html += `<button type="button" class="page-btn ${i === page ? 'active' : ''}" onclick="loadPatients(${i})">${i}</button>`;
-    }
-    wrapper.innerHTML = html;
-}
 
 async function togglePatientStatus(taiKhoanId, status, name) {
     const actionText = status === 1 ? 'kích hoạt' : 'vô hiệu hóa';

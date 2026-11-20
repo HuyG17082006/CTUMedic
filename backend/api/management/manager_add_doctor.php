@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../../middleware/auth.php';
+require_once __DIR__ . '/../../middleware/manager.php';
 require_once __DIR__ . '/../../database.php';
 
 header('Content-Type: application/json; charset=utf-8');
@@ -10,16 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode([
         'status' => 'failed',
         'message' => 'Phương thức không được phép.'
-    ], JSON_UNESCAPED_UNICODE);
-    exit();
-}
-
-// Kiểm tra quyền quản lý
-if (strtolower($_SESSION['role'] ?? '') !== 'manager') {
-    http_response_code(403);
-    echo json_encode([
-        'status' => 'failed',
-        'message' => 'Bạn không có quyền thực hiện thao tác này.'
     ], JSON_UNESCAPED_UNICODE);
     exit();
 }

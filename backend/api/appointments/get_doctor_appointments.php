@@ -1,5 +1,6 @@
 <?php
 
+require_once __DIR__ . '/../../middleware/patient.php';
 require_once __DIR__ . '/../../database.php';
 
 $doctorId = $_GET['doctorId'];
@@ -15,21 +16,19 @@ if (!$doctorId) {
 
 $stmt = $pdo->prepare("
     SELECT
-    id,
-    bacSiId,
-    benhNhanId,
-    ngayKham,
-    gioKham,
-    trangThai,
-    cancelledBy
-FROM lichKham
-WHERE bacSiId = ?
-  AND ngayKham = ?
-  AND NOT (
-        trangThai = 'CANCELLED'
-        AND cancelledBy = 'PATIENT'
-      )
-ORDER BY gioKham ASC
+        gioKham,
+        cancelledBy
+    FROM lichKham
+    WHERE bacSiId = ?
+      AND ngayKham = ?
+      AND (
+            trangThai IN ('CONFIRMED', 'COMPLETED', 'NO_SHOW')
+            OR (
+                trangThai = 'CANCELLED'
+                AND cancelledBy = 'DOCTOR'
+            )
+          )
+    ORDER BY gioKham ASC
 ");
 
 $stmt->execute([$doctorId, $date]);

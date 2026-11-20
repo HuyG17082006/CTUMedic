@@ -1,4 +1,4 @@
-import { getFilterDoctorList } from '../api/doctors.js';
+import { getAvailableDoctorsForBooking } from '../api/doctors.js';
 import { getDoctorSchedule, createAppointment } from '../api/appointments.js';
 import finishedAction from '../helper/finished_action.js';
 import { renderSchedulePeriods } from '../shared/schedule_periods.js';
@@ -47,7 +47,7 @@ const renderDoctorList = async (specialty) => {
     if (!toggleDoctorSelectBox(specialty))
         return;
 
-    const doctorList = await getFilterDoctorList(specialty)
+    const doctorList = await getAvailableDoctorsForBooking(specialty)
 
     if (!doctorList)
         return;

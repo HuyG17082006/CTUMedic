@@ -2,6 +2,19 @@
 require_once __DIR__ . '/../../middleware/auth.php';
 require_once __DIR__ . '/../../database.php';
 
+if ($role === 'patient') {
+    require_once __DIR__ . '/../../middleware/patient.php';
+} elseif ($role === 'doctor') {
+    require_once __DIR__ . '/../../middleware/doctor.php';
+} else {
+    http_response_code(403);
+    echo json_encode([
+        'status' => 'failed',
+        'message' => 'Bạn không có quyền truy cập hồ sơ này.'
+    ], JSON_UNESCAPED_UNICODE);
+    exit();
+}
+
 $taiKhoanId = $_SESSION['taiKhoanId'];
 
 try {

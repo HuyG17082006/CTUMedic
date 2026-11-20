@@ -16,9 +16,26 @@ export const WORKING_TIME_SLOTS = [
 ]
 
 export const SPECIALTY_LIST = [
-    "Nội tổng quát",
-    "Nội khoa",
-    'Nhi khoa',
-    "Tim mạch",
-    "Da liễu"
-]
+  "Nội tổng quát",
+  "Nội khoa",
+  "Nhi khoa",
+  "Tim mạch",
+  "Da liễu",
+  "Tai Mũi Họng",
+  "Mắt",
+  "Răng Hàm Mặt",
+  "Sản phụ khoa",
+  "Thần kinh",
+  "Cơ xương khớp",
+  "Tiêu hóa",
+  "Hô hấp",
+  "Nội tiết",
+  "Thận - Tiết niệu",
+  "Ung bướu",
+  "Tâm thần",
+  "Dinh dưỡng",
+  "Y học cổ truyền",
+  "Chẩn đoán hình ảnh",
+  "Xét nghiệm",
+  "Ngoại tổng quát"
+];

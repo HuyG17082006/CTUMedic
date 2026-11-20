@@ -11,11 +11,6 @@
                 <label for="filterSpecialty" class="filter-label">Chuyên khoa</label>
                 <select id="filterSpecialty" class="form-select">
                     <option value="">Tất cả chuyên khoa</option>
-                    <option value="Nội tổng quát">Nội tổng quát</option>
-                    <option value="Nội khoa">Nội khoa</option>
-                    <option value="Nhi khoa">Nhi khoa</option>
-                    <option value="Tim mạch">Tim mạch</option>
-                    <option value="Da liễu">Da liễu</option>
                 </select>
             </div>
 
@@ -121,11 +116,6 @@
                     <label for="addDoctorChuyenKhoa" class="form-label">Chuyên khoa <span class="required">*</span></label>
                     <select id="addDoctorChuyenKhoa" required class="form-select">
                         <option value="">-- Chọn chuyên khoa --</option>
-                        <option value="Nội tổng quát">Nội tổng quát</option>
-                        <option value="Nội khoa">Nội khoa</option>
-                        <option value="Nhi khoa">Nhi khoa</option>
-                        <option value="Tim mạch">Tim mạch</option>
-                        <option value="Da liễu">Da liễu</option>
                     </select>
                 </div>
             </div>
